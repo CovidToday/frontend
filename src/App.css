@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web');
+
 .App {
   text-align: center;
 }
@@ -14,14 +17,12 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: white;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
@@ -35,4 +36,433 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.table-div {
+	align-content: center;
+	text-align:center;
+}
+
+.ag-header-cell-label {
+   justify-content: center;
+   padding: 0px;
+}
+
+ag-header-cell ag-header-cell-sortable ag-column-hover {
+	padding: 0px;
+}
+
+.header-pic-container {
+	width: 35%;
+	text-align: left;
+}
+
+.header-pic-container-mobile {
+	width: 100%;
+	text-align: left;
+}
+
+.header-pic {
+	display: inline-block;
+	width: inherit;
+	padding-left: 45px;
+}
+
+.header-pic-mobile {
+	display: inline-block;
+	width: inherit;
+}
+
+.footer-pic-container {
+	width: 100%;
+	text-align: center;
+}
+
+.footer-pic {
+	display: inline-block;
+	width: inherit;
+	max-width: 350px;
+	padding: 20px;
+}
+
+.header-bar-text {
+	color: white;
+	display: table-cell;
+	text-align: center;
+	font-family: Titillium Web;
+	vertical-align: middle;
+}
+
+.header-bar-dropdown {
+	display: table-cell;
+	text-align: center;
+}
+
+.sub-header-row {
+	display: table;
+	table-layout: fixed;
+	background-color: #004065;
+	width: 100%;
+	min-height: 35px;
+}
+
+.dropdown.btn-success.focus, .btn-success:focus {
+	box-shadow: black;
+}
+
+.ag-header-cell-label .ag-header-cell-text {
+ 	white-space: normal !important;
+}
+
+.ag-header-group-cell-label {
+ 	justify-content: center;
+}
+
+.home-text {
+	width: 90%;
+	margin: 0 auto;
+	padding: 10px;
+}
+
+.top-text-title {
+	text-align: left;
+	font-family: Titillium Web;
+}
+
+.top-text-body {
+	text-align: justify;
+	font-family: Titillium Web;
+	}
+	
+.information-icon {
+  height: 16px;
+  width: 16px;
+}
+
+.nav-button.btn-outline-primary {
+	color: #383838;
+	border-color: white;
+}
+
+.nav-button.btn-outline-primary:hover {
+	color: white;
+	border-color: lightgray;
+	background-color: lightgray;
+}
+
+.nav-button.btn-outline-primary:not(:disabled):not(.disabled).active, 
+.nav-button.btn-outline-primary:not(:disabled):not(.disabled):active, 
+.nav-button.show>.btn-outline-primary.dropdown-toggle {
+	color: white;
+	border-color: lightgray;
+	background-color: lightgray;
+}
+
+.nav-button.btn-outline-primary.focus, .nav-button.btn-outline-primary:focus {
+	box-shadow: 0 0 0 0.2rem rgb(255, 255, 255);;
+}
+
+.nav-bar.btn {
+	font-family: inherit;
+}
+
+.nav-button-group {
+	padding-left: 25px;
+	width: 100%;
+}
+
+.nav-bar {
+	padding: 30px;
+	font-family: Titillium Web;
+}
+
+.nav-bar-mobile {
+	font-family: Titillium Web;
+}
+
+.nav-button-group-mobile {
+	width: 100%;
+	display: block;
+	text-align: center;
+}
+
+.link-text {
+	color: blue;
+	cursor: pointer;
+}
+
+.dropdown-state.btn-success:not(:disabled):not(.disabled).active:focus, 
+.dropdown-state.btn-success:not(:disabled):not(.disabled):active:focus, .dropdown-state
+.show>.btn-success.dropdown-toggle:focus {
+	box-shadow: 0 0 0 0.2rem rgb(255, 255, 255);
+}
+
+.dropdown-state.btn-success, .dropdown-state.btn-success:not(:disabled):not(.disabled).active, 
+.dropdown-state.btn-success:not(:disabled):not(.disabled):active, .dropdown-state.show>.btn-success.dropdown-toggle, .dropdown-state.btn-success:hover {
+	background-color: white;
+	border-color: black;
+	color: #004065;
+}
+
+.dropdown-state.btn-success.focus, .dropdown-state.btn-success:focus, .btn-success:focus{
+	background-color: white;
+	border-color: black;
+	box-shadow: 0 0 0 0.1rem rgb(255, 255, 255);
+	color: #004065;
+}
+
+.show>.btn-success.dropdown-toggle, .show>.btn-success.dropdown-toggle:focus, .show>.btn-success.dropdown-toggle :focus {
+	background-color: white !important;
+	border-color: white !important;
+	color: #004065 !important;
+	box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5) !important;
+}
+
+
+
+.scroll-button.btn-outline-primary, .scroll-button-mobile.btn-outline-primary{
+	color: #004065;
+	border-color: #004065;
+}
+
+.scroll-button.btn-outline-primary.focus, .scroll-button.btn-outline-primary:focus, 
+.scroll-button-mobile.btn-outline-primary.focus, .scroll-button-mobile.btn-outline-primary:focus{
+	box-shadow: 0 0 0 0.2rem rgb(128, 128, 255);
+}
+
+.scroll-button.btn-outline-primary:hover, .scroll-button.btn-outline-primary:not(:disabled):not(.disabled).active, 
+.scroll-button.btn-outline-primary:not(:disabled):not(.disabled):active, .scroll-button.show>.btn-outline-primary.dropdown-toggle,
+.scroll-button-mobile.btn-outline-primary:hover, .scroll-button-mobile.btn-outline-primary:not(:disabled):not(.disabled).active, 
+.scroll-button-mobile.btn-outline-primary:not(:disabled):not(.disabled):active, .scroll-button-mobile.show>.btn-outline-primary.dropdown-toggle {
+	background-color: #004065;
+	border-color: black;
+	color: white;
+}
+
+.dropdown-state.btn-success:not(:disabled):not(.disabled).active, .dropdown-state.btn-success:not(:disabled):not(.disabled):active, 
+.dropdown-state.show>.btn-success.dropdown-toggle {
+	color: #004065;
+	background-color: white;
+}
+
+.cell-icon {
+	height: 12px;
+	padding: 2px;
+	vertical-align: middle;
+}
+
+.home-text-footnote {
+	width: 80%;
+	margin: 0 auto;
+	font-size: smaller;
+	text-align: justify;
+}
+
+.home-text-footnote-mobile {
+	width: 90%;
+	margin: 0 auto;
+	font-size: x-small;
+	text-align: justify;
+}
+
+.methods-table {
+	width: 80%;
+	margin: 0 auto;
+}
+
+.methods-table-mobile {
+	margin: 0 auto;
+	font-size: small;
+}
+
+.plot-heading {
+	font-family: Titillium Web;
+}
+
+.for-the-people {
+	width: 90%;
+	margin: 0 auto;
+	padding: 10px;
+}
+
+.for-the-people-text {
+	font-size: medium;
+    text-align: justify;
+	font-family: Titillium Web;
+}
+
+.for-the-people-heading {
+	text-align: center;
+    font-size: larger;
+    font-weight: bolder;
+	font-family: Montserrat;
+	padding-bottom: 15px;
+}
+
+.disclaimer {
+	width: 90%;
+	margin: 0 auto;
+	padding: 20px;
+	text-align: center;
+	font-family: Titillium Web;
+}
+
+.plots-card {
+	padding: 5px;
+	margin: 10px;
+}
+
+.disclaimer-top {
+	margin: 0 auto;
+	text-align: center;
+	font-family: Titillium Web;
+}
+
+.scroll-button {
+	color: #004056;
+	width: 40%;
+	margin: 0 auto;
+}
+
+.scroll-button-mobile {
+	color: #004056;
+	margin: 0 auto;
+}
+
+.accordion-button {
+	color: #004056;
+    border: 0;
+    background: none;
+    text-decoration: underline;
+}
+
+.accordion-button:focus {
+	outline: none;
+}
+
+.text-pages-layout {
+	margin: 0 auto;
+	padding: 10px;
+}
+
+.small-text {
+	font-size: smaller;
+}
+
+.equation {
+	width: 250px;
+}
+
+.wrapper
+{
+	padding-bottom: 90px;
+}
+
+.divider
+{
+	position: relative;
+	margin-top: 90px;
+	height: 1px;
+}
+
+.div-transparent:before
+{
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 5%;
+	right: 5%;
+	width: 90%;
+	height: 1px;
+	background-image: linear-gradient(to right, transparent, rgb(48,49,51), transparent);
+}
+
+.table-info {
+	width: 50%;
+	margin: 0 auto;
+	padding: 10px;
+	text-align: justify;
+	font-family: Titillium Web;
+	
+}
+
+.table-info-mobile {
+	margin: 0 auto;
+	padding: 10px;
+	text-align: justify;
+	font-family: Titillium Web;
+	font-size: smaller;
+}
+
+.plot-headers {
+	max-width: 90%;  
+  	margin: 10px auto;
+}
+
+.hr-text {
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: black;
+  text-align: center;
+  height: 1.5em;
+  opacity: .5;
+}
+.hr-text:before {
+    content: '';
+    background: linear-gradient(to right, transparent, black, transparent);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px; 
+	font-weight: bolder;
+	font-family: Montserrat;
+}
+.hr-text:after {
+    content: attr(data-content);
+    position: relative;
+    display: inline-block;
+    color: black;
+
+    padding: 0 .5em;
+    line-height: 1.5em;
+    color: black;
+    background-color: #fcfcfa;
+	font-weight: bolder;
+	font-family: Montserrat;
+}
+
+.span-plot-title {
+	display: inline-block;
+	width: 50%;
+}
+
+.span-plot-title-mobile {
+	display: inline-block;
+	font-size: smaller;
+}
+
+.quicklink-icon {
+	width: 30px;
+	cursor: pointer;
+}
+
+.dropdown-state-list {
+	height: 500px;
+	width: 130px;
+	overflow-y: scroll;
+}
+
+.titillium {
+	font-family: Titillium Web;
+}
+
+.social-links {
+	width: 90%;
+	margin: 0 auto;
+	padding: 10px;
+	text-align: center;
+	font-family: Titillium Web;
 }
