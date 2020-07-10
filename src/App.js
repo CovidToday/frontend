@@ -7,26 +7,37 @@ import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { Line, Chart, Bar } from 'react-chartjs-2';
-import { Container, Row, Col, Dropdown, Card, Button, Popover, OverlayTrigger, CardGroup, Accordion, ButtonToolbar } from 'react-bootstrap';
+import { Container, Row, Col, Dropdown, Card, Button, Popover, OverlayTrigger,
+    CardGroup, Accordion, ButtonToolbar } from 'react-bootstrap';
 import Header from "./images/header.png"
 import Footer from "./images/footer.jpg"
 import informationIcon from "./images/information_icon.png";
-import PosRateRenderer from './PosRateRenderer.jsx';
-import CfrRenderer from './CfrRenderer.jsx';
-import RtRenderer from './RtRenderer.jsx';
-import CasesRenderer from './CasesRenderer.jsx';
-import CumPosRateRenderer from './CumPosRateRenderer.jsx';
-import CumCasesRenderer from './CumCasesRenderer.jsx';
-import TPMRenderer from './TPMRenderer.jsx';
-import Methods from "./Methods.js";
-import Contribute from "./Contribute.js";
-import About from "./About.js";
+import PosRateRenderer from './StatesDataGrid/CellRenderers/PosRateRenderer.jsx';
+import CfrRenderer from './StatesDataGrid/CellRenderers/CfrRenderer.jsx';
+import RtRenderer from './StatesDataGrid/CellRenderers/RtRenderer.jsx';
+import CasesRenderer from './StatesDataGrid/CellRenderers/CasesRenderer.jsx';
+import CumPosRateRenderer from './StatesDataGrid/CellRenderers/CumPosRateRenderer.jsx';
+import CumCasesRenderer from './StatesDataGrid/CellRenderers/CumCasesRenderer.jsx';
+import TPMRenderer from './StatesDataGrid/CellRenderers/TPMRenderer.jsx';
+import Methods from "./Methods/Methods.js";
+import Contribute from "./Contribute/Contribute.js";
+import About from "./AboutUs/About.js";
 import graphIcon from "./images/graphIcon.png";
 import tableIcon from "./images/tableIcon.png";
 import gitIcon from "./images/github.png";
 import twitterIcon from "./images/twitter.png";
 import mailIcon from "./images/mail.png";
 import feedbackIcon from "./images/feedback.png";
+import Licence from "./Licence/Licence.js";
+import LinkButtons from "./LinkButtons.js"
+import IndicatorDescriptionCards from "./IndicatorDescriptionCards.js"
+import CfrChart from "./Plots/CfrChart.js"
+import PosRateChart from "./Plots/PosRateChart.js"
+import DailyTestsChart from "./Plots/DailyTestsChart.js"
+import MobilityChart from "./Plots/MobilityChart.js"
+import RtChart from "./Plots/RtChart.js"
+import DailyCasesChart from "./Plots/DailyCasesChart.js"
+import * as StateEnums from "./Commons/StateEnums.js"
 
 class App extends Component {
 	constructor(props) {
@@ -354,121 +365,7 @@ class App extends Component {
 	}
 
 	getName = (key) => {
-		let name;
-		switch (key) {
-			case "IN":
-				name = "India";
-				break;
-			case "ap":
-				name = "Andhra Pradesh";
-				break;
-			case "ar":
-				name = "Arunachal Pradesh";
-				break;
-			case "as":
-				name = "Assam";
-				break;
-			case "br":
-				name = "Bihar";
-				break;
-			case "ct":
-				name = "Chhattisgarh";
-				break;
-			case "ga":
-				name = "Goa";
-				break;
-			case "gj":
-				name = "Gujarat";
-				break;
-			case "hr":
-				name = "Haryana";
-				break;
-			case "hp":
-				name = "Himachal Pradesh";
-				break;
-			case "jh":
-				name = "Jharkhand";
-				break;
-			case "ka":
-				name = "Karnataka";
-				break;
-			case "kl":
-				name = "Kerala";
-				break;
-			case "mp":
-				name = "Madhya Pradesh";
-				break;
-			case "mh":
-				name = "Maharashtra";
-				break;
-			case "mn":
-				name = "Manipur";
-				break;
-			case "ml":
-				name = "Meghalaya";
-				break;
-			case "mz":
-				name = "Mizoram";
-				break;
-			case "nl":
-				name = "Nagaland";
-				break;
-			case "or":
-				name = "Odisha";
-				break;
-			case "pb":
-				name = "Punjab";
-				break;
-			case "rj":
-				name = "Rajasthan";
-				break;
-			case "sk":
-				name = "Sikkim";
-				break;
-			case "tn":
-				name = "Tamil Nadu";
-				break;
-			case "tg":
-				name = "Telangana";
-				break;
-			case "tr":
-				name = "Tripura";
-				break;
-			case "up":
-				name = "Uttar Pradesh";
-				break;
-			case "ut":
-				name = "Uttarakhand";
-				break;
-			case "wb":
-				name = "West Bengal";
-				break;
-			case "an":
-				name = "Andaman and Nicobar Islands";
-				break;
-			case "ch":
-				name = "Chandigarh";
-				break;
-			case "dn":
-				name = "Dadra and Nagar Haveli and Daman and Diu";
-				break;
-			case "dl":
-				name = "Delhi";
-				break;
-			case "jk":
-				name = "Jammu and Kashmir";
-				break;
-			case "la":
-				name = "Ladakh";
-				break;
-			case "ld":
-				name = "Lakshadweep";
-				break;
-			case "py":
-				name = "Puducherry";
-				break;
-		}
-		return name;
+		return StateEnums.StateNames[key];
 	}
 
 	setRowData = () => {
@@ -1058,362 +955,6 @@ class App extends Component {
 		</div>
 	}
 
-	DailyCasesChartRender = () => {
-		const { dailyCasesGraphData, lockdownDates, lockdownChartText } = this.state;
-		return <Bar
-			data={dailyCasesGraphData}
-			height={300}
-			plugins={{
-				verticalLineAtIndex: lockdownDates,
-				lockdownChartText: lockdownChartText,
-			}}
-			options={{
-				maintainAspectRatio: false,
-				legend: {
-					display: false,
-					labels: {
-						boxWidth: 20,
-						fontFamily: 'Titillium Web',
-						// filter: function (item, chart) {
-						// 	if (item.text) {
-						// 		return !item.text.includes('fixed');
-						// 	}
-						// },
-					},
-					position: 'bottom',
-				},
-				tooltips: {
-					mode: 'index',
-					intersect: false,
-					callbacks: {
-						label: function (tooltipItem, data) {
-							var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-							if (label) {
-								label += ': ';
-							}
-							label += Math.trunc(tooltipItem.yLabel);
-							return label;
-						}
-					}
-				},
-				hover: {
-					mode: 'index',
-					intersect: false,
-					animationDuration: 200,
-					onHover: function (event, chart) {
-					},
-				},
-				layout: {
-					padding: {
-						top: 21,
-					}
-				},
-				title: {
-					display: false,
-				},
-				scales: {
-					yAxes: [{
-						display: true,
-					}],
-					xAxes: [{
-						gridLines: {
-							display: false,
-						},
-						ticks: {
-							type: 'time',
-							maxTicksLimit: 6,
-							autoSkip: true,
-							minRotation: 0,
-							maxRotation: 0.
-						},
-					}],
-				},
-			}}
-		/>
-	}
-
-	DailyTestsChartRender = () => {
-		const { dailyTestsGraphData, lockdownDates, lockdownChartText } = this.state;
-		return <Bar
-			data={dailyTestsGraphData}
-			height={300}
-			plugins={{
-				verticalLineAtIndex: lockdownDates,
-				lockdownChartText: lockdownChartText,
-			}}
-			options={{
-				maintainAspectRatio: false,
-				legend: {
-					display: false,
-					labels: {
-						boxWidth: 20,
-						fontFamily: 'Titillium Web',
-						// filter: function (item, chart) {
-						// 	if (item.text) {
-						// 		return !item.text.includes('fixed');
-						// 	}
-						// },
-					},
-					position: 'bottom',
-				},
-				tooltips: {
-					mode: 'index',
-					intersect: false,
-				},
-				hover: {
-					mode: 'index',
-					intersect: false,
-					animationDuration: 200,
-					onHover: function (event, chart) {
-					},
-				},
-				layout: {
-					padding: {
-						top: 21,
-					}
-				},
-				title: {
-					display: false,
-				},
-				scales: {
-					yAxes: [{
-						display: true,
-					}],
-					xAxes: [{
-						gridLines: {
-							display: false,
-						},
-						ticks: {
-							type: 'time',
-							maxTicksLimit: 6,
-							autoSkip: true,
-							minRotation: 0,
-							maxRotation: 0.
-						},
-					}],
-				},
-			}}
-		/>
-	}
-
-	RtChartRender = () => {
-		const { minRtDataPoint, maxRtDataPoint, rtPointGraphData, lockdownDates, lockdownChartText } = this.state;
-		return <Line
-			data={rtPointGraphData}
-			height={300}
-			plugins={{
-				verticalLineAtIndex: lockdownDates,
-				lockdownChartText: lockdownChartText,
-			}}
-			options={{
-				maintainAspectRatio: false,
-				legend: {
-					display: false,
-					// labels: {
-					// 	filter: function (item, chart) {
-					// 		return item.text.includes('Lockdown');
-					// 	}
-					// }
-				},
-				tooltips: {
-					mode: 'index',
-					intersect: false,
-					filter: function (tooltipItem) {
-						return tooltipItem.datasetIndex === 3;
-					},
-					callbacks: {
-						label: function (tooltipItem, data) {
-							var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-							if (label) {
-								label += ': ';
-							}
-							label += tooltipItem.yLabel.toFixed(2);
-							return label;
-						}
-					}
-				},
-				hover: {
-					mode: 'index',
-					intersect: false,
-					animationDuration: 200,
-					onHover: function (event, chart) {
-						//chart[0]._chart.tooltip._view.opacity = 1;
-					},
-				},
-				layout: {
-					padding: {
-						top: 21,
-					}
-				},
-				title: {
-					display: false,
-				},
-				scales: {
-					yAxes: [{
-						display: true,
-						ticks: {
-							suggestedMin: minRtDataPoint,
-							// suggestedMax: maxRtDataPoint,
-							stepSize: 0.5
-						},
-					}],
-					xAxes: [{
-						gridLines: {
-							display: false,
-						},
-						ticks: {
-							type: 'time',
-							maxTicksLimit: 6,
-							autoSkip: true,
-							minRotation: 0,
-							maxRotation: 0.
-						},
-					}]
-				},
-			}}
-		/>
-	}
-
-	CfrChartRender = () => {
-		const { cfrGraphData, lockdownDates, lockdownChartText, maxCFRPoint } = this.state;
-		return <Line
-			data={cfrGraphData}
-			height={300}
-			plugins={{
-				verticalLineAtIndex: lockdownDates,
-				lockdownChartText: lockdownChartText,
-			}}
-			options={{
-				maintainAspectRatio: false,
-				legend: {
-					display: false,
-				},
-				tooltips: {
-					mode: 'index',
-					intersect: false,
-					filter: function (tooltipItem) {
-						return tooltipItem.datasetIndex === 2;
-					},
-					callbacks: {
-						label: function (tooltipItem, data) {
-							var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-							if (label) {
-								label += ': ';
-							}
-							label += tooltipItem.yLabel.toFixed(2) + '%';
-							return label;
-						}
-					}
-				},
-				hover: {
-					mode: 'index',
-					intersect: false,
-					animationDuration: 200,
-					onHover: function (event, chart) {
-					},
-				},
-				layout: {
-					padding: {
-						top: 21,
-					}
-				},
-				title: {
-					display: false,
-				},
-				scales: {
-					yAxes: [{
-						display: true,
-						ticks: {
-							max: maxCFRPoint,
-						},
-					}],
-					xAxes: [{
-						gridLines: {
-							display: false,
-						},
-						ticks: {
-							type: 'time',
-							maxTicksLimit: 6,
-							autoSkip: true,
-							minRotation: 0,
-							maxRotation: 0.
-						},
-					}]
-				},
-			}}
-		/>
-	}
-
-	MobilityChartRender = () => {
-		const { mobilityGraphData, lockdownDates, lockdownChartText } = this.state;
-		return <Line
-			data={mobilityGraphData}
-			height={300}
-			plugins={{
-				verticalLineAtIndex: lockdownDates,
-				lockdownChartText: lockdownChartText,
-			}}
-			options={{
-				maintainAspectRatio: false,
-				legend: {
-					display: true,
-					labels: {
-						boxWidth: 20,
-						fontFamily: 'Titillium Web',
-						filter: function (item, chart) {
-							if (item.text) {
-								return !item.text.includes('fixed');
-							}
-						},
-					},
-					position: 'bottom',
-				},
-				tooltips: {
-					mode: 'index',
-					intersect: false,
-					filter: function (item) {
-						return !item.datasetIndex == 0;
-					},
-				},
-				hover: {
-					mode: 'index',
-					intersect: false,
-					animationDuration: 200,
-					onHover: function (event, chart) {
-					},
-				},
-				layout: {
-					padding: {
-						top: 21,
-					}
-				},
-				title: {
-					display: false,
-				},
-				scales: {
-					yAxes: [{
-						display: true,
-					}],
-					xAxes: [{
-						gridLines: {
-							display: false,
-						},
-						ticks: {
-							type: 'time',
-							maxTicksLimit: 6,
-							autoSkip: true,
-							minRotation: 0,
-							maxRotation: 0.
-						},
-					}],
-				},
-			}}
-		/>
-	}
-
 	handleDivScroll = (event) => {
 		if (this.textDivRef.current) {
 			this.textDivRef.current.scrollIntoView({
@@ -1616,7 +1157,11 @@ class App extends Component {
 													</OverlayTrigger>
 												</h5>
 												<div className="rtgraph">
-													<this.DailyCasesChartRender />
+													<DailyCasesChart
+													    dailyCasesGraphData={this.state.dailyCasesGraphData}
+													    lockdownDates={this.state.lockdownDates}
+													    lockdownChartText={this.state.lockdownChartText}
+													/>
 												</div>
 											</Card>
 										</Col>
@@ -1632,7 +1177,13 @@ class App extends Component {
 													</OverlayTrigger>
 												</h5>
 												<div className="rtgraph">
-													<this.RtChartRender />
+													<RtChart
+													    minRtDataPoint={this.state.minRtDataPoint}
+													    maxRtDataPoint={this.state.maxRtDataPoint}
+													    rtPointGraphData={this.state.rtPointGraphData}
+													    lockdownDates={this.state.lockdownDates}
+													    lockdownChartText={this.state.lockdownChartText}
+													/>
 												</div>
 											</Card>
 										</Col>
@@ -1648,7 +1199,11 @@ class App extends Component {
 													</OverlayTrigger>
 												</h5>
 												<div className="mobilityGraph">
-													<this.MobilityChartRender />
+													<MobilityChart
+													    mobilityGraphData={this.state.mobilityGraphData}
+													    lockdownDates={this.state.lockdownDates}
+													    lockdownChartText={this.state.lockdownChartText}
+													/>
 												</div>
 											</Card>
 										</Col>
@@ -1669,7 +1224,11 @@ class App extends Component {
 													</OverlayTrigger>
 												</h5>
 												<div className="rtgraph">
-													<this.DailyTestsChartRender />
+													<DailyTestsChart
+													    dailyTestsGraphData={this.state.dailyTestsGraphData}
+													    lockdownDates={this.state.lockdownDates}
+													    lockdownChartText={this.state.lockdownChartText}
+													/>
 												</div>
 											</Card>
 										</Col>
@@ -1685,69 +1244,10 @@ class App extends Component {
 													</OverlayTrigger>
 												</h5>
 												<div className="positivityrate-graph">
-													<Line
-														data={positivityRateGraphData}
-														height={300}
-														plugins={{
-															verticalLineAtIndex: this.state.lockdownDates,
-															lockdownChartText: this.state.lockdownChartText,
-														}}
-														options={{
-															maintainAspectRatio: false,
-															legend: {
-																display: false,
-															},
-															tooltips: {
-																mode: 'index',
-																intersect: false,
-																filter: function (tooltipItem) {
-																	return tooltipItem.datasetIndex === 2;
-																},
-																callbacks: {
-																	label: function (tooltipItem, data) {
-																		var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-																		if (label) {
-																			label += ': ';
-																		}
-																		label += tooltipItem.yLabel.toFixed(2) + '%';
-																		return label;
-																	}
-																}
-															},
-															hover: {
-																mode: 'index',
-																intersect: false,
-																animationDuration: 200,
-																onHover: function (event, chart) {
-																},
-															},
-															layout: {
-																padding: {
-																	top: 21,
-																}
-															},
-															title: {
-																display: false,
-															},
-															scales: {
-																yAxes: [{
-																	display: true,
-																}],
-																xAxes: [{
-																	gridLines: {
-																		display: false,
-																	},
-																	ticks: {
-																		type: 'time',
-																		maxTicksLimit: 6,
-																		autoSkip: true,
-																		minRotation: 0,
-																		maxRotation: 0.
-																	},
-																}]
-															},
-														}}
+													<PosRateChart
+													    lockdownDates={this.state.lockdownDates}
+													    lockdownChartText={this.state.lockdownChartText}
+													    positivityRateGraphData={positivityRateGraphData}
 													/>
 												</div>
 											</Card>
@@ -1764,7 +1264,12 @@ class App extends Component {
 													</OverlayTrigger>
 												</h5>
 												<div className="cfr-graph">
-													<this.CfrChartRender />
+													<CfrChart
+													    cfrGraphData={this.state.cfrGraphData}
+													    lockdownDates={this.state.lockdownDates}
+													    lockdownChartText={this.state.lockdownChartText}
+													    maxCFRPoint={this.state.maxCFRPoint}
+													/>
 												</div>
 											</Card>
 										</Col>
@@ -1836,66 +1341,7 @@ class App extends Component {
 					</div>
 
 					<div className="home-text" ref={this.textDivRef}>
-						<div className="for-the-people-heading" style={{ padding: "10px", fontSize: fontSizeDynamic }}>How fast is the spread? (Transmission indicators)</div>
-						<CardGroup>
-							<Card style={{ background: "#e8e8e8" }}>
-								<Card.Body>
-									<Card.Title className="top-text-title" style={{ fontWeight: "bolder", fontSize: fontSizeDynamic }}>{`Effective Reproduction Number (Rt)`}</Card.Title>
-									<Card.Text className="top-text-body" style={{ fontSize: fontSizeDynamic }}>
-										<div><span style={{ fontStyle: "italic" }}>Rt is the average number of people infected by a single case, at a particular time
-									t during the outbreak.</span>  WHO recommends this metric as the key measure to know the rate of spread of the virus. When Rt
-									reaches below 1, we can say that the outbreak has been brought under control. Tracking the regional Rt tells us the severity of
-									the outbreak in each state, and guides administrators to fine-tune the level of control measures required to bring the Rt under
-									1. As changes in transmission correlate with control measures, we can assess the efficacy of different measures by comparing the
-									change in Rt after their implementation. </div>
-									</Card.Text>
-								</Card.Body>
-							</Card>
-							<span style={{ width: "2%" }}> </span>
-							<Card style={{ background: "#e8e8e8" }}>
-								<Card.Body>
-									<Card.Title className="top-text-title" style={{ fontWeight: "bolder", fontSize: fontSizeDynamic }}>{`Mobility Index`}</Card.Title>
-									<Card.Text className="top-text-body" style={{ fontSize: fontSizeDynamic }}>
-										<div><span style={{ fontStyle: "italic" }}>This indicates the change in the amount of movement of people at various places
-									compared to that before lockdown</span>  It shows us the effect of lockdown and behavioural change on the movement of people,
-									and how this changes as restrictions are relaxed in a graded manner. We have introduced this parameter experimentally considering
-									that mobility has a direct effect on disease spread, however there is no evidence yet that the mobility indices shown directly
-									correlate with local transmission.</div>
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</CardGroup>
-						<div className="for-the-people-heading" style={{ padding: "10px", fontSize: fontSizeDynamic }}>Are we testing enough? (Testing indicators)</div>
-						<CardGroup>
-							<Card style={{ background: "antiquewhite" }}>
-								<Card.Body>
-									<Card.Title className="top-text-title" style={{ fontWeight: "bolder", fontSize: fontSizeDynamic }}>{`Test Positivity Rate`}</Card.Title>
-									<Card.Text className="top-text-body" style={{ fontSize: fontSizeDynamic }}>
-										<div><span style={{ fontStyle: "italic" }}>It is the percent of COVID-19 tests done that come back positive.</span> A low positivity
-									rate means that testing levels are sufficient for the scale of the epidemic and surveillance is penetrating the community enough to
-									detect any resurgence. In contrast, a high positivity rate indicates that testing is relatively limited to people with high suspicion
-									of COVID-19 and may miss new chains of transmission in the community. The WHO recommends that the daily positivity rate be below 5%
-									for atleast two weeks before relaxing public health measures. Test Positivity Rate is a better indicator of testing adequacy than
-									Tests Per Million, as testing coverage should be seen relative to the size of the epidemic rather than the size of the population.
-									We report daily positivity rate (as 7-day moving averages) and cumulative positivity rate (which includes all tests done till date). </div>
-									</Card.Text>
-								</Card.Body>
-							</Card>
-							<span style={{ width: "2%" }}> </span>
-							<Card style={{ background: "antiquewhite" }}>
-								<Card.Body>
-									<Card.Title className="top-text-title" style={{ fontWeight: "bolder", fontSize: fontSizeDynamic }}>{`Corrected Case Fatality Rate`}</Card.Title>
-									<Card.Text className="top-text-body" style={{ fontSize: fontSizeDynamic }}>
-										<div>The Crude CFR is equal to the deaths till date divided by the cases till date. This naive estimate of CFR is known to be biased in
-										ongoing outbreaks, primarily due to two factors- the delay between time of case confirmation and time of death, and the under-reporting
-										of cases due to limitations in testing coverage. The Corrected CFR presented here corrects for the first bias, by adjusting the
-										denominator to reflect the number of cases where death would have been reported if it had occurred, based on known estimates of
-									delay from confirmation to death. <span style={{ fontStyle: "italic" }}>The variation in Corrected CFR across states would then reflect
-									the degree of under-reporting or testing adequacy in a particular state (with certain limitations). </span></div>
-									</Card.Text>
-								</Card.Body>
-							</Card>
-						</CardGroup>
+					    <IndicatorDescriptionCards fontSize={fontSizeDynamic}/>
 					</div>
 					<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
 						<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Methods" }, window.scrollTo(0, 0))}> Methods</a> page.
@@ -1903,12 +1349,7 @@ class App extends Component {
 						We use best practices in all calculations, however some inadvertent errors may creep in despite our efforts.
 						<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Contribute" }, window.scrollTo(0, 0))}> Report an error.</a></div>
 
-					<div className="for-the-people" style={{ textAlign: "center", fontSize: fontSizeDynamic }}>
-						<a className="titillium" href="https://github.com/CovidToday/indicator-dataset" target="_blank">Get the dataset (csv and json)</a><br />
-						<a className="titillium" href="https://twitter.com/icart_india" target="_blank">Follow us on twitter</a><br />
-						<a className="titillium" href="https://forms.gle/HDCDVYApfRi319k58" target="_blank">Contribute or give us feedback</a><br />
-						<a className="titillium" href=" covidtodayindia@gmail.com" target="_blank">Get in touch with us</a>
-					</div>
+					<LinkButtons fontSize={fontSizeDynamic}/>
 
 					<div class="wrapper"><div class="divider div-transparent" style={{ marginTop: "10px" }}></div></div>
 					<div className="for-the-people">
@@ -1928,9 +1369,7 @@ class App extends Component {
 				<div className="footer-pic-container">
 					<img src={Footer} className="footer-pic" onClick={() => this.setState({ selectedView: "Team" }, window.scrollTo(0, 0))} />
 				</div>
-				<div style={{ marginTop: "30px", display: "inline-block", textAlign: "end", width: "100%", fontSize: licenceFont }}>
-					<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style={{ borderWidth: 0, width: licenceWidth }} src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>
-				</div>
+				<Licence font={licenceFont} width={licenceWidth}/>
 			</div>
 		);
 	}

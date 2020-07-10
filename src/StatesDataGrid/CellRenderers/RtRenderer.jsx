@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import upIcon from "./images/up red.png"
-import downIcon from "./images/down green.png"
+import upIcon from "../../images/up red.png"
+import downIcon from "../../images/down green.png"
 
 export default class PosRateRenderer extends Component {
   constructor(props) {

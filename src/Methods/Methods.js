@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Card, Table } from 'react-bootstrap';
-import Equation from "./images/equation.jpeg"
+import Equation from "../images/equation.jpeg"
 
 export default class Methods extends Component {
 
