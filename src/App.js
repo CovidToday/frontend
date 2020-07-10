@@ -1048,7 +1048,7 @@ class App extends Component {
 				<Popover.Title as="h3" style={{ fontSize: popoverFont }}>Positivity Rate</Popover.Title>
 				<Popover.Content style={{ fontSize: popoverFont }}>
 					Percent of tests done per day that came back positive (7-day moving average). Lower positivity rate means better testing.
-					Positivity rate below green line (less than 5%) indicates good testing, between green and red line (5-10%) indicates need for improvement, and above red line (>10%) indicates poor testing.
+					Positivity rate below green line (less than 5%) indicates good testing, between green and red line (5-10%) indicates need for improvement, and above red line (more than 10%) indicates poor testing.
 				</Popover.Content>
 			</Popover>
 		);
