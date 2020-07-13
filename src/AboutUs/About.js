@@ -49,14 +49,6 @@ export default class About extends Component {
 								</Card.Text>
 							</Card.Body>
 
-							<Card.Body>
-								<Card.Title className="top-text-title" style={headingText}><strong>Active contributors at Covid Today</strong></Card.Title>
-								<Card.Text className="titillium">
-									<div style={normalAlignedText}>Join hands with us in this effort. Join as an active contributor <a href="https://forms.gle/HDCDVYApfRi319k58">here.</a><br/>
-										You can also visit the project's <a href="https://github.com/CovidToday/backend">GitHub</a> (open-sourced) and start contributing right away.
-									</div>
-								</Card.Text>
-							</Card.Body>
 
 				<Card.Body>
 					<Card.Title className="top-text-title" style={headingText}><div><strong>Public Health Expert Panel</strong></div></Card.Title>
@@ -69,7 +61,7 @@ export default class About extends Component {
 							Infections (SEDRIC) Consortium at Wellcome Trust, and is the lead faculty on Pharmaceutical
 							Economics and Infectious Disease Epidemiology at Indian Institute of Public Health – Delhi.
 							He has received training as Post Doctoral Fellow (Economic Evaluation) at the London School
-							of Hygiene and Tropical Medicine.<a href="www.phfi.org/member/habib-hasan-farooqui/"> Know more.</a>
+							of Hygiene and Tropical Medicine.<a href="https://www.phfi.org/member/habib-hasan-farooqui/"> Know more.</a>
 							<br/><br/>
 							<b>Dr Archisman Mohapatra
 							<br/>Executive Director at GRID Council (Generating Research Insights for Development)</b>
