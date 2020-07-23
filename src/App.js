@@ -7,8 +7,10 @@ import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { Line, Chart, Bar } from 'react-chartjs-2';
-import { Container, Row, Col, Dropdown, Card, Button, Popover, OverlayTrigger,
-    CardGroup, Accordion, ButtonToolbar } from 'react-bootstrap';
+import {
+	Container, Row, Col, Dropdown, Card, Button, Popover, OverlayTrigger,
+	CardGroup, Accordion, ButtonToolbar
+} from 'react-bootstrap';
 import Header from "./images/header.png"
 import Footer from "./images/footer.jpg"
 import informationIcon from "./images/information_icon.png";
@@ -38,6 +40,7 @@ import MobilityChart from "./Plots/MobilityChart.js"
 import RtChart from "./Plots/RtChart.js"
 import DailyCasesChart from "./Plots/DailyCasesChart.js"
 import * as StateEnums from "./Commons/StateEnums.js"
+import ComparisionChart from './Plots/ComparisionChart';
 
 class App extends Component {
 	constructor(props) {
@@ -146,6 +149,9 @@ class App extends Component {
 			positivityRateGraphData: { datasets: [{ data: [] }], lables: [] },
 			dailyCasesGraphData: { datasets: [{ data: [] }], lables: [] },
 			dailyTestsGraphData: { datasets: [{ data: [] }], lables: [] },
+			comparisionGraphData: { datasets: [{ data: [] }], lables: [] },
+			statesForComparision: ["Delhi", "Gujarat", "Punjab"],
+			objectsForComparision: '',
 			selectedState: 'India',
 			selectedView: 'Home',
 			mobileView: false,
@@ -287,6 +293,8 @@ class App extends Component {
 				this.getPositivityRateGraphData(this.state.positivityRateDataFromApi.India);
 				this.getDailyCasesGraphData(this.state.positivityRateDataFromApi.India);
 				this.getDailyTestsGraphData(this.state.positivityRateDataFromApi.India);
+				this.getComparisionGraphData(this.state.positivityRateDataFromApi, "daily_positive_cases");
+				// console.log(response.data);
 			});
 
 		const lastUpdated = this.state.positivityRateDataFromApi.datetime;
@@ -849,6 +857,49 @@ class App extends Component {
 		}
 	}
 
+	getComparisionGraphData = (api, objType) => {
+		const states = this.state.statesForComparision;
+		if (api) {
+			let data = {
+				datasets: [],
+				labels: []
+			};
+			let dateIndex = api["India"].dates.indexOf(this.state.graphStartDate);
+			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
+			data.labels = api["India"].dates.slice(dateIndex, api["India"].dates.length);
+
+
+			// Main data
+			let mainData = [];
+			states.forEach(s => {
+				mainData.push({
+					label: s,
+					data: api[s][objType].slice(dateIndex, api["India"].dates.length),
+					fill: false,
+					radius: 1,
+				});
+			});
+			console.log(data);
+			data.datasets.push(...mainData);
+			this.setState({
+				comparisionGraphData: data,
+			});
+		}
+	}
+
+	onStateCheckBoxChange(state) {
+		const { statesForComparision } = this.state;
+		let updatedStates = [];
+		if (statesForComparision.indexOf(state) > -1) {
+			updatedStates = statesForComparision.filter((s) => s != state);
+		} else {
+			updatedStates.push(...statesForComparision, state);
+		}
+		this.setState({
+			statesForComparision: updatedStates
+		}, () => this.getComparisionGraphData(this.state.positivityRateDataFromApi, "daily_positive_cases"));
+	}
+
 	getPositivityRateGraphData = (dataFromApi) => {
 		if (dataFromApi) {
 			let data = {
@@ -1158,9 +1209,9 @@ class App extends Component {
 												</h5>
 												<div className="rtgraph">
 													<DailyCasesChart
-													    dailyCasesGraphData={this.state.dailyCasesGraphData}
-													    lockdownDates={this.state.lockdownDates}
-													    lockdownChartText={this.state.lockdownChartText}
+														dailyCasesGraphData={this.state.dailyCasesGraphData}
+														lockdownDates={this.state.lockdownDates}
+														lockdownChartText={this.state.lockdownChartText}
 													/>
 												</div>
 											</Card>
@@ -1178,11 +1229,11 @@ class App extends Component {
 												</h5>
 												<div className="rtgraph">
 													<RtChart
-													    minRtDataPoint={this.state.minRtDataPoint}
-													    maxRtDataPoint={this.state.maxRtDataPoint}
-													    rtPointGraphData={this.state.rtPointGraphData}
-													    lockdownDates={this.state.lockdownDates}
-													    lockdownChartText={this.state.lockdownChartText}
+														minRtDataPoint={this.state.minRtDataPoint}
+														maxRtDataPoint={this.state.maxRtDataPoint}
+														rtPointGraphData={this.state.rtPointGraphData}
+														lockdownDates={this.state.lockdownDates}
+														lockdownChartText={this.state.lockdownChartText}
 													/>
 												</div>
 											</Card>
@@ -1200,9 +1251,9 @@ class App extends Component {
 												</h5>
 												<div className="mobilityGraph">
 													<MobilityChart
-													    mobilityGraphData={this.state.mobilityGraphData}
-													    lockdownDates={this.state.lockdownDates}
-													    lockdownChartText={this.state.lockdownChartText}
+														mobilityGraphData={this.state.mobilityGraphData}
+														lockdownDates={this.state.lockdownDates}
+														lockdownChartText={this.state.lockdownChartText}
 													/>
 												</div>
 											</Card>
@@ -1225,9 +1276,9 @@ class App extends Component {
 												</h5>
 												<div className="rtgraph">
 													<DailyTestsChart
-													    dailyTestsGraphData={this.state.dailyTestsGraphData}
-													    lockdownDates={this.state.lockdownDates}
-													    lockdownChartText={this.state.lockdownChartText}
+														dailyTestsGraphData={this.state.dailyTestsGraphData}
+														lockdownDates={this.state.lockdownDates}
+														lockdownChartText={this.state.lockdownChartText}
 													/>
 												</div>
 											</Card>
@@ -1245,9 +1296,9 @@ class App extends Component {
 												</h5>
 												<div className="positivityrate-graph">
 													<PosRateChart
-													    lockdownDates={this.state.lockdownDates}
-													    lockdownChartText={this.state.lockdownChartText}
-													    positivityRateGraphData={positivityRateGraphData}
+														lockdownDates={this.state.lockdownDates}
+														lockdownChartText={this.state.lockdownChartText}
+														positivityRateGraphData={positivityRateGraphData}
 													/>
 												</div>
 											</Card>
@@ -1265,10 +1316,10 @@ class App extends Component {
 												</h5>
 												<div className="cfr-graph">
 													<CfrChart
-													    cfrGraphData={this.state.cfrGraphData}
-													    lockdownDates={this.state.lockdownDates}
-													    lockdownChartText={this.state.lockdownChartText}
-													    maxCFRPoint={this.state.maxCFRPoint}
+														cfrGraphData={this.state.cfrGraphData}
+														lockdownDates={this.state.lockdownDates}
+														lockdownChartText={this.state.lockdownChartText}
+														maxCFRPoint={this.state.maxCFRPoint}
 													/>
 												</div>
 											</Card>
@@ -1336,12 +1387,56 @@ class App extends Component {
 							</div>
 						</Container>
 					</div>
+					{/* Comparision chart */}
+					<Container>
+						<Row>
+							<Col>
+								Download the dataset
+							</Col>
+							<Col xs="9">
+								List of objetcs
+							</Col>
+						</Row>
+						<Row>
+							<Col>
+								<table style={{ maxHeight: 450, overflowX: 'hidden' }} class="table table-responsive">
+									<thead>
+										<tr style={{ position: 'sticky', top: 0 }}>
+											<th></th>
+											<th>States</th>
+										</tr>
+									</thead>
+									<tbody>
+										{this.state.rowData && this.state.rowData.map((item) => {
+											const stateName = this.getName(item.key);
+											return (
+												<tr>
+													<td><input type="checkbox"
+														onChange={() => this.onStateCheckBoxChange(stateName)}
+														checked={this.state.statesForComparision.indexOf(stateName) > -1 ? true : false}
+													></input></td>
+													<td>{stateName}</td>
+												</tr>
+											);
+										})}
+									</tbody>
+								</table>
+							</Col>
+							<Col xs="9">
+								<ComparisionChart
+									comparisionGraphData={this.state.comparisionGraphData}
+									lockdownDates={this.state.lockdownDates}
+									lockdownChartText={this.state.lockdownChartText}
+								></ComparisionChart>
+							</Col>
+						</Row>
+					</Container>
 					<div className="sub-header-row mt-4">
 						<span className="header-bar-text">Know about the indicators</span>
 					</div>
 
 					<div className="home-text" ref={this.textDivRef}>
-					    <IndicatorDescriptionCards fontSize={fontSizeDynamic}/>
+						<IndicatorDescriptionCards fontSize={fontSizeDynamic} />
 					</div>
 					<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
 						<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Methods" }, window.scrollTo(0, 0))}> Methods</a> page.
@@ -1349,7 +1444,7 @@ class App extends Component {
 						We use best practices in all calculations, however some inadvertent errors may creep in despite our efforts.
 						<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Contribute" }, window.scrollTo(0, 0))}> Report an error.</a></div>
 
-					<LinkButtons fontSize={fontSizeDynamic}/>
+					<LinkButtons fontSize={fontSizeDynamic} />
 
 					<div class="wrapper"><div class="divider div-transparent" style={{ marginTop: "10px" }}></div></div>
 					<div className="for-the-people">
@@ -1369,7 +1464,7 @@ class App extends Component {
 				<div className="footer-pic-container">
 					<img src={Footer} className="footer-pic" onClick={() => this.setState({ selectedView: "Team" }, window.scrollTo(0, 0))} />
 				</div>
-				<Licence font={licenceFont} width={licenceWidth}/>
+				<Licence font={licenceFont} width={licenceWidth} />
 			</div>
 		);
 	}
