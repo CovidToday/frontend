@@ -1,13 +1,13 @@
 # Instruction to use this
-
+**Both will be disabled or enabled together.**
 ## Disabled state
 ### Title of blog
-file Title.txt must be **completely empty**
+file Title.txt must have **#** as **first character**
 ### Description of blog
-  file Description.txt must be **completely empty**
+  file Description.txt must have **#** as **first character**
 
 
-## Active state
+## Enabled state
 ### Title of blog
 needs to be one lined **without extra spaces**.
 ### Description of blog
