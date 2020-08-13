@@ -36,9 +36,6 @@ export default class About extends Component {
 									<b>Aditya Garg, B.Tech CSE, VIT Vellore. Software Developer at Barclays</b><br/>
 									<i>Interests: Content Creation, Web and Game Development, Playing Music</i><br/><br/>
 
-									<b>Devarsh Patel, BS-MS, IISER Pune</b><br/>
-									<i>Interests : Machine Learning, Deep Learning, Data Analysis, Data Engineering</i><br/><br/>
-
 									<b>Technical Consulting and IT Support: <br/>
 											&nbsp;&nbsp;&nbsp;<b>Siddharth Jain, Integrated B.Tech-MBA, IIIT Gwalior</b><br/>
 											&nbsp;&nbsp;&nbsp;<i>Interests: Data Analysis, Machine Learning</i><br/>
@@ -48,6 +45,10 @@ export default class About extends Component {
 
 											&nbsp;&nbsp;&nbsp;Abhinav Gupta, CA Inter, B.Com</b><br/>
 											&nbsp;&nbsp;&nbsp;<i>Interests: Simplifying Complex Structures with Technology to Make Robust and Cost Effective Systems</i><br/><br/>
+
+									<b>Devarsh Patel, BS-MS, IISER Pune</b><br/>
+									<i>Interests : Machine Learning, Deep Learning, Data Analysis, Data Engineering</i><br/><br/>
+
 									</div>
 								</Card.Text>
 							</Card.Body>
