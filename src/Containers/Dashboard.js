@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { Line, Chart, Bar } from 'react-chartjs-2';
 import {
-	Container, Row, Col, Dropdown, Card, Button, Popover, OverlayTrigger,
+	Container, Row, Col, Dropdown, Card, Tabs, Tab, Button, Popover, OverlayTrigger,
 	CardGroup, Accordion, ButtonToolbar
 } from 'react-bootstrap';
 import Header from ".././images/header.png"
@@ -21,8 +21,13 @@ import CasesRenderer from '.././StatesDataGrid/CellRenderers/CasesRenderer.jsx';
 import CumPosRateRenderer from '.././StatesDataGrid/CellRenderers/CumPosRateRenderer.jsx';
 import CumCasesRenderer from '.././StatesDataGrid/CellRenderers/CumCasesRenderer.jsx';
 import TPMRenderer from '.././StatesDataGrid/CellRenderers/TPMRenderer.jsx';
-import graphIcon from ".././images/graphIcon.png";
-import tableIcon from ".././images/tableIcon.png";
+import graphIcon from ".././images/dashgraph.png";
+import tableIcon from ".././images/dashtable.png";
+import compareIcon from ".././images/dashcompare.png";
+import mapIcon from ".././images/dashamap.png";
+import analysisIcon from ".././images/dashanalysis.png";
+import summaryIcon from ".././images/dashsummary.png";
+import menuIcon from ".././images/menu.png";
 import gitIcon from ".././images/github.png";
 import twitterIcon from ".././images/twitter.png";
 import mailIcon from ".././images/mail.png";
@@ -47,6 +52,8 @@ export default class Dashboard extends Component {
 		this.tableRef = React.createRef();
 
 		this.state = {
+			blogtitle:"",
+			blogdescription:"",
 			columnDefs: [
 				{
 					headerName: '', children: [
@@ -267,34 +274,44 @@ export default class Dashboard extends Component {
 
 
 	async setData() {
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/reproduction-number-rt/rt.json')
-			.then(response => {
-				this.setState({ rtDataFromApi: response.data });
-				this.getRtPointGraphData(this.state.rtDataFromApi.IN);
-			});
-
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/testing-and-cfr/cfr.json')
-			.then(response => {
-				this.setState({ cfrDataFromApi: response.data });
-				this.getCfrGraphData(this.state.cfrDataFromApi.India);
-			});
-
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/mobility-index/india_mobility_indented.json')
-			.then(response => {
-				this.setState({ mobilityDataFromApi: response.data });
-				this.getMobilityGraphData(this.state.mobilityDataFromApi.India);
-			});
-
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/testing-and-cfr/positivity_Rate.json')
-			.then(response => {
-				this.setState({ positivityRateDataFromApi: response.data });
-				this.getPositivityRateGraphData(this.state.positivityRateDataFromApi.India);
-				this.getDailyCasesGraphData(this.state.positivityRateDataFromApi.India);
-				this.getDailyTestsGraphData(this.state.positivityRateDataFromApi.India);
-				this.getComparisionGraphData(this.state.positivityRateDataFromApi, "daily_positive_cases");
-				// console.log(response.data);
-			});
-
+			// link of file named Title.txt in Blogs folder
+			await axios.get('https://raw.githubusercontent.com/Architjain128/frontend/developfront/src/Blogs/Title.txt')
+				.then(response => {
+					this.setState({ blogtitle: response.data });
+				});
+			// link of file named Description.txt in Blogs folder
+			await axios.get('https://raw.githubusercontent.com/Architjain128/frontend/developfront/src/Blogs/Description.txt')
+				.then(response => {
+					this.setState({ blogdescription: response.data });
+				});
+			await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/reproduction-number-rt/rt.json')
+				.then(response => {
+					this.setState({ rtDataFromApi: response.data });
+					this.getRtPointGraphData(this.state.rtDataFromApi.IN);
+				});
+	
+			await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/testing-and-cfr/cfr.json')
+				.then(response => {
+					this.setState({ cfrDataFromApi: response.data });
+					this.getCfrGraphData(this.state.cfrDataFromApi.India);
+				});
+		
+			await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/mobility-index/india_mobility_indented.json')
+				.then(response => {
+					this.setState({ mobilityDataFromApi: response.data });
+					this.getMobilityGraphData(this.state.mobilityDataFromApi.India);
+				});
+		
+			await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/testing-and-cfr/positivity_Rate.json')
+				.then(response => {
+					this.setState({ positivityRateDataFromApi: response.data });
+					this.getPositivityRateGraphData(this.state.positivityRateDataFromApi.India);
+					this.getDailyCasesGraphData(this.state.positivityRateDataFromApi.India);
+					this.getDailyTestsGraphData(this.state.positivityRateDataFromApi.India);
+					this.getComparisionGraphData(this.state.positivityRateDataFromApi, "daily_positive_cases");
+					// console.log(response.data);
+				});
+		
 		const lastUpdated = this.state.positivityRateDataFromApi.datetime;
 		const timestamp = lastUpdated ? lastUpdated.split(":", 2).join(":") : "NA";
 		this.setState({ lastUpdatedTime: timestamp });
@@ -303,7 +320,7 @@ export default class Dashboard extends Component {
 			.then(response => {
 				this.setState({ nationalDataFromApi: response.data });
 			});
-
+		
 		this.setRowData();
 	}
 
@@ -1022,11 +1039,53 @@ export default class Dashboard extends Component {
 		this.getDailyTestsGraphData(this.state.positivityRateDataFromApi[stateName]);
 	}
 
+		blog = ()=>{
+			return(
+				<div id="dash-cms-blog">
+					<Card style={{marginLeft:"20rem",marginRight:"20rem"}} className="text-center">
+						<Card.Body>
+							<Card.Title>{this.state.blogtitle}</Card.Title>
+							{/* <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle> */}
+							<Card.Text>{this.state.blogdescription}</Card.Text>
+							{/* <Card.Link href="#">Card Link</Card.Link> */}
+						</Card.Body>
+					</Card>
+					<br />
+					<br />
+				</div>
+			)
+		}
+
+dropdown = ()=>{
+	return (
+		<Dropdown>
+			<Dropdown.Toggle variant="success" id="dropdown-dash" className="dropdown-dash">
+			<span><img src={menuIcon} style={{width : "40px"}}  className="quicklink-icon" /></span>
+			</Dropdown.Toggle>
+			<Dropdown.Menu id="dropdown-dash-menu">
+			<Dropdown.Item href="#Summary"><img src={summaryIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Summary</Dropdown.Item>
+			<Dropdown.Divider/>
+			<Dropdown.Item href="#Graph"><img src={graphIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }} />  Graph</Dropdown.Item>
+			<Dropdown.Divider/> 
+			<Dropdown.Item href="#Table"><img src={tableIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Table</Dropdown.Item>
+			<Dropdown.Divider/>
+			<Dropdown.Item href="#Map"><img src={mapIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Map</Dropdown.Item>
+			<Dropdown.Divider/>
+			<Dropdown.Item href="#Compare"><img src={compareIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Compare State</Dropdown.Item>
+			<Dropdown.Divider/>
+			<Dropdown.Item href="#Analysis"><img src={analysisIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Analysis</Dropdown.Item>
+			</Dropdown.Menu>
+		</Dropdown>
+		
+	)
+}
+
 	DropdownRenderer = () => {
 		const fontSize = this.state.mobileView ? "x-small" : "inherit";
 
 		return <div className="sub-header-row sticky-top">
 			{!this.state.mobileView && <span className="header-bar-text"> </span>}
+			<span ><this.dropdown/></span>
 			<span className="header-bar-text" style={{ fontSize: fontSize }}>Last Updated -{this.state.mobileView && <br />} {this.state.lastUpdatedTime}</span>
 			<span className="header-bar-dropdown">
 				<Dropdown>
@@ -1043,10 +1102,10 @@ export default class Dashboard extends Component {
 				</Dropdown>
 			</span>
 			<span className="header-bar-text">
-				<img src={graphIcon} className="quicklink-icon" onClick={() => this.scrollToPlots()} />
 				<span style={{ marginRight: "15px" }}> </span>
-				<img src={tableIcon} className="quicklink-icon" onClick={() => this.scrollToTable()} /></span>
-			{!this.state.mobileView && <span className="header-bar-text"> </span>}
+			</span>
+			{!this.state.mobileView && <span className="header-bar-text"> 
+			</span>}
 		</div>
 	}
 
@@ -1164,314 +1223,354 @@ export default class Dashboard extends Component {
 		return (
 			<div>
 
-				{selectedView === "Home" && <>
-					<div className="App">
+			{selectedView === "Home" && <>
+				<div className="App">
 
 						<div className="home-text">
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicHeading }}>Tracking India's Progress Through The Coronavirus Pandemic, Today</div>
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicSH, fontWeight: "bolder" }}>Understanding Your State's Response Through Live Outbreak Indicators</div>
+							<br/>
 						</div>
 
-						<Container>
-						    <Row>
-						        <Col>
-						            <Card className={mobileView ? "shadow" : "plots-card shadow"}>
-                                        <span style={{ fontSize: fontSizeDynamic }}>Confirmed <br/> {totalCases}</span>
-						            </Card>
-						        </Col>
-						        <Col>
-                                	<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-                                        <span style={{ fontSize: fontSizeDynamic }}>Active <br/> {activeCases}</span>
-                                    </Card>
-                                </Col>
-                                <Col>
-                                	<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-                                        <span style={{ fontSize: fontSizeDynamic }}>Recovered <br/> {recoveredCases}</span>
-                                    </Card>
-                                </Col>
-                                <Col>
-                                	<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-                                        <span style={{ fontSize: fontSizeDynamic }}>Deceased <br/> {deceasedCases}</span>
-                                    </Card>
-                                </Col>
-						    </Row>
-						</Container>
-
+						<this.blog/>
 						<this.DropdownRenderer />
-						<div ref={this.plotsRef} style={{ textDecorationColor: "white", height: "5px" }}>.</div>
-						{!mobileView && <div className="plot-headers">
-							<span className="span-plot-title"><hr class="hr-text" data-content="How fast is the spread?" /></span>
-							<span className="span-plot-title"><hr class="hr-text" data-content="Are we testing enough?" /></span>
-						</div>}
+						<br/>
+					<div id="Summary">
+							<br/>
+							<br/>
+							<Container>
+								<Row>
+									<Col>
+										<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}>Confirmed <br/> {totalCases}</span>
+										</Card>
+									</Col>
+									<Col>
+										<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}>Active <br/> {activeCases}</span>
+										</Card>
+									</Col>
+									<Col>
+										<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}>Recovered <br/> {recoveredCases}</span>
+										</Card>
+									</Col>
+									<Col>
+										<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}>Deceased <br/> {deceasedCases}</span>
+										</Card>
+									</Col>
+								</Row>
+							</Container>
+					</div>
+						
+					<div id="Garph">
+								<div ref={this.plotsRef} style={{ textDecorationColor: "white", height: "5px" }}>.</div>
+								{!mobileView && <div className="plot-headers">
+									<span className="span-plot-title"><hr class="hr-text" data-content="How fast is the spread?" /></span>
+									<span className="span-plot-title"><hr class="hr-text" data-content="Are we testing enough?" /></span>
+								</div>}
 
+							<Container>
+								<Row>
+									<Col lg="6">
+										{mobileView && <div className="plot-headers">
+											<span className="span-plot-title-mobile"><hr class="hr-text" data-content="How fast is the spread?" /></span>
+										</div>}
+										{/* Daily Cases Graph */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Positive Cases
+													<OverlayTrigger placement="left" overlay={dailyCasesPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="rtgraph">
+														<DailyCasesChart
+															dailyCasesGraphData={this.state.dailyCasesGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+										<div className="mt-2"></div>
+										{/* RT Graph */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Effective Reproduction Number
+													<OverlayTrigger placement="left" overlay={rtPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="rtgraph">
+														<RtChart
+															minRtDataPoint={this.state.minRtDataPoint}
+															maxRtDataPoint={this.state.maxRtDataPoint}
+															rtPointGraphData={this.state.rtPointGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+										<div className="mt-2"></div>
+										{/* Mobility Graph */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Mobility Index (% change from pre-lockdown)
+													<OverlayTrigger placement="left" overlay={mobilityPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="mobilityGraph">
+														<MobilityChart
+															mobilityGraphData={this.state.mobilityGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+									</Col>
+									<Col>
+										{mobileView && <div className="mt-2"></div>}
+										{mobileView && <div className="plot-headers">
+											<span className="span-plot-title-mobile"><hr class="hr-text" data-content="Are we testing enough?" /></span>
+										</div>}
+										{/* Daily Tests */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Tests
+													<OverlayTrigger placement="left" overlay={dailyTestsPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="rtgraph">
+														<DailyTestsChart
+															dailyTestsGraphData={this.state.dailyTestsGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+										<div className="mt-2"></div>
+										{/* Pos Rate Graph */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Positivity Rate (%)
+													<OverlayTrigger placement="left" overlay={positivityPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="positivityrate-graph">
+														<PosRateChart
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+															positivityRateGraphData={positivityRateGraphData}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+										<div className="mt-2"></div>
+										{/* CFR Graph */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Corrected Case Fatality Rate (%)
+													<OverlayTrigger placement="left" overlay={cfrPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="cfr-graph">
+														<CfrChart
+															cfrGraphData={this.state.cfrGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+															maxCFRPoint={this.state.maxCFRPoint}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+									</Col>
+								</Row>
+							</Container>
+					</div>
+
+
+					<div id="Table">
+							<div className="sub-header-row mt-4">
+								<span className="header-bar-text">LATEST STATEWISE DATA</span>
+							</div>
+							<div className={mobileView ? "table-info-mobile" : "table-info"} style={{ backgroundColor: "white" }}>
+								<Accordion>
+									<Card>
+										<Card.Header style={{ textAlign: "center" }}>
+											<Accordion.Toggle as={Button} variant="link" eventKey="0">
+												<img src={informationIcon} className="ml-1 information-icon" />
+												{` Click here to know how to use the table`}
+											</Accordion.Toggle>
+										</Card.Header>
+										<Accordion.Collapse eventKey="0">
+											<Card.Body>
+												<div>
+													<b>How to interact with the table</b><br />
+											Click on the parameter heading to sort states in order of that parameter. <br />
+											Click on the state to load data for that state in the graphs above.<br />
+											Hover on the headings for more info about the parameter.<br />
+											Hover on the cells to see the date for which parameter is shown.<br /><br />
+
+													<b>What do the colours mean</b><br />
+											Up and Down arrows indicate change in respective parameters as compared to 7 days ago. <br />
+													{`Rt is Red: >1, Yellow: <1 for less than 2 weeks, Green: < 1 for more than 2 weeks (based on WHO criteria).`} <br />
+													{`Positivity Rate is Red: >10%, Yellow: 5-10%, Green: < 5% (based on WHO criteria).`} <br />
+													{`Corrected CFR is Red: >10%, Yellow: 5-10%, Green: < 5%.`} <br /><br />
+
+											Understand what the parameters mean
+											<a className="link-text" style={{ color: "blue" }} onClick={this.handleDivScroll}> here</a>.<br />
+											Raw data sources and detailed method of calculation
+											<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Methods" }, window.scrollTo(0, 0))}> here</a>.
+										</div>
+											</Card.Body>
+										</Accordion.Collapse>
+									</Card>
+								</Accordion>
+							</div>
+							<Container>
+								<div ref={this.tableRef}
+									id="myTable"
+									className="ag-theme-balham"
+									style={!this.state.mobileView ? {
+										padding: '20px'
+									} : { paddingTop: '20px' }}
+								>
+									<AgGridReact
+										columnDefs={this.state.columnDefs}
+										rowData={this.state.rowData}
+										rowSelection={"single"}
+										frameworkComponents={this.state.frameworkComponents}
+										headerHeight={window.innerWidth < '1200' ? '60' : '48'}
+										domLayout='autoHeight'
+										pinnedTopRowData={this.state.pinnedTopRowData}
+										onSelectionChanged={this.onSelectionChanged.bind(this)} />
+								</div>
+							</Container>
+					</div>
+				
+					<div id="Map">
+						<h1>MAP</h1>
+					</div>
+
+					<div id="Compare">
+							<div className="sub-header-row mt-4">
+							<span className="header-bar-text">COMPARE DATA FOR STATES</span>
+							</div>
+						{/* Comparision chart */}
 						<Container>
 							<Row>
-								<Col lg="6">
-									{mobileView && <div className="plot-headers">
-										<span className="span-plot-title-mobile"><hr class="hr-text" data-content="How fast is the spread?" /></span>
-									</div>}
-									{/* Daily Cases Graph */}
-									<Row>
-										<Col>
-											<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-												<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Positive Cases
-												<OverlayTrigger placement="left" overlay={dailyCasesPopover}>
-														<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
-													</OverlayTrigger>
-												</h5>
-												<div className="rtgraph">
-													<DailyCasesChart
-														dailyCasesGraphData={this.state.dailyCasesGraphData}
-														lockdownDates={this.state.lockdownDates}
-														lockdownChartText={this.state.lockdownChartText}
-													/>
-												</div>
-											</Card>
-										</Col>
-									</Row>
-									<div className="mt-2"></div>
-									{/* RT Graph */}
-									<Row>
-										<Col>
-											<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-												<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Effective Reproduction Number
-												<OverlayTrigger placement="left" overlay={rtPopover}>
-														<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
-													</OverlayTrigger>
-												</h5>
-												<div className="rtgraph">
-													<RtChart
-														minRtDataPoint={this.state.minRtDataPoint}
-														maxRtDataPoint={this.state.maxRtDataPoint}
-														rtPointGraphData={this.state.rtPointGraphData}
-														lockdownDates={this.state.lockdownDates}
-														lockdownChartText={this.state.lockdownChartText}
-													/>
-												</div>
-											</Card>
-										</Col>
-									</Row>
-									<div className="mt-2"></div>
-									{/* Mobility Graph */}
-									<Row>
-										<Col>
-											<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-												<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Mobility Index (% change from pre-lockdown)
-												<OverlayTrigger placement="left" overlay={mobilityPopover}>
-														<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
-													</OverlayTrigger>
-												</h5>
-												<div className="mobilityGraph">
-													<MobilityChart
-														mobilityGraphData={this.state.mobilityGraphData}
-														lockdownDates={this.state.lockdownDates}
-														lockdownChartText={this.state.lockdownChartText}
-													/>
-												</div>
-											</Card>
-										</Col>
-									</Row>
-								</Col>
 								<Col>
-									{mobileView && <div className="mt-2"></div>}
-									{mobileView && <div className="plot-headers">
-										<span className="span-plot-title-mobile"><hr class="hr-text" data-content="Are we testing enough?" /></span>
-									</div>}
-									{/* Daily Tests */}
-									<Row>
-										<Col>
-											<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-												<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Tests
-												<OverlayTrigger placement="left" overlay={dailyTestsPopover}>
-														<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
-													</OverlayTrigger>
-												</h5>
-												<div className="rtgraph">
-													<DailyTestsChart
-														dailyTestsGraphData={this.state.dailyTestsGraphData}
-														lockdownDates={this.state.lockdownDates}
-														lockdownChartText={this.state.lockdownChartText}
-													/>
-												</div>
-											</Card>
-										</Col>
-									</Row>
-									<div className="mt-2"></div>
-									{/* Pos Rate Graph */}
-									<Row>
-										<Col>
-											<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-												<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Positivity Rate (%)
-												<OverlayTrigger placement="left" overlay={positivityPopover}>
-														<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
-													</OverlayTrigger>
-												</h5>
-												<div className="positivityrate-graph">
-													<PosRateChart
-														lockdownDates={this.state.lockdownDates}
-														lockdownChartText={this.state.lockdownChartText}
-														positivityRateGraphData={positivityRateGraphData}
-													/>
-												</div>
-											</Card>
-										</Col>
-									</Row>
-									<div className="mt-2"></div>
-									{/* CFR Graph */}
-									<Row>
-										<Col>
-											<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-												<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Corrected Case Fatality Rate (%)
-												<OverlayTrigger placement="left" overlay={cfrPopover}>
-														<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
-													</OverlayTrigger>
-												</h5>
-												<div className="cfr-graph">
-													<CfrChart
-														cfrGraphData={this.state.cfrGraphData}
-														lockdownDates={this.state.lockdownDates}
-														lockdownChartText={this.state.lockdownChartText}
-														maxCFRPoint={this.state.maxCFRPoint}
-													/>
-												</div>
-											</Card>
-										</Col>
-									</Row>
+									Download the dataset
+								</Col>
+								<Col xs="9">
+									List of objetcs
+								</Col>
+							</Row>
+							<Row>
+								<Col>
+									<table style={{ maxHeight: 450, overflowX: 'hidden' }} class="table table-responsive">
+										<thead>
+											<tr style={{ position: 'sticky', top: 0 }}>
+												<th></th>
+												<th>States</th>
+											</tr>
+										</thead>
+										<tbody>
+											{this.state.rowData && this.state.rowData.map((item) => {
+												const stateName = this.getName(item.key);
+												return (
+													<tr>
+														<td><input type="checkbox"
+															onChange={() => this.onStateCheckBoxChange(stateName)}
+															checked={this.state.statesForComparision.indexOf(stateName) > -1 ? true : false}
+														></input></td>
+														<td>{stateName}</td>
+													</tr>
+												);
+											})}
+										</tbody>
+									</table>
+								</Col>
+								<Col xs="9">
+									<Tabs defaultActiveKey="home" id="uncontrolled-tab-example">
+										<Tab eventKey="home" title="1">
+											<ComparisionChart
+											comparisionGraphData={this.state.comparisionGraphData}
+											lockdownDates={this.state.lockdownDates}
+											lockdownChartText={this.state.lockdownChartText}
+											></ComparisionChart>
+										</Tab>
+										<Tab eventKey="profile" title="2">
+											{/* <Sonnet /> */}
+											wfejbgk
+										</Tab>
+										<Tab eventKey="contact" title="3">
+											{/* <Sonnet /> */}
+										</Tab>
+										<Tab eventKey="profil" title="4">
+											{/* <Sonnet /> */}
+										</Tab><Tab eventKey="proile" title="5">
+											{/* <Sonnet /> */}
+										</Tab>
+										<Tab eventKey="profie" title="6">
+											{/* <Sonnet /> */}
+										</Tab>
+									</Tabs>
 								</Col>
 							</Row>
 						</Container>
-
-
+					</div>
+						
+					<div id="Analysis">									
 						<div className="sub-header-row mt-4">
-							<span className="header-bar-text">LATEST STATEWISE DATA</span>
+							<span className="header-bar-text">KNOW ABOUT THE INDICATORS</span>
 						</div>
-						<div className={mobileView ? "table-info-mobile" : "table-info"} style={{ backgroundColor: "white" }}>
-							<Accordion>
-								<Card>
-									<Card.Header style={{ textAlign: "center" }}>
-										<Accordion.Toggle as={Button} variant="link" eventKey="0">
-											<img src={informationIcon} className="ml-1 information-icon" />
-											{` Click here to know how to use the table`}
-										</Accordion.Toggle>
-									</Card.Header>
-									<Accordion.Collapse eventKey="0">
-										<Card.Body>
-											<div>
-												<b>How to interact with the table</b><br />
-										Click on the parameter heading to sort states in order of that parameter. <br />
-										Click on the state to load data for that state in the graphs above.<br />
-										Hover on the headings for more info about the parameter.<br />
-										Hover on the cells to see the date for which parameter is shown.<br /><br />
 
-												<b>What do the colours mean</b><br />
-										Up and Down arrows indicate change in respective parameters as compared to 7 days ago. <br />
-												{`Rt is Red: >1, Yellow: <1 for less than 2 weeks, Green: < 1 for more than 2 weeks (based on WHO criteria).`} <br />
-												{`Positivity Rate is Red: >10%, Yellow: 5-10%, Green: < 5% (based on WHO criteria).`} <br />
-												{`Corrected CFR is Red: >10%, Yellow: 5-10%, Green: < 5%.`} <br /><br />
-
-										Understand what the parameters mean
-										<a className="link-text" style={{ color: "blue" }} onClick={this.handleDivScroll}> here</a>.<br />
-										Raw data sources and detailed method of calculation
-										<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Methods" }, window.scrollTo(0, 0))}> here</a>.
-									</div>
-										</Card.Body>
-									</Accordion.Collapse>
-								</Card>
-							</Accordion>
+						<div className="home-text" ref={this.textDivRef}>
+							<IndicatorDescriptionCards fontSize={fontSizeDynamic} />
 						</div>
-						<Container>
-							<div ref={this.tableRef}
-								id="myTable"
-								className="ag-theme-balham"
-								style={!this.state.mobileView ? {
-									padding: '20px'
-								} : { paddingTop: '20px' }}
-							>
-								<AgGridReact
-									columnDefs={this.state.columnDefs}
-									rowData={this.state.rowData}
-									rowSelection={"single"}
-									frameworkComponents={this.state.frameworkComponents}
-									headerHeight={window.innerWidth < '1200' ? '60' : '48'}
-									domLayout='autoHeight'
-									pinnedTopRowData={this.state.pinnedTopRowData}
-									onSelectionChanged={this.onSelectionChanged.bind(this)} />
+						<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
+							<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Methods" }, window.scrollTo(0, 0))}> Methods</a> page.
+							Caution should be used in interpretation as the transmission and testing indicators are not entirely independent, and one may affect the other.
+							We use best practices in all calculations, however some inadvertent errors may creep in despite our efforts.
+							<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Contribute" }, window.scrollTo(0, 0))}> Report an error.</a></div>
+
+						<LinkButtons fontSize={fontSizeDynamic} />
+
+						<div class="wrapper"><div class="divider div-transparent" style={{ marginTop: "10px" }}></div></div>
+						<div className="for-the-people">
+							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamic }}>For The People, By The People</div>
+							<div className="for-the-people-text" style={{ fontSize: fontSizeDynamic }}>COVID TODAY is an initiative by iCART, a multidisciplinary volunteer team of passionate doctors,
+							researchers, coders, and public health experts from institutes across India.
+							<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Team" }, window.scrollTo(0, 0))}> Learn more about the team</a>. This pandemic demands everyone to
+							come together so that we can gradually move towards a new normal in the coming months while ensuring those who are vulnerable are protected.
+							We envisage this platform to grow with your contribution and we welcome anyone who can contribute meaningfully to the project. Head over to
+							the <a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Contribute" }, window.scrollTo(0, 0))}>Contribute </a>page to see how you can pitch in.
 							</div>
-						</Container>
-					</div>
-					<div className="sub-header-row mt-4">
-                    	<span className="header-bar-text">COMPARE DATA FOR STATES</span>
-                    </div>
-					{/* Comparision chart */}
-					<Container>
-						<Row>
-							<Col>
-								Download the dataset
-							</Col>
-							<Col xs="9">
-								List of objetcs
-							</Col>
-						</Row>
-						<Row>
-							<Col>
-								<table style={{ maxHeight: 450, overflowX: 'hidden' }} class="table table-responsive">
-									<thead>
-										<tr style={{ position: 'sticky', top: 0 }}>
-											<th></th>
-											<th>States</th>
-										</tr>
-									</thead>
-									<tbody>
-										{this.state.rowData && this.state.rowData.map((item) => {
-											const stateName = this.getName(item.key);
-											return (
-												<tr>
-													<td><input type="checkbox"
-														onChange={() => this.onStateCheckBoxChange(stateName)}
-														checked={this.state.statesForComparision.indexOf(stateName) > -1 ? true : false}
-													></input></td>
-													<td>{stateName}</td>
-												</tr>
-											);
-										})}
-									</tbody>
-								</table>
-							</Col>
-							<Col xs="9">
-								<ComparisionChart
-									comparisionGraphData={this.state.comparisionGraphData}
-									lockdownDates={this.state.lockdownDates}
-									lockdownChartText={this.state.lockdownChartText}
-								></ComparisionChart>
-							</Col>
-						</Row>
-					</Container>
-					<div className="sub-header-row mt-4">
-						<span className="header-bar-text">KNOW ABOUT THE INDICATORS</span>
-					</div>
-
-					<div className="home-text" ref={this.textDivRef}>
-						<IndicatorDescriptionCards fontSize={fontSizeDynamic} />
-					</div>
-					<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
-						<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Methods" }, window.scrollTo(0, 0))}> Methods</a> page.
-						Caution should be used in interpretation as the transmission and testing indicators are not entirely independent, and one may affect the other.
-						We use best practices in all calculations, however some inadvertent errors may creep in despite our efforts.
-						<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Contribute" }, window.scrollTo(0, 0))}> Report an error.</a></div>
-
-					<LinkButtons fontSize={fontSizeDynamic} />
-
-					<div class="wrapper"><div class="divider div-transparent" style={{ marginTop: "10px" }}></div></div>
-					<div className="for-the-people">
-						<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamic }}>For The People, By The People</div>
-						<div className="for-the-people-text" style={{ fontSize: fontSizeDynamic }}>COVID TODAY is an initiative by iCART, a multidisciplinary volunteer team of passionate doctors,
-						researchers, coders, and public health experts from institutes across India.
-						<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Team" }, window.scrollTo(0, 0))}> Learn more about the team</a>. This pandemic demands everyone to
-						come together so that we can gradually move towards a new normal in the coming months while ensuring those who are vulnerable are protected.
-						We envisage this platform to grow with your contribution and we welcome anyone who can contribute meaningfully to the project. Head over to
-						the <a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Contribute" }, window.scrollTo(0, 0))}>Contribute </a>page to see how you can pitch in.
 						</div>
 					</div>
+				</div>
 				</>}
 				<div className="footer-pic-container">
 					<img src={Footer} className="footer-pic" onClick={() => this.setState({ selectedView: "Team" }, window.scrollTo(0, 0))} />
