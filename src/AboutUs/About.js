@@ -24,36 +24,48 @@ export default class About extends Component {
 									to provide a one-stop dashboard where outbreak indicators are calculated with reliable scientific methods, and are updated and
 									visualised daily to track each state’s progress in the epidemic.<br/><br/>
 
-									<b>Dr Mohak Gupta, MBBS, AIIMS Delhi.</b><br />
+									<b>Dr Mohak Gupta, MBBS, AIIMS Delhi</b><br />
 									<i>Interests: Technology and Data-driven Solutions in Healthcare</i><br /><br />
 
-									<b>Saptarshi Mohanta (Rishi), BS-MS, IISER Pune.</b><br />
+									<b>Saptarshi Mohanta (Rishi), BS-MS, IISER Pune</b><br />
 									<i>Interests: Computational Modelling of Biological Systems, Statistics and Data Science</i><br/><br/>
 
-									<b>Pratik Mandlecha, B.Tech CSE, IIIT Hyderabad. Data & Applied Scientist at Microsoft.</b> <br/>
+									<b>Pratik Mandlecha, B.Tech CSE, IIIT Hyderabad. Data & Applied Scientist at Microsoft</b> <br/>
 									<i>Interests: Machine Learning , Deep Learning, Data Applications and  Analytics</i><br/><br/>
 
-										<b>Aditya Garg, B.Tech CSE, VIT Vellore. Software Developer at Barclays.</b><br/>
-										<i>Interests: Content Creation, Web and Game Development, Playing Music</i><br/><br/>
+									<b>Aditya Garg, B.Tech CSE, VIT Vellore. Software Developer at Barclays</b><br/>
+									<i>Interests: Content Creation, Web and Game Development, Playing Music</i><br/><br/>
 
-										<b>Technical Consulting and IT Support: <br/>
-										&nbsp;&nbsp;&nbsp;Abhinav Gupta, CA Inter, B.Com</b><br/>
-										&nbsp;&nbsp;&nbsp;<i>Interests: Simplifying Complex Structures with Technology to Make Robust and Cost Effective Systems</i><br/><br/>
+									<b>Devarsh Patel, BS-MS, IISER Pune</b><br/>
+									<i>Interests : Machine Learning, Deep Learning, Data Analysis, Data Engineering</i><br/><br/>
 
-										&nbsp;&nbsp;&nbsp;<b>Apurva Thakker, B.Tech CSE, BFCET Bathinda</b> <br/>
-										&nbsp;&nbsp;&nbsp;<i>Interests: Solving Problems through Technology, Creating & Designing Music</i><br/><br/>
+									<b>Technical Consulting and IT Support: <br/>
+											&nbsp;&nbsp;&nbsp;<b>Siddharth Jain, Integrated B.Tech-MBA, IIIT Gwalior</b><br/>
+											&nbsp;&nbsp;&nbsp;<i>Interests: Data Analysis, Machine Learning</i><br/>
 
-										&nbsp;&nbsp;&nbsp;<b>Siddharth Jain, Integrated B.Tech-MBA, IIIT Gwalior.</b><br/>
-										&nbsp;&nbsp;&nbsp;<i>Interests: Data Analysis, Machine Learning</i><br/>
+											&nbsp;&nbsp;&nbsp;<b>Apurva Thakker, B.Tech CSE, BFCET Bathinda</b> <br/>
+											&nbsp;&nbsp;&nbsp;<i>Interests: Solving Problems through Technology, Creating & Designing Music</i><br/><br/>
+
+											&nbsp;&nbsp;&nbsp;Abhinav Gupta, CA Inter, B.Com</b><br/>
+											&nbsp;&nbsp;&nbsp;<i>Interests: Simplifying Complex Structures with Technology to Make Robust and Cost Effective Systems</i><br/><br/>
 									</div>
 								</Card.Text>
 							</Card.Body>
 
 
 				<Card.Body>
-					<Card.Title className="top-text-title" style={headingText}><div><strong>Public Health Expert Panel</strong></div></Card.Title>
+					<Card.Title className="top-text-title" style={headingText}><div><strong>Public Health Advisory Panel</strong></div></Card.Title>
 					<Card.Text className="top-text-body">
 						<div style={normalText}>
+							<b>Dr Giridhara R Babu
+							<br/>Professor & Head, Life Course Epidemiology at Public Health Foundation of India (PHFI).
+							Wellcome Trust DBT India Alliance Fellow. Member of the Technical Advisory Committee to the Karnataka Government on COVID-19.</b>
+							<br/>He graduated as a medical doctor from Kastruba Medical College Manipal, and joined the Center for Community Medicine at the All India Institute of
+							Medical Sciences (AIIMS) New Delhi as a Junior Resident. He completed his Masters in public Health (MPH) and PhD from University of California
+							Los Angeles (UCLA), USA. Giridhara has over 60 papers published in national and international high impact journals. He has provided consultation
+							to State, National and WHO committees on various public health matters.<a href="https://www.indiaalliance.org/fellow/giridhara-r-babu"> Know more.</a>
+							<br/><br/>
+
 							<b>Dr Habib Hasan Farooqui
 							<br/>Faculty at Indian Institute of Public Health Delhi, Public Health Foundation of India (PHFI)</b>
 							<br/>He is currently serving as member of Vaccine Centre at London School of Hygiene and Tropical Medicine,
@@ -63,6 +75,7 @@ export default class About extends Component {
 							He has received training as Post Doctoral Fellow (Economic Evaluation) at the London School
 							of Hygiene and Tropical Medicine.<a href="https://www.phfi.org/member/habib-hasan-farooqui/"> Know more.</a>
 							<br/><br/>
+
 							<b>Dr Archisman Mohapatra
 							<br/>Executive Director at GRID Council (Generating Research Insights for Development)</b>
 							<br/>An epidemiologist and social scientist, Dr Mohapatra, is currently coordinating a Pan-India network
@@ -70,6 +83,7 @@ export default class About extends Component {
 							several research projects that have translated into national policy (e.g., RBSK, PSBI guidelines,
 							National Research Priority Setting Exercise).<a href="https://www.linkedin.com/in/archisman-mohapatra-40a45529/"> Know more.</a>
 							<br/><br/>
+
 							<b>Dr Hemant Deepak Shewade
 							<br/>Senior Operational Research Fellow, Center for Operational Research, International Union Against Tuberculosis and Lung Disease (The Union)</b>
 							<br/>A community physician by training, his current work focuses on conducting and building capacity for
@@ -108,6 +122,7 @@ Archisman Mazumder, MBBS student, AIIMS Delhi<br/>
 Mehak Arora, MBBS student, AIIMS Delhi<br/>
 Manraj Singh Sra, MBBS student, AIIMS Delhi<br/>
 Saptarshi Mohanta, BS-MS, IISER Pune<br/>
+Bhavik Bansal, MBBS student, AIIMS Delhi<br/>
 Dr Ayush Lohiya, Assistant Professor, Public Health, Super Specialty Cancer Institute & Hospital, Lucknow<br/>
 Dr Priyamadhaba Behera, Assistant Professor , Department of Community Medicine and Family Medicine, AIIMS Bhubaneswar<br/><br/>
 
@@ -115,9 +130,13 @@ Dr Priyamadhaba Behera, Assistant Professor , Department of Community Medicine a
 	Their views and opinions under iCART represent their personal views and not that of their institute or employer.</i><br/><br/>
 
 <b>COVID-19 research from iCART:</b><br/>
-<a href="https://pubmed.ncbi.nlm.nih.gov/32528664/?from_single_result=SARS-CoV-2+epidemic+in+India%3A+epidemiological+features+and+in+silico+analysis+of+the+effect+of+interventions
+1. <a href="https://pubmed.ncbi.nlm.nih.gov/32528664/?from_single_result=SARS-CoV-2+epidemic+in+India%3A+epidemiological+features+and+in+silico+analysis+of+the+effect+of+interventions
 ">SARS-CoV-2 Epidemic in India: Epidemiological Features and in silico Analysis of the Effect of Interventions</a><br/>
-<a href="https://doi.org/10.1101/2020.05.13.20096826">Transmission dynamics of the COVID-19 epidemic in India and modelling optimal lockdown exit strategies</a>
+2. <a href="https://doi.org/10.1101/2020.05.13.20096826">Transmission dynamics of the COVID-19 epidemic in India and modelling optimal lockdown exit strategies</a><br/>
+3. <a href="https://www.cambridge.org/core/journals/epidemiology-and-infection/article/geographical-variation-in-case-fatality-rate-and-doubling-time-during-the-covid19-pandemic/749A8D9772342198D1B791625B66EA98">
+Geographical variation in case fatality rate and doubling time during the COVID-19 pandemic</a><br/>
+
+
 
 								</div>
 							</Card.Text>
