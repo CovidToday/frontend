@@ -1264,7 +1264,7 @@ dropdown = ()=>{
 							</Container>
 					</div>
 						
-					<div id="Garph">
+					<div id="Graph">
 								<div ref={this.plotsRef} style={{ textDecorationColor: "white", height: "5px" }}>.</div>
 								{!mobileView && <div className="plot-headers">
 									<span className="span-plot-title"><hr class="hr-text" data-content="How fast is the spread?" /></span>
