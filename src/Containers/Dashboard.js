@@ -158,6 +158,7 @@ export default class Dashboard extends Component {
 			objectsForComparision: '',
 			selectedState: 'India',
 			selectedView: 'Home',
+			showblog: 0,
 			mobileView: false,
 			frameworkComponents: {
 				posRateRenderer: PosRateRenderer,
@@ -274,16 +275,21 @@ export default class Dashboard extends Component {
 
 
 	async setData() {
-			// link of file named Title.txt in Blogs folder
-			await axios.get('https://raw.githubusercontent.com/Architjain128/frontend/developfront/src/Blogs/Title.txt')
+// link of file named Title.txt in Blogs folder
+		await axios.get('https://raw.githubusercontent.com/Architjain128/frontend/developfront/src/Blogs/Title.txt')
 				.then(response => {
 					this.setState({ blogtitle: response.data });
+					if(response.data[0]!="#")
+					this.setState({showblog : this.state.showblog +1});
 				});
-			// link of file named Description.txt in Blogs folder
+			
 			await axios.get('https://raw.githubusercontent.com/Architjain128/frontend/developfront/src/Blogs/Description.txt')
 				.then(response => {
 					this.setState({ blogdescription: response.data });
+					if(response.data[0]!="#")
+					this.setState({showblog : this.state.showblog +1});
 				});
+
 			await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/reproduction-number-rt/rt.json')
 				.then(response => {
 					this.setState({ rtDataFromApi: response.data });
@@ -1040,19 +1046,29 @@ export default class Dashboard extends Component {
 	}
 
 		blog = ()=>{
+			let newText = this.state.blogdescription.split('\n').map(i => {
+				return <p style={{marginTop : "0px",marginBottom : "0px"}}>{i}</p>
+			});
+			// const { showblog } = this.state;
+			console.log(this.state.showblog)
 			return(
-				<div id="dash-cms-blog">
-					<Card style={{marginLeft:"20rem",marginRight:"20rem"}} className="text-center">
-						<Card.Body>
-							<Card.Title>{this.state.blogtitle}</Card.Title>
-							{/* <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle> */}
-							<Card.Text>{this.state.blogdescription}</Card.Text>
-							{/* <Card.Link href="#">Card Link</Card.Link> */}
-						</Card.Body>
-					</Card>
-					<br />
-					<br />
+
+				<div>
+				{this.state.showblog === 2 && <>
+						<Card style={{marginLeft:"20rem",marginRight:"20rem"}} className="text-center">
+							<Card.Body>
+								<Card.Title>{this.state.blogtitle}</Card.Title>
+								{/* <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle> */}
+								<Card.Text>{newText}</Card.Text>
+								{/* <Card.Link href="#">Card Link</Card.Link> */}
+							</Card.Body>
+						</Card>
+						<br />
+						<br />
+						</>
+				}
 				</div>
+				
 			)
 		}
 
@@ -1580,3 +1596,4 @@ dropdown = ()=>{
 		);
 	}
 }
+
