@@ -170,14 +170,15 @@ export default class Dashboard extends Component {
 				TPMRenderer: TPMRenderer
 			},
 			lastUpdatedTime: "",
-			cardsData: []
+			cardsData: [],
+			showDistricts: false
 		}
 	}
 
 	columnDefMobile = [
 		{
 			headerName: '', children: [
-				{ headerName: "STATES", field: "state", sortable: true, suppressMovable: true }
+				{ headerName: "STATES", field: "state", sortable: true, suppressMovable: true, pinned: 'left' }
 			]
 		},
 		{
@@ -1072,7 +1073,7 @@ export default class Dashboard extends Component {
 			)
 		}
 
-dropdown = ()=>{
+NavDropdown = ()=>{
 	return (
 		<Dropdown>
 			<Dropdown.Toggle variant="success" id="dropdown-dash" className="dropdown-dash">
@@ -1097,12 +1098,14 @@ dropdown = ()=>{
 }
 
 	DropdownRenderer = () => {
-		const fontSize = this.state.mobileView ? "x-small" : "inherit";
+		const fontSize = this.state.mobileView ? "x-small" : "smaller";
 
 		return <div className="sub-header-row sticky-top">
-			{!this.state.mobileView && <span className="header-bar-text"> </span>}
-			<span ><this.dropdown/></span>
-			<span className="header-bar-text" style={{ fontSize: fontSize }}>Last Updated -{this.state.mobileView && <br />} {this.state.lastUpdatedTime}</span>
+			<span className="header-bar-nav"><this.NavDropdown/></span>
+			{!this.state.mobileView &&
+			<span className="header-bar-text" style={{ fontSize: fontSize }}>
+			    Last Updated -{this.state.mobileView && <br />} {this.state.lastUpdatedTime}
+			</span>}
 			<span className="header-bar-dropdown">
 				<Dropdown>
 					<Dropdown.Toggle variant="success" id="dropdown-basic" className="dropdown-state">
@@ -1118,7 +1121,12 @@ dropdown = ()=>{
 				</Dropdown>
 			</span>
 			<span className="header-bar-text">
-				<span style={{ marginRight: "15px" }}> </span>
+				<span style={{ marginRight: "15px" }}>
+				    <Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle"
+                    			onClick={() => this.setState({ showDistricts: !this.state.showDistricts })}>
+                    				{this.state.showDistricts ? "Show State Data" : "Show District Data"}
+                    </Button>
+				</span>
 			</span>
 			{!this.state.mobileView && <span className="header-bar-text"> 
 			</span>}

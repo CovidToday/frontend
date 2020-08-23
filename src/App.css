@@ -96,6 +96,15 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 	vertical-align: middle;
 }
 
+.header-bar-nav {
+	color: white;
+	display: table-cell;
+	text-align: left;
+	padding-left: 15px;
+	font-family: Titillium Web;
+	vertical-align: middle;
+}
+
 .header-bar-dropdown {
 	display: table-cell;
 	text-align: center;
@@ -498,4 +507,27 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 	padding: 10px;
 	text-align: center;
 	font-family: Titillium Web;
+}
+
+.st-di-toggle.btn-outline-primary {
+	color: white;
+	border-color: white;
+}
+
+.st-di-toggle.btn-outline-primary:hover {
+	color: #004056;
+	border-color: white;
+	background-color: white;
+}
+
+.st-di-toggle.btn-outline-primary:not(:disabled):not(.disabled).active,
+.st-di-toggle.btn-outline-primary:not(:disabled):not(.disabled):active,
+.st-di-toggle.show>.btn-outline-primary.dropdown-toggle {
+	color: #004056;
+	border-color: white;
+	background-color: white;
+}
+
+.st-di-toggle.btn-outline-primary.focus, .st-di-toggle.btn-outline-primary:focus {
+	box-shadow: none;
 }
