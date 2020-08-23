@@ -38,6 +38,7 @@ import MobilityChart from "./Plots/MobilityChart.js"
 import RtChart from "./Plots/RtChart.js"
 import DailyCasesChart from "./Plots/DailyCasesChart.js"
 import * as StateEnums from "./Commons/StateEnums.js"
+import featured from "./images/featured.png";
 
 class App extends Component {
 	constructor(props) {
@@ -1278,6 +1279,9 @@ class App extends Component {
 							</Row>
 						</Container>
 
+                        <div className={mobileView ? "featured-pic-container-mobile" : "featured-pic-container"}>
+                        	<img src={featured} className="featured-pic"/>
+                        </div>
 
 						<div className="sub-header-row mt-4">
 							<span className="header-bar-text">LATEST STATEWISE DATA</span>

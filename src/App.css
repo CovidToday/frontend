@@ -466,3 +466,17 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 	text-align: center;
 	font-family: Titillium Web;
 }
+.featured-pic-container {
+    padding: 40px;
+    width: 100%;
+}
+
+.featured-pic-container-mobile {
+    padding: 15px;
+    width: 100%;
+}
+
+.featured-pic {
+    border-radius: 15px;
+    width: 100%;
+}
