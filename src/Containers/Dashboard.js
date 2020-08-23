@@ -43,6 +43,7 @@ import RtChart from ".././Plots/RtChart.js"
 import DailyCasesChart from ".././Plots/DailyCasesChart.js"
 import * as StateEnums from ".././Commons/StateEnums.js"
 import ComparisionChart from '.././Plots/ComparisionChart';
+import featured from ".././images/featured.png";
 
 export default class Dashboard extends Component {
 	constructor(props) {
@@ -1433,6 +1434,9 @@ NavDropdown = ()=>{
 							</Container>
 					</div>
 
+                    <div className={mobileView ? "featured-pic-container-mobile" : "featured-pic-container"}>
+                        <img src={featured} className="featured-pic"/>
+                    </div>
 
 					<div id="Table">
 							<div className="sub-header-row mt-4">

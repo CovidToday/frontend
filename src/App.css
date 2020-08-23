@@ -531,3 +531,18 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 .st-di-toggle.btn-outline-primary.focus, .st-di-toggle.btn-outline-primary:focus {
 	box-shadow: none;
 }
+
+.featured-pic-container {
+    padding: 40px;
+    width: 100%;
+}
+
+.featured-pic-container-mobile {
+    padding: 15px;
+    width: 100%;
+}
+
+.featured-pic {
+    border-radius: 15px;
+    width: 100%;
+}
