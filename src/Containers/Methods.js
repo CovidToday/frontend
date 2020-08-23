@@ -33,12 +33,12 @@ export default class Methods extends Component {
 							<Card.Body>
 								<Card.Title className="top-text-title" style={headingText}><strong>Data Sources</strong></Card.Title>
 								<Card.Text className="top-text-body">
-									<div style={citationsText}><b>Raw data for cases and tests</b>- <a href="http://www.covid19india.org" target="_blank">www.covid19india.org</a><br/>
-										 <b>Data for mobility index</b>- <a href="http://www.google.com/covid19/mobility" target="_blank">www.google.com/covid19/mobility</a><br/>
-										 <b>Distribution of delay from symptom onset to confirmation</b>- <a href="http://www.medrxiv.org/content/10.1101/2020.05.13.20096826v2" target="_blank">www.medrxiv.org/content/10.1101/2020.05.13.20096826v2</a> (53 patients from Delhi NCR)<br/>
-										 <b>Distribution of serial interval</b>- <a href="http://wwwnc.cdc.gov/eid/article/26/6/20-0357_article" target="_blank">wwwnc.cdc.gov/eid/article/26/6/20-0357_article</a> (468 patients from China; no local data available)<br/>
-										 <b>Distribution of delay from hospitalisation to death</b>- <a href="http://www.mdpi.com/2077-0383/9/2/538/htm" target="_blank">www.mdpi.com/2077-0383/9/2/538/htm</a><br/>
-										 <b>Population data</b>- <a href="http://uidai.gov.in/images/state-wise-aadhaar-saturation.pdf" target="_blank">uidai.gov.in/images/state-wise-aadhaar-saturation.pdf</a><br/>
+									<div style={citationsText}><b>Raw data for cases and tests</b>- <a href="https://www.covid19india.org" target="_blank">www.covid19india.org</a><br/>
+										 <b>Data for mobility index</b>- <a href="https://www.google.com/covid19/mobility" target="_blank">www.google.com/covid19/mobility</a><br/>
+										 <b>Distribution of delay from symptom onset to confirmation</b>- <a href="https://www.medrxiv.org/content/10.1101/2020.05.13.20096826v2" target="_blank">www.medrxiv.org/content/10.1101/2020.05.13.20096826v2</a> (53 patients from Delhi NCR)<br/>
+										 <b>Distribution of serial interval</b>- <a href="https://wwwnc.cdc.gov/eid/article/26/6/20-0357_article" target="_blank">wwwnc.cdc.gov/eid/article/26/6/20-0357_article</a> (468 patients from China; no local data available)<br/>
+										 <b>Distribution of delay from hospitalisation to death</b>- <a href="https://www.mdpi.com/2077-0383/9/2/538/htm" target="_blank">www.mdpi.com/2077-0383/9/2/538/htm</a><br/>
+										 <b>Population data</b>- <a href="https://uidai.gov.in/images/state-wise-aadhaar-saturation.pdf" target="_blank">uidai.gov.in/images/state-wise-aadhaar-saturation.pdf</a><br/>
 									</div>
 								</Card.Text>
 							</Card.Body>

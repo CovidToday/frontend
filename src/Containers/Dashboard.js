@@ -1465,7 +1465,10 @@ NavDropdown = ()=>{
 											Understand what the parameters mean
 											<a className="link-text" style={{ color: "blue" }} onClick={this.handleDivScroll}> here</a>.<br />
 											Raw data sources and detailed method of calculation
-											<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Methods" }, window.scrollTo(0, 0))}> here</a>.
+											<a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
+                                                                                                       	e.preventDefault();
+                                                                                                       	window.location = "https://www.covidtoday.in/methods"
+                                                                                                        }}> here</a>.
 										</div>
 											</Card.Body>
 										</Accordion.Collapse>
@@ -1575,10 +1578,16 @@ NavDropdown = ()=>{
 							<IndicatorDescriptionCards fontSize={fontSizeDynamic} />
 						</div>
 						<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
-							<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Methods" }, window.scrollTo(0, 0))}> Methods</a> page.
+							<a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
+                                                                                       		e.preventDefault();
+                                                                                       		window.location = "https://www.covidtoday.in/methods"
+                                                                                       	    }}> Methods</a> page.
 							Caution should be used in interpretation as the transmission and testing indicators are not entirely independent, and one may affect the other.
 							We use best practices in all calculations, however some inadvertent errors may creep in despite our efforts.
-							<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Contribute" }, window.scrollTo(0, 0))}> Report an error.</a></div>
+							<a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
+                                                                                       		e.preventDefault();
+                                                                                       	    window.location = "https://www.covidtoday.in/contribute"
+                                                                                       		}}> Report an error.</a></div>
 
 						<LinkButtons fontSize={fontSizeDynamic} />
 
@@ -1587,17 +1596,26 @@ NavDropdown = ()=>{
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamic }}>For The People, By The People</div>
 							<div className="for-the-people-text" style={{ fontSize: fontSizeDynamic }}>COVID TODAY is an initiative by iCART, a multidisciplinary volunteer team of passionate doctors,
 							researchers, coders, and public health experts from institutes across India.
-							<a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Team" }, window.scrollTo(0, 0))}> Learn more about the team</a>. This pandemic demands everyone to
+							<a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
+                                                                                            e.preventDefault();
+                                                                                       		window.location = "https://www.covidtoday.in/aboutUs"
+                                                                                       		}}> Learn more about the team</a>. This pandemic demands everyone to
 							come together so that we can gradually move towards a new normal in the coming months while ensuring those who are vulnerable are protected.
 							We envisage this platform to grow with your contribution and we welcome anyone who can contribute meaningfully to the project. Head over to
-							the <a className="link-text" style={{ color: "blue" }} onClick={() => this.setState({ selectedView: "Contribute" }, window.scrollTo(0, 0))}>Contribute </a>page to see how you can pitch in.
+							the <a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
+                                                                                           	e.preventDefault();
+                                                                                           	window.location = "https://www.covidtoday.in/contribute"
+                                                                                           	}}>Contribute </a>page to see how you can pitch in.
 							</div>
 						</div>
 					</div>
 				</div>
 				</>}
 				<div className="footer-pic-container">
-					<img src={Footer} className="footer-pic" onClick={() => this.setState({ selectedView: "Team" }, window.scrollTo(0, 0))} />
+					<img src={Footer} className="footer-pic" onClick={ (e) => {
+					        e.preventDefault();
+					        window.location = "https://www.covidtoday.in/aboutUs"
+					    }} />
 				</div>
 				<Licence font={licenceFont} width={licenceWidth} />
 			</div>
