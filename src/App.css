@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 @import url('https://fonts.googleapis.com/css?family=Titillium+Web');
+@import url('https://fonts.googleapis.com/css?family=Varela+Round');
+
 .App {
   text-align: center;
 }
@@ -306,7 +308,9 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 	font-size: x-small;
 	text-align: justify;
 }
-
+.card-summary {
+	color: black;
+}
 .methods-table {
 	width: 80%;
 	margin: 0 auto;
