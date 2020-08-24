@@ -278,14 +278,14 @@ export default class Dashboard extends Component {
 
 	async setData() {
 // link of file named Title.txt in Blogs folder
-		await axios.get('https://raw.githubusercontent.com/Architjain128/frontend/developfront/src/Blogs/Title.txt')
+		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Title.txt')
 				.then(response => {
 					this.setState({ blogtitle: response.data });
 					if(response.data[0]!="#")
 					this.setState({showblog : this.state.showblog +1});
 				});
 			
-			await axios.get('https://raw.githubusercontent.com/Architjain128/frontend/developfront/src/Blogs/Description.txt')
+			await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Description.txt')
 				.then(response => {
 					this.setState({ blogdescription: response.data });
 					if(response.data[0]!="#")
@@ -1266,23 +1266,55 @@ NavDropdown = ()=>{
 							<Container>
 								<Row>
 									<Col>
-										<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}>Confirmed <br/> {totalCases}</span>
+										<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Confirmed </b><br/><a style={{fontFamily : "Varela Round"}}> {totalCases}</a></span>
 										</Card>
 									</Col>
 									<Col>
-										<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}>Active <br/> {activeCases}</span>
+										<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}> {activeCases}</a></span>
 										</Card>
 									</Col>
 									<Col>
-										<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}>Recovered <br/> {recoveredCases}</span>
+										<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>{recoveredCases}</a></span>
 										</Card>
 									</Col>
 									<Col>
-										<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}>Deceased <br/> {deceasedCases}</span>
+										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Deceased </b><br/> <a style={{fontFamily : "Varela Round"}}>{deceasedCases}</a></span>
+										</Card>
+									</Col>
+									<Col>
+										<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Tests </b><br/> <a style={{fontFamily : "Varela Round"}}>{deceasedCases}</a></span>
+										</Card>
+									</Col>
+								</Row>
+								<Row>
+									<Col>
+										<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Confirmed </b><br/><a style={{fontFamily : "Varela Round"}}> {totalCases}</a></span>
+										</Card>
+									</Col>
+									<Col>
+										<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}> {activeCases}</a></span>
+										</Card>
+									</Col>
+									<Col>
+										<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>{recoveredCases}</a></span>
+										</Card>
+									</Col>
+									<Col>
+										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Deceased </b><br/> <a style={{fontFamily : "Varela Round"}}>{deceasedCases}</a></span>
+										</Card>
+									</Col>
+									<Col>
+										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Deceased </b><br/> <a style={{fontFamily : "Varela Round"}}>{deceasedCases}</a></span>
 										</Card>
 									</Col>
 								</Row>
