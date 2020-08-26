@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import upIcon from "../../images/up red.png"
 import downIcon from "../../images/down green.png"
+import yellowDash from "../../images/yellowDash.png"
 
 export default class PosRateRenderer extends Component {
   constructor(props) {
@@ -12,13 +13,18 @@ export default class PosRateRenderer extends Component {
 		const rtOldValue = data.rtOld[6];
 			if(this.props.value && this.props.value !== "NA"){
 				if(parseFloat(data.rtCurrent) < parseFloat(rtOldValue)) {
-				return <span title={`Value shown for ${this.props.data.rtDate}`}><span style={{paddingRight: "3px"}}>
-				{this.props.value}</span><img src={downIcon} className="cell-icon"/></span>
-			} else {
-				return <span title={`Value shown for ${this.props.data.rtDate}`}><span style={{paddingRight: "3px"}}>
-				{this.props.value}</span><img src={upIcon} className="cell-icon"/></span>
-			}
-		} else {return <span>-</span>}
+				    return <span title={`Value shown for ${this.props.data.rtDate}`}><span style={{paddingRight: "3px"}}>
+				        {this.props.value}</span><img src={downIcon} className="cell-icon"/></span>
+			    } else if(parseFloat(data.rtCurrent) === parseFloat(rtOldValue)) {
+                    return <span title={`Value shown for ${this.props.data.rtDate}`}><span style={{paddingRight: "3px"}}>
+                        {this.props.value}</span><img src={yellowDash} className="cell-icon"/></span>
+                } else {
+				    return <span title={`Value shown for ${this.props.data.rtDate}`}><span style={{paddingRight: "3px"}}>
+				        {this.props.value}</span><img src={upIcon} className="cell-icon"/></span>
+			    }
+		    } else {
+		        return <span>-</span>
+		    }
 	}
 
   render() {
