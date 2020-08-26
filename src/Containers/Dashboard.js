@@ -1316,82 +1316,164 @@ export default class Dashboard extends Component {
 					<div id="Summary">
 							<br/>
 							<br/>
-							<Container>
+							{this.state.mobileView && <Container>
 								<Row>
-									<Col>
+									<Col className="mobile-summary-cards">
 										<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
 											<span style={{ fontSize: fontSizeDynamic }}><b>Confirmed </b><br/><a style={{fontFamily : "Varela Round"}}>
-											    {totalCases}
+											    {totalCases ? totalCases : 0}
 											</a></span>
 										</Card>
 									</Col>
-									<Col>
-										<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}>
-											    {activeCases}
-											</a></span>
-										</Card>
-									</Col>
-									<Col>
-										<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>
-											    {recoveredCases}
-											</a></span>
-										</Card>
-									</Col>
-									<Col>
-										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Deaths </b><br/> <a style={{fontFamily : "Varela Round"}}>
-											    {deceasedCases}
-											</a></span>
-										</Card>
-									</Col>
-									<Col>
-										<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Tests </b><br/> <a style={{fontFamily : "Varela Round"}}>
-											    {tests}
+									<Col className="mobile-summary-cards">
+										<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Reproduction N</b><br/><a style={{fontFamily : "Varela Round"}}>
+											    {rt ? rt : 0}
 											</a></span>
 										</Card>
 									</Col>
 								</Row>
 								<Row>
-									<Col>
-										<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Reproduction N</b><br/><a style={{fontFamily : "Varela Round"}}>
-											    {rt}
+									<Col className="mobile-summary-cards">
+										<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}>
+											    {activeCases ? activeCases : 0}
 											</a></span>
 										</Card>
 									</Col>
-									<Col>
+									<Col className="mobile-summary-cards">
 										<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
 											<span style={{ fontSize: fontSizeDynamic }}><b>Doubling Time</b><br/><a style={{fontFamily : "Varela Round"}}>
-											    {dbt}
+											    {dbt ? dbt : 0}
 											</a></span>
 										</Card>
 									</Col>
-									<Col>
+								</Row>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>
+											    {recoveredCases ? recoveredCases : 0}
+											</a></span>
+										</Card>
+									</Col>
+									<Col className="mobile-summary-cards">
 										<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
 											<span style={{ fontSize: fontSizeDynamic }}><b>Recovery Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
 											    0
 											</a></span>
 										</Card>
 									</Col>
-									<Col>
+								</Row>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Deaths </b><br/> <a style={{fontFamily : "Varela Round"}}>
+											    {deceasedCases ? deceasedCases : 0}
+											</a></span>
+										</Card>
+									</Col>
+									<Col className="mobile-summary-cards">
 										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
 											<span style={{ fontSize: fontSizeDynamic }}><b>Fatality Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
 											    0
 											</a></span>
 										</Card>
 									</Col>
-									<Col>
-										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Test Positivity</b><br/> <a style={{fontFamily : "Varela Round"}}>
-											    0
+								</Row>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Tests </b><br/> <a style={{fontFamily : "Varela Round"}}>
+											    {tests ? tests : 0}
 											</a></span>
 										</Card>
 									</Col>
+								    <Col className="mobile-summary-cards">
+                                    	<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
+                                    		<span style={{ fontSize: fontSizeDynamic }}><b>Test Positivity</b><br/> <a style={{fontFamily : "Varela Round"}}>
+                                    	        0
+                                    		</a></span>
+                                    	</Card>
+                                    </Col>
 								</Row>
-							</Container>
+							</Container>}
+							{!this.state.mobileView && <Container>
+                            	<Row>
+                            		<Col>
+                            			<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}><b>Confirmed </b><br/><a style={{fontFamily : "Varela Round"}}>
+                            					{totalCases}
+                            			    </a></span>
+                            		    </Card>
+                            		</Col>
+                            		<Col>
+                            			<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}>
+                            					{activeCases}
+                            				</a></span>
+                            			</Card>
+                            		</Col>
+                            		<Col>
+                            			<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
+                            			    <span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>
+                            					{recoveredCases}
+                            				</a></span>
+                            			</Card>
+                            		</Col>
+                            		<Col>
+                            			<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
+                            			    <span style={{ fontSize: fontSizeDynamic }}><b>Deaths </b><br/> <a style={{fontFamily : "Varela Round"}}>
+                            					{deceasedCases}
+                            				</a></span>
+                            			</Card>
+                            		</Col>
+                            		<Col>
+                            			<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}><b>Tests </b><br/> <a style={{fontFamily : "Varela Round"}}>
+                            					 {tests}
+                            				</a></span>
+                            			</Card>
+                            		</Col>
+                            	</Row>
+                            	<Row>
+                            		<Col>
+                            			<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
+                            			    <span style={{ fontSize: fontSizeDynamic }}><b>Reproduction N</b><br/><a style={{fontFamily : "Varela Round"}}>
+                            					{rt}
+                            				</a></span>
+                            			</Card>
+                            		</Col>
+                            		<Col>
+                            			<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}><b>Doubling Time</b><br/><a style={{fontFamily : "Varela Round"}}>
+                            					{dbt}
+                            			    </a></span>
+                            			</Card>
+                            		</Col>
+                            		<Col>
+                            			<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}><b>Recovery Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
+                            					0
+                            				</a></span>
+                            			</Card>
+                            		</Col>
+                            		<Col>
+                            			<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}><b>Fatality Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
+                            				    0
+                            				</a></span>
+                            			</Card>
+                            		</Col>
+                            	    <Col>
+                            			<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}><b>Test Positivity</b><br/> <a style={{fontFamily : "Varela Round"}}>
+                            					0
+                            				</a></span>
+                            			</Card>
+                            		</Col>
+                            	</Row>
+                            </Container>}
 					</div>
 						
 					<div id="Graph">

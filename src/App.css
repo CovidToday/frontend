@@ -561,3 +561,9 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
     display: inline-flex !important;
     width: 95%
 }
+
+.mobile-summary-cards {
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+    padding-bottom: 10px !important;
+}
