@@ -70,3 +70,18 @@
 						<span style={{ fontSize: fontSizeDynamic }}>Know about the indicators</span></Button></div>
 			</Accordion>
 /* End */
+
+/*
+.
+.
+.
+.
+*/
+
+/* Graph headings */
+<div ref={this.plotsRef} style={{ textDecorationColor: "white", height: "5px" }}>.</div>
+{!mobileView && <div className="plot-headers">
+									<span className="span-plot-title"><hr class="hr-text" data-content="How fast is the spread?" /></span>
+									<span className="span-plot-title"><hr class="hr-text" data-content="Are we testing enough?" /></span>
+								</div>}
+/* End */

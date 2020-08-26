@@ -137,11 +137,13 @@ export default class Dashboard extends Component {
 			],
 			rowData: [],
 			pinnedTopRowData: [],
-			rtDataFromApi: [],
-			cfrDataFromApi: [],
 			mobilityDataFromApi: [],
-			positivityRateDataFromApi: [],
-			nationalDataFromApi: [],
+			rtDataFromApi: [],
+			allDataFromApi: [],
+			rtStateDataApi: [],
+			rtDistrictDataApi: [],
+			allStateData: [],
+			allDistrictData: [],
 			minRtDataPoint: 0,
 			maxRtDataPoint: 0,
 			maxCFRPoint: 0,
@@ -260,14 +262,10 @@ export default class Dashboard extends Component {
 
 	componentDidMount() {
 		this.setData();
-		ReactGA.initialize('UA-168412971-1');
-		ReactGA.pageview('covidToday');
 		if (window.innerWidth <= '1000') {
 			this.setState({ columnDefs: this.columnDefMobile });
 			this.setState({ mobileView: true });
-
 		}
-
 	}
 
 	componentWillMount() {
@@ -277,57 +275,58 @@ export default class Dashboard extends Component {
 
 
 	async setData() {
-// link of file named Title.txt in Blogs folder
-		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Title.txt')
-				.then(response => {
-					this.setState({ blogtitle: response.data });
-					if(response.data[0]!="#")
-					this.setState({showblog : this.state.showblog +1});
-				});
-			
-			await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Description.txt')
-				.then(response => {
-					this.setState({ blogdescription: response.data });
-					if(response.data[0]!="#")
-					this.setState({showblog : this.state.showblog +1});
-				});
+        //RT
+	    await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/rt_graph.json')
+    				.then(response => {
+    					this.setState({ rtStateDataApi : response.data });
+    					this.setState({rtDataFromApi: this.state.rtStateDataApi});
+                        this.getRtPointGraphData(this.state.rtDataFromApi.TT);
+    				});
 
-			await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/reproduction-number-rt/rt.json')
-				.then(response => {
-					this.setState({ rtDataFromApi: response.data });
-					this.getRtPointGraphData(this.state.rtDataFromApi.IN);
-				});
-	
-			await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/testing-and-cfr/cfr.json')
-				.then(response => {
-					this.setState({ cfrDataFromApi: response.data });
-					this.getCfrGraphData(this.state.cfrDataFromApi.India);
-				});
+        await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/rt_graph.json')
+                	.then(response => {
+                		this.setState({ rtDistrictDataApi : response.data });
+                	});
+        //OTHER METRICS
+    	await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/allmetrics_states.json')
+        			.then(response => {
+        				this.setState({ allStateData : response.data });
+        				this.setState({ allDataFromApi : response.data });
+        				this.getCfrGraphData(this.state.allStateData.India);
+        				this.getPositivityRateGraphData(this.state.allStateData.India);
+                        this.getDailyCasesGraphData(this.state.allStateData.India);
+                        this.getDailyTestsGraphData(this.state.allStateData.India);
+                        this.getComparisionGraphData(this.state.allStateData, "daily_positive_cases");
+        			});
+
+        await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/allmetrics_districts.json')
+        			.then(response => {
+        				this.setState({ allDistrictData : response.data });
+        			});
+        //BLOG
+		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Title.txt')
+				    .then(response => {
+					    this.setState({ blogtitle: response.data });
+					    if(response.data[0]!="#")
+					    this.setState({showblog : this.state.showblog +1});
+				    });
+			
+		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Description.txt')
+				    .then(response => {
+					    this.setState({ blogdescription: response.data });
+					    if(response.data[0]!="#")
+					    this.setState({showblog : this.state.showblog +1});
+				    });
+
+		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/mobility-index/india_mobility_indented.json')
+				    .then(response => {
+					    this.setState({ mobilityDataFromApi: response.data });
+					    this.getMobilityGraphData(this.state.mobilityDataFromApi.India);
+				    });
 		
-			await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/mobility-index/india_mobility_indented.json')
-				.then(response => {
-					this.setState({ mobilityDataFromApi: response.data });
-					this.getMobilityGraphData(this.state.mobilityDataFromApi.India);
-				});
-		
-			await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/testing-and-cfr/positivity_Rate.json')
-				.then(response => {
-					this.setState({ positivityRateDataFromApi: response.data });
-					this.getPositivityRateGraphData(this.state.positivityRateDataFromApi.India);
-					this.getDailyCasesGraphData(this.state.positivityRateDataFromApi.India);
-					this.getDailyTestsGraphData(this.state.positivityRateDataFromApi.India);
-					this.getComparisionGraphData(this.state.positivityRateDataFromApi, "daily_positive_cases");
-					// console.log(response.data);
-				});
-		
-		const lastUpdated = this.state.positivityRateDataFromApi.datetime;
+		const lastUpdated = this.state.allStateData.datetime;
 		const timestamp = lastUpdated ? lastUpdated.split(":", 2).join(":") : "NA";
 		this.setState({ lastUpdatedTime: timestamp });
-
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/testing-and-cfr/national.json')
-			.then(response => {
-				this.setState({ nationalDataFromApi: response.data });
-			});
 		
 		this.setRowData();
 	}
@@ -400,40 +399,46 @@ export default class Dashboard extends Component {
 	}
 
 	setRowData = () => {
-		const allstates = [];
-		this.state.nationalDataFromApi && this.state.nationalDataFromApi.statewise && this.state.nationalDataFromApi.statewise.forEach(i => {
-			allstates.push(i.statecode.toLowerCase());
-		});
-		const states = allstates.filter(s => s !== "tt" && s !== "un" && s !== "ld");
+		let allStates = [];
+		let allDistricts = [];
+		allStates = this.state.rtStateDataApi && Object.keys(this.state.rtStateDataApi);
+		allDistricts = this.state.rtDistrictDataApi && Object.keys(this.state.rtDistrictDataApi);
+		const list = this.state.showDistricts ? allDistricts : allStates.filter(s => s !== "TT");
 		const data = [];
 		const infoData = [];
 		const pinnedData = [];
-		if (this.state.rtDataFromApi && this.state.cfrDataFromApi && this.state.nationalDataFromApi && this.state.positivityRateDataFromApi) {
-			states && states.forEach(s => {
-				const name = this.getName(s);
+
+		const rtApi = this.state.showDistricts ? this.state.rtDistrictDataApi : this.state.rtStateDataApi;
+		this.setState({rtDataFromApi: rtApi});
+		const allApi = this.state.showDistricts ? this.state.allDistrictData : this.state.allStateData;
+        		this.setState({allDataFromApi: allApi});
+
+		if (rtApi && allApi) {
+			list && list.forEach(s => {
+				const name = !this.state.showDistricts ? this.getName(s) : s;
 
 				//rt
-				const rtIndex = this.state.rtDataFromApi[s] ? this.state.rtDataFromApi[s].rt_point.length - 1 : -1;
-				const rtPoint = rtIndex > 0 ? (this.state.rtDataFromApi[s].rt_point[rtIndex]).toFixed(2) : "NA";
-				const rtl95 = rtIndex > 0 ? (this.state.rtDataFromApi[s].rt_l95[rtIndex]).toFixed(2) : "NA";
-				const rtu95 = rtIndex > 0 ? (this.state.rtDataFromApi[s].rt_u95[rtIndex]).toFixed(2) : "NA";
-				const rtDate = rtIndex > 0 ? (this.state.rtDataFromApi[s].dates[rtIndex]) : "-";
+				const rtIndex = rtApi[s] ? rtApi[s].rt_point.length - 1 : -1;
+				const rtPoint = rtIndex > 0 ? (rtApi[s].rt_point[rtIndex]).toFixed(2) : "NA";
+				const rtl95 = rtIndex > 0 ? (rtApi[s].rt_l95[rtIndex]).toFixed(2) : "NA";
+				const rtu95 = rtIndex > 0 ? (rtApi[s].rt_u95[rtIndex]).toFixed(2) : "NA";
+				const rtDate = rtIndex > 0 ? (rtApi[s].dates[rtIndex]) : "-";
 				const rtToCompare = [];
 				if (rtIndex > 13) {
 					for (let i = rtIndex - 13; i <= rtIndex; i++) {
-						rtToCompare.push((this.state.rtDataFromApi[s].rt_point[i]).toFixed(2));
+						rtToCompare.push((rtApi[s].rt_point[i]).toFixed(2));
 					};
 				}
 				const rtData = rtPoint === "NA" ? "NA" : `${rtPoint} (${rtl95}-${rtu95})`;
 
 				//cfr
-				const cfrIndex = this.state.cfrDataFromApi[name] ? this.state.cfrDataFromApi[name].cfr3_point.length - 1 : -1;
-				const cfrPoint = cfrIndex > 0 ? (this.state.cfrDataFromApi[name].cfr3_point[cfrIndex]).toFixed(2) : "NA";
-				const cfrPointOld = cfrIndex > 0 ? (this.state.cfrDataFromApi[name].cfr3_point[cfrIndex - 7]).toFixed(2) : "NA";
-				const cfrDate = cfrIndex > 0 ? this.state.cfrDataFromApi[name].dates[cfrIndex] : "-";
+				const cfrIndex = allApi[name] ? allApi[name].cfr3_point.length - 1 : -1;
+				const cfrPoint = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex]).toFixed(2) : "NA";
+				const cfrPointOld = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex - 7]).toFixed(2) : "NA";
+				const cfrDate = cfrIndex > 0 ? allApi[name].dates[cfrIndex] : "-";
 
 				//posRate
-				const posRateArr = Object.entries(this.state.positivityRateDataFromApi);
+				const posRateArr = Object.entries(allApi);
 				let cumCases;
 				let cumCasesDate;
 				posRateArr.forEach(data => {
@@ -512,6 +517,7 @@ export default class Dashboard extends Component {
 						posRateDate = data[1].dates[posRateMaIndex];
 					}
 				});
+
 				let tpm;
 				let tpmDate;
 				posRateArr.forEach(data => {
@@ -525,8 +531,35 @@ export default class Dashboard extends Component {
 					}
 				});
 
+				let cumTests;
+                let cumTestsDate;
+                posRateArr.forEach(data => {
+                	if (data[0] === name) {
+                		const indexTests = data[1].cum_tests.slice().reverse().findIndex(i => i !== "");
+                		const countTests = data[1].cum_tests.length - 1;
+                		const testsIndex = indexTests >= 0 ? countTests - indexTests : indexTests;
+                		const testsFloat = (data[1].cum_tests[testsIndex]);
+                		cumTests = testsFloat && testsFloat !== "" ? Math.floor(testsFloat) : "-";
+                		cumTestsDate = data[1].dates[testsIndex];
+                	}
+                });
+
+                let dbt;
+                let dbtDate;
+                posRateArr.forEach(data => {
+                     if (data[0] === name) {
+                        const indexDbt = data[1].dbt_point.slice().reverse().findIndex(i => i !== "");
+                        const countDbt = data[1].dbt_point.length - 1;
+                        const dbtIndex = indexDbt >= 0 ? countDbt - indexDbt : indexDbt;
+                        const dbtFloat = (data[1].dbt_point[dbtIndex]);
+                        dbt = dbtFloat && dbtFloat !== "" ? Math.floor(dbtFloat) : "-";
+                        dbtDate = data[1].dates[dbtIndex];
+                     }
+                });
+
                 infoData.push({key: s, state: name, total: cumCases, totalDate: cumCasesDate, recovered: cumRecovered,
-                recoveredDate: cumRecoveredDate, deceased: cumDeceased, deceasedDate: cumDeceasedDate});
+                recoveredDate: cumRecoveredDate, deceased: cumDeceased, deceasedDate: cumDeceasedDate, tests: cumTests,
+                testsDate: cumTestsDate, rt: rtData, rtDate: rtDate, dbt: dbt, dbtDate: dbtDate});
 
 				data.push({
 					key: s, state: name, rt: rtData, cumCases: cumCases, dailyCases: maCases, posRate: maPosRate, cumPosRate: cumulativePosRate,
@@ -544,25 +577,25 @@ export default class Dashboard extends Component {
 		}
 
         //India data
-		const rtIndexInd = this.state.rtDataFromApi["IN"].rt_point.length - 1;
-		const rtPointInd = rtIndexInd > 0 ? (this.state.rtDataFromApi["IN"].rt_point[rtIndexInd]).toFixed(2) : "NA";
-		const rtl95Ind = rtIndexInd > 0 ? (this.state.rtDataFromApi["IN"].rt_l95[rtIndexInd]).toFixed(2) : "NA";
-		const rtu95Ind = rtIndexInd > 0 ? (this.state.rtDataFromApi["IN"].rt_u95[rtIndexInd]).toFixed(2) : "NA";
-		const rtDate = rtIndexInd > 0 ? (this.state.rtDataFromApi["IN"].dates[rtIndexInd]) : "-";
+		const rtIndexInd = this.state.rtStateDataApi["TT"].rt_point.length - 1;
+		const rtPointInd = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_point[rtIndexInd]).toFixed(2) : "NA";
+		const rtl95Ind = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_l95[rtIndexInd]).toFixed(2) : "NA";
+		const rtu95Ind = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_u95[rtIndexInd]).toFixed(2) : "NA";
+		const rtDate = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].dates[rtIndexInd]) : "-";
 		const rtToCompareInd = [];
 		if (rtIndexInd > 13) {
 			for (let i = rtIndexInd - 13; i <= rtIndexInd; i++) {
-				rtToCompareInd.push((this.state.rtDataFromApi["IN"].rt_point[i]).toFixed(2));
+				rtToCompareInd.push((this.state.rtStateDataApi["TT"].rt_point[i]).toFixed(2));
 			};
 		}
 		const rtDataInd = `${rtPointInd} (${rtl95Ind}-${rtu95Ind})`
 
-		const cfrIndexInd = this.state.cfrDataFromApi["India"].cfr3_point.length - 1;
-		const cfrPointInd = cfrIndexInd > 0 ? (this.state.cfrDataFromApi["India"].cfr3_point[cfrIndexInd]).toFixed(2) : "NA";
-		const cfrDate = cfrIndexInd > 0 ? this.state.cfrDataFromApi["India"].dates[cfrIndexInd] : "-";
-		const cfrPointOld = cfrIndexInd > 0 ? (this.state.cfrDataFromApi["India"].cfr3_point[cfrIndexInd - 7]).toFixed(2) : "NA";
+		const cfrIndexInd = this.state.allStateData.India.cfr3_point.length - 1;
+		const cfrPointInd = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr3_point[cfrIndexInd]).toFixed(2) : "NA";
+		const cfrDate = cfrIndexInd > 0 ? this.state.allStateData.India.dates[cfrIndexInd] : "-";
+		const cfrPointOld = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr3_point[cfrIndexInd - 7]).toFixed(2) : "NA";
 
-		const posRateArrInd = this.state.positivityRateDataFromApi.India;
+		const posRateArrInd = this.state.allStateData.India;
 
 		const cumConfirmedIndIndex = posRateArrInd.cum_positive_cases.slice().reverse().findIndex(i => i !== "");
 		const cumConfirmedIndCount = posRateArrInd.cum_positive_cases.length - 1;
@@ -608,11 +641,24 @@ export default class Dashboard extends Component {
 		const tpmInd = Math.floor(posRateArrInd.test_per_million[tpmIndexInd]);
 		const tpmIndDate = posRateArrInd.dates[tpmIndexInd];
 
-        infoData.push({key: "IN", state: "India", total: cumCasesInd, totalDate: cumCasesIndDate, recovered: cumRecoveredInd,
-                        recoveredDate: cumRecoveredIndDate, deceased: cumDeceasedInd, deceasedDate: cumDeceasedIndDate});
+		const indexIndTests = posRateArrInd.cum_tests.slice().reverse().findIndex(i => i !== "");
+        const countIndTests = posRateArrInd.cum_tests.length - 1;
+        const testsIndexInd = indexIndTests >= 0 ? countIndTests - indexIndTests : indexIndTests;
+        const testsInd = Math.floor(posRateArrInd.cum_tests[testsIndexInd]);
+        const testsIndDate = posRateArrInd.dates[testsIndexInd];
+
+        const indexIndDbt = posRateArrInd.dbt_point.slice().reverse().findIndex(i => i !== "");
+        const countIndDbt = posRateArrInd.dbt_point.length - 1;
+        const dbtIndexInd = indexIndDbt >= 0 ? countIndDbt - indexIndDbt : indexIndDbt;
+        const dbtInd = Math.floor(posRateArrInd.dbt_point[dbtIndexInd]);
+        const dbtIndDate = posRateArrInd.dates[dbtIndexInd];
+
+        infoData.push({key: "TT", state: "India", total: cumCasesInd, totalDate: cumCasesIndDate, recovered: cumRecoveredInd,
+                        recoveredDate: cumRecoveredIndDate, deceased: cumDeceasedInd, deceasedDate: cumDeceasedIndDate,
+                        tests: testsInd, testsDate: testsIndDate, rt: rtDataInd, rtDate: rtDate, dbt: dbtInd, dbtDate: dbtIndDate});
 
 		pinnedData.push({
-			key: "IN", state: "India", rt: rtDataInd, cumCases: cumCasesInd, dailyCases: casesMaInd, posRate: PosRateMaInd, cumPosRate: cumulativePosRateInd,
+			key: "TT", state: "India", rt: rtDataInd, cumCases: cumCasesInd, dailyCases: casesMaInd, posRate: PosRateMaInd, cumPosRate: cumulativePosRateInd,
 			ccfr: cfrPointInd, rtCurrent: rtPointInd, rtOld: rtToCompareInd, rtDate: rtDate, cfrDate: cfrDate, cfrOld: cfrPointOld, dailyCasesOld: casesMaIndOld,
 			posRateOld: PosRateMaIndOld, cumCasesDate: cumCasesIndDate, maCasesDate: maCasesIndDate, posRateDate: posRateDateInd, cumPRateDate: cumPRDateInd,
 			testsPerMil: tpmInd, tpmDate: tpmIndDate
@@ -966,7 +1012,7 @@ export default class Dashboard extends Component {
 		}
 		this.setState({
 			statesForComparision: updatedStates
-		}, () => this.getComparisionGraphData(this.state.positivityRateDataFromApi, "daily_positive_cases"));
+		}, () => this.getComparisionGraphData(this.state.allStateData, "daily_positive_cases"));
 	}
 
 	getPositivityRateGraphData = (dataFromApi) => {
@@ -1026,43 +1072,40 @@ export default class Dashboard extends Component {
 	onSelectionChanged = (data) => {
 		const selectedRows = data.api.getSelectedRows();
 		const selectedState = selectedRows[0].key;
-		const state = this.getName(selectedState);
+		const state = this.state.showDistricts ? selectedState : this.getName(selectedState);
 		this.getRtPointGraphData(this.state.rtDataFromApi[selectedState]);
-		this.getCfrGraphData(this.state.cfrDataFromApi[state]);
+		this.getCfrGraphData(this.state.allDataFromApi[state]);
 		this.getMobilityGraphData(this.state.mobilityDataFromApi[state]);
-		this.getPositivityRateGraphData(this.state.positivityRateDataFromApi[state]);
-		this.getDailyCasesGraphData(this.state.positivityRateDataFromApi[state]);
-		this.getDailyTestsGraphData(this.state.positivityRateDataFromApi[state]);
+		this.getPositivityRateGraphData(this.state.allDataFromApi[state]);
+		this.getDailyCasesGraphData(this.state.allDataFromApi[state]);
+		this.getDailyTestsGraphData(this.state.allDataFromApi[state]);
 		this.setState({ selectedState: state });
 	}
 
 	onStateSelect(key) {
-		const stateName = this.getName(key);
+		const stateName = this.state.showDistricts ? key : this.getName(key);
 		this.setState({ selectedState: stateName });
 		this.getRtPointGraphData(this.state.rtDataFromApi[key]);
 		this.getMobilityGraphData(this.state.mobilityDataFromApi[stateName]);
-		this.getPositivityRateGraphData(this.state.positivityRateDataFromApi[stateName]);
-		this.getCfrGraphData(this.state.cfrDataFromApi[stateName]);
-		this.getDailyCasesGraphData(this.state.positivityRateDataFromApi[stateName]);
-		this.getDailyTestsGraphData(this.state.positivityRateDataFromApi[stateName]);
+		this.getPositivityRateGraphData(this.state.allDataFromApi[stateName]);
+		this.getCfrGraphData(this.state.allDataFromApi[stateName]);
+		this.getDailyCasesGraphData(this.state.allDataFromApi[stateName]);
+		this.getDailyTestsGraphData(this.state.allDataFromApi[stateName]);
 	}
 
 		blog = ()=>{
 			let newText = this.state.blogdescription.split('\n').map(i => {
 				return <p style={{marginTop : "0px",marginBottom : "0px"}}>{i}</p>
 			});
-			// const { showblog } = this.state;
 			console.log(this.state.showblog)
 			return(
 
 				<div>
 				{this.state.showblog === 2 && <>
-						<Card style={{marginLeft:"20rem",marginRight:"20rem"}} className="text-center">
+						<Card className={this.state.mobileView ? "blog-container-mobile text-center" : "blog-container text-center"}>
 							<Card.Body>
 								<Card.Title>{this.state.blogtitle}</Card.Title>
-								{/* <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle> */}
 								<Card.Text>{newText}</Card.Text>
-								{/* <Card.Link href="#">Card Link</Card.Link> */}
 							</Card.Body>
 						</Card>
 						<br />
@@ -1074,29 +1117,29 @@ export default class Dashboard extends Component {
 			)
 		}
 
-NavDropdown = ()=>{
-	return (
-		<Dropdown>
-			<Dropdown.Toggle variant="success" id="dropdown-dash" className="dropdown-dash">
-			<span><img src={menuIcon} style={{width : "40px"}}  className="quicklink-icon" /></span>
-			</Dropdown.Toggle>
-			<Dropdown.Menu id="dropdown-dash-menu">
-			<Dropdown.Item href="#Summary"><img src={summaryIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Summary</Dropdown.Item>
-			<Dropdown.Divider/>
-			<Dropdown.Item href="#Graph"><img src={graphIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }} />  Graph</Dropdown.Item>
-			<Dropdown.Divider/> 
-			<Dropdown.Item href="#Table"><img src={tableIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Table</Dropdown.Item>
-			<Dropdown.Divider/>
-			<Dropdown.Item href="#Map"><img src={mapIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Map</Dropdown.Item>
-			<Dropdown.Divider/>
-			<Dropdown.Item href="#Compare"><img src={compareIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Compare State</Dropdown.Item>
-			<Dropdown.Divider/>
-			<Dropdown.Item href="#Analysis"><img src={analysisIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Analysis</Dropdown.Item>
-			</Dropdown.Menu>
-		</Dropdown>
-		
-	)
-}
+    NavDropdown = ()=>{
+        return (
+            <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-dash" className="dropdown-dash">
+                <span><img src={menuIcon} style={{width : "40px"}}  className="quicklink-icon" /></span>
+                </Dropdown.Toggle>
+                <Dropdown.Menu id="dropdown-dash-menu">
+                <Dropdown.Item href="#Summary"><img src={summaryIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Summary</Dropdown.Item>
+                <Dropdown.Divider/>
+                <Dropdown.Item href="#Graph"><img src={graphIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }} />  Graph</Dropdown.Item>
+                <Dropdown.Divider/>
+                <Dropdown.Item href="#Table"><img src={tableIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Table</Dropdown.Item>
+                <Dropdown.Divider/>
+                {/*<Dropdown.Item href="#Map"><img src={mapIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Map</Dropdown.Item>
+                <Dropdown.Divider/>
+                <Dropdown.Item href="#Compare"><img src={compareIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Compare State</Dropdown.Item>
+                <Dropdown.Divider/>*/}
+                <Dropdown.Item href="#Analysis"><img src={analysisIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Analysis</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+
+        )
+    }
 
 	DropdownRenderer = () => {
 		const fontSize = this.state.mobileView ? "x-small" : "smaller";
@@ -1114,17 +1157,18 @@ NavDropdown = ()=>{
 					</Dropdown.Toggle>
 
 					<Dropdown.Menu className="dropdown-state-list">
-						<Dropdown.Item onSelect={() => this.onStateSelect("IN")}>India</Dropdown.Item>
+						<Dropdown.Item onSelect={() => this.onStateSelect("TT")}>India</Dropdown.Item>
 						{this.state.rowData && this.state.rowData.map((item) => {
-							return <Dropdown.Item onSelect={() => this.onStateSelect(item.key)}>{this.getName(item.key)}</Dropdown.Item>
+							return <Dropdown.Item onSelect={() => this.onStateSelect(item.key)}>
+							            {!this.state.showDistricts ? this.getName(item.key) : item.key}
+							       </Dropdown.Item>
 						})}
 					</Dropdown.Menu>
 				</Dropdown>
 			</span>
 			<span className="header-bar-text">
 				<span style={{ marginRight: "15px" }}>
-				    <Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle"
-                    			onClick={() => this.setState({ showDistricts: !this.state.showDistricts })}>
+				    <Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle" onClick={() => this.switchStateDistrict()}>
                     				{this.state.showDistricts ? "Show State Data" : "Show District Data"}
                     </Button>
 				</span>
@@ -1133,6 +1177,12 @@ NavDropdown = ()=>{
 			</span>}
 		</div>
 	}
+
+	async switchStateDistrict() {
+	    const {showDistricts} = this.state
+	    await this.setState({ showDistricts: !showDistricts });
+	    this.setRowData();
+	};
 
 	handleDivScroll = (event) => {
 		if (this.textDivRef.current) {
@@ -1244,6 +1294,9 @@ NavDropdown = ()=>{
 		const deceasedCases = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].deceased;
 		const recoveredCases = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].recovered;
 		const activeCases = totalCases && deceasedCases && recoveredCases && (totalCases - (deceasedCases + recoveredCases));
+		const tests = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].tests;
+		const rt = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].rt;
+		const dbt = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].dbt;
 
 		return (
 			<div>
@@ -1267,54 +1320,74 @@ NavDropdown = ()=>{
 								<Row>
 									<Col>
 										<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Confirmed </b><br/><a style={{fontFamily : "Varela Round"}}> {totalCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Confirmed </b><br/><a style={{fontFamily : "Varela Round"}}>
+											    {totalCases}
+											</a></span>
 										</Card>
 									</Col>
 									<Col>
 										<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}> {activeCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}>
+											    {activeCases}
+											</a></span>
 										</Card>
 									</Col>
 									<Col>
 										<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>{recoveredCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>
+											    {recoveredCases}
+											</a></span>
 										</Card>
 									</Col>
 									<Col>
 										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Deceased </b><br/> <a style={{fontFamily : "Varela Round"}}>{deceasedCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Deaths </b><br/> <a style={{fontFamily : "Varela Round"}}>
+											    {deceasedCases}
+											</a></span>
 										</Card>
 									</Col>
 									<Col>
 										<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Tests </b><br/> <a style={{fontFamily : "Varela Round"}}>{deceasedCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Tests </b><br/> <a style={{fontFamily : "Varela Round"}}>
+											    {tests}
+											</a></span>
 										</Card>
 									</Col>
 								</Row>
 								<Row>
 									<Col>
 										<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Confirmed </b><br/><a style={{fontFamily : "Varela Round"}}> {totalCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Reproduction N</b><br/><a style={{fontFamily : "Varela Round"}}>
+											    {rt}
+											</a></span>
 										</Card>
 									</Col>
 									<Col>
 										<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}> {activeCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Doubling Time</b><br/><a style={{fontFamily : "Varela Round"}}>
+											    {dbt}
+											</a></span>
 										</Card>
 									</Col>
 									<Col>
 										<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>{recoveredCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Recovery Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
+											    0
+											</a></span>
 										</Card>
 									</Col>
 									<Col>
 										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Deceased </b><br/> <a style={{fontFamily : "Varela Round"}}>{deceasedCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Fatality Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
+											    0
+											</a></span>
 										</Card>
 									</Col>
 									<Col>
 										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Deceased </b><br/> <a style={{fontFamily : "Varela Round"}}>{deceasedCases}</a></span>
+											<span style={{ fontSize: fontSizeDynamic }}><b>Test Positivity</b><br/> <a style={{fontFamily : "Varela Round"}}>
+											    0
+											</a></span>
 										</Card>
 									</Col>
 								</Row>
@@ -1322,11 +1395,9 @@ NavDropdown = ()=>{
 					</div>
 						
 					<div id="Graph">
-								<div ref={this.plotsRef} style={{ textDecorationColor: "white", height: "5px" }}>.</div>
-								{!mobileView && <div className="plot-headers">
-									<span className="span-plot-title"><hr class="hr-text" data-content="How fast is the spread?" /></span>
-									<span className="span-plot-title"><hr class="hr-text" data-content="Are we testing enough?" /></span>
-								</div>}
+								<div ref={this.plotsRef} className="sub-header-row mt-4">
+                                    <span className="header-bar-text">GRAPHICAL REPRESENTATION</span>
+                                </div>
 
 							<Container>
 								<Row>
@@ -1532,7 +1603,7 @@ NavDropdown = ()=>{
 							</Container>
 					</div>
 				
-					<div id="Map">
+					{/*<div id="Map">
 						<h1>MAP</h1>
 					</div>
 
@@ -1540,7 +1611,7 @@ NavDropdown = ()=>{
 							<div className="sub-header-row mt-4">
 							<span className="header-bar-text">COMPARE DATA FOR STATES</span>
 							</div>
-						{/* Comparision chart */}
+						{*//* Comparision chart *//*}
 						<Container>
 							<Row>
 								<Col>
@@ -1585,25 +1656,25 @@ NavDropdown = ()=>{
 											></ComparisionChart>
 										</Tab>
 										<Tab eventKey="profile" title="2">
-											{/* <Sonnet /> */}
+											{*//* <Sonnet /> *//*}
 											wfejbgk
 										</Tab>
 										<Tab eventKey="contact" title="3">
-											{/* <Sonnet /> */}
+											{*//* <Sonnet /> *//*}
 										</Tab>
 										<Tab eventKey="profil" title="4">
-											{/* <Sonnet /> */}
+											{*//* <Sonnet /> *//*}
 										</Tab><Tab eventKey="proile" title="5">
-											{/* <Sonnet /> */}
+											{*//* <Sonnet /> *//*}
 										</Tab>
 										<Tab eventKey="profie" title="6">
-											{/* <Sonnet /> */}
+											{*//* <Sonnet /> *//*}
 										</Tab>
 									</Tabs>
 								</Col>
 							</Row>
 						</Container>
-					</div>
+					</div>*/}
 						
 					<div id="Analysis">									
 						<div className="sub-header-row mt-4">

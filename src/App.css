@@ -538,7 +538,8 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 
 .featured-pic-container {
     padding: 40px;
-    width: 100%;
+    width: 50%;
+    display: inline-flex;
 }
 
 .featured-pic-container-mobile {
@@ -549,4 +550,14 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 .featured-pic {
     border-radius: 15px;
     width: 100%;
+}
+
+.blog-container {
+    display: inline-flex !important;
+    width: 80%
+}
+
+.blog-container-mobile {
+    display: inline-flex !important;
+    width: 95%
 }
