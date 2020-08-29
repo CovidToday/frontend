@@ -62,6 +62,7 @@ export default class Licence extends Component {
         					yAxes: [{
         						display: true,
         						ticks: {
+        						    max: 4,
         							suggestedMin: minRtDataPoint,
         							// suggestedMax: maxRtDataPoint,
         							stepSize: 0.5

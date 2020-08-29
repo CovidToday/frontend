@@ -563,7 +563,92 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 }
 
 .mobile-summary-cards {
-    padding-right: 20px !important;
-    padding-left: 20px !important;
+    padding-right: 5px !important;
+    padding-left: 5px !important;
     padding-bottom: 10px !important;
+}
+
+.summary-cards {
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+}
+
+.blue-card {
+    background-color: #b6f2f0 !important;
+}
+
+.red-card {
+    background-color: #ff7a7a !important;
+}
+
+.green-card {
+    background-color: #78f0a6 !important;
+}
+
+.yellow-card {
+    background-color: #f5fa69 !important;
+}
+
+.grey-card {
+    background-color: #b5b5b5 !important;
+}
+
+.summary-card-heading {
+    font-weight: bold;
+    font-size: medium;
+    font-family: Titillium Web;
+}
+
+.summary-card-number {
+    font-family: Titillium Web;
+    font-size: larger;
+}
+
+.summary-card-number-rt {
+    font-family: Titillium Web;
+    font-size: medium;
+}
+
+.summary-card-number-secondary {
+    font-family: Titillium Web;
+    font-size: medium;
+}
+
+.summary-card-description {
+    font-size: small;
+    font-family: Titillium Web;
+}
+
+.summary-card-heading-mobile {
+    font-family: Titillium Web;
+    font-weight: bold;
+}
+
+.summary-card-number-mobile {
+    font-family: Titillium Web;
+    font-size: large;
+}
+
+.summary-card-number-mobile-rt {
+    font-family: Titillium Web;
+    font-size: small;
+}
+
+.summary-card-number-secondary-mobile {
+    font-family: Titillium Web;
+    font-size: medium;
+}
+
+.summary-card-description-mobile {
+    font-family: Titillium Web;
+    font-size: small;
+}
+
+.summary-card {
+    height: 100px;
+    margin: 5px;
+}
+
+.summary-card-mobile {
+    height: 75px;
 }

@@ -44,6 +44,10 @@ import DailyCasesChart from ".././Plots/DailyCasesChart.js"
 import * as StateEnums from ".././Commons/StateEnums.js"
 import ComparisionChart from '.././Plots/ComparisionChart';
 import featured from ".././images/featured.png";
+import numbro from 'numbro';
+import upIcon from ".././images/up red.png"
+import downIcon from ".././images/down green.png"
+import yellowDash from ".././images/yellowDash.png"
 
 export default class Dashboard extends Component {
 	constructor(props) {
@@ -147,8 +151,8 @@ export default class Dashboard extends Component {
 			minRtDataPoint: 0,
 			maxRtDataPoint: 0,
 			maxCFRPoint: 0,
-			lockdownDates: ["25 March", "15 April", "04 May", "18 May", "08 June"],
-			lockdownChartText: ['Lockdown 1', 'Lockdown 2', 'Lockdown 3', 'Lockdown 4', 'Unlock 1'],
+			lockdownDates: ["25 March", "15 April", "04 May", "18 May", "08 June", "01 July", "01 August"],
+			lockdownChartText: ['Lockdown 1', 'Lockdown 2', 'Lockdown 3', 'Lockdown 4', 'Unlock 1', 'Unlock 2', 'Unlock 3'],
 			graphStartDate: '22 March',
 			rtPointGraphData: { datasets: [{ data: [] }], labels: [] },
 			cfrGraphData: { datasets: [{ data: [] }], labels: [] },
@@ -181,7 +185,7 @@ export default class Dashboard extends Component {
 	columnDefMobile = [
 		{
 			headerName: '', children: [
-				{ headerName: "STATES", field: "state", sortable: true, suppressMovable: true, pinned: 'left' }
+				{ headerName: "STATES", field: "state", sortable: true, suppressMovable: true, pinned: 'left', width: 120 }
 			]
 		},
 		{
@@ -413,7 +417,7 @@ export default class Dashboard extends Component {
 		const allApi = this.state.showDistricts ? this.state.allDistrictData : this.state.allStateData;
         		this.setState({allDataFromApi: allApi});
 
-		if (rtApi && allApi) {
+		if (rtApi && allApi && Object.keys(rtApi).length > 0 && Object.keys(allApi).length > 0) {
 			list && list.forEach(s => {
 				const name = !this.state.showDistricts ? this.getName(s) : s;
 
@@ -436,6 +440,7 @@ export default class Dashboard extends Component {
 				const cfrPoint = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex]).toFixed(2) : "NA";
 				const cfrPointOld = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex - 7]).toFixed(2) : "NA";
 				const cfrDate = cfrIndex > 0 ? allApi[name].dates[cfrIndex] : "-";
+				const cfrPoint2 = cfrIndex > 0 ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
 
 				//posRate
 				const posRateArr = Object.entries(allApi);
@@ -557,13 +562,71 @@ export default class Dashboard extends Component {
                      }
                 });
 
+                let dailyPos;
+                let dailyPosOld;
+                posRateArr.forEach(data => {
+                     if (data[0] === name) {
+                        const indexDailyPos = data[1].daily_positive_cases.slice().reverse().findIndex(i => i !== "");
+                        const countDailyPos = data[1].daily_positive_cases.length - 1;
+                        const DailyPosIndex = indexDailyPos >= 0 ? countDailyPos - indexDailyPos : indexDailyPos;
+                        const DailyPosFloat = (data[1].daily_positive_cases[DailyPosIndex]);
+                        dailyPos = DailyPosFloat && DailyPosFloat !== "" ? Math.floor(DailyPosFloat) : "-";
+                        const DailyPosFloatOld = (data[1].daily_positive_cases[DailyPosIndex - 7]);
+                        dailyPosOld = DailyPosFloatOld && DailyPosFloatOld !== "" ? (DailyPosFloatOld).toFixed(2) : "NA";
+                     }
+                });
+
+                let dailyRec;
+                let dailyRecOld;
+                posRateArr.forEach(data => {
+                     if (data[0] === name) {
+                        const indexDailyRec = data[1].daily_recovered.slice().reverse().findIndex(i => i !== "");
+                        const countDailyRec = data[1].daily_recovered.length - 1;
+                        const DailyRecIndex = indexDailyRec >= 0 ? countDailyRec - indexDailyRec : indexDailyRec;
+                        const DailyRecFloat = (data[1].daily_recovered[DailyRecIndex]);
+                        dailyRec = DailyRecFloat && DailyRecFloat !== "" ? Math.floor(DailyRecFloat) : "-";
+                        const DailyRecFloatOld = (data[1].daily_recovered[DailyRecIndex - 7]);
+                        dailyRecOld = DailyRecFloatOld && DailyRecFloatOld !== "" ? (DailyRecFloatOld).toFixed(2) : "NA";
+                     }
+                });
+
+                let dailyDeath;
+                let dailyDeathOld;
+                posRateArr.forEach(data => {
+                     if (data[0] === name) {
+                        const indexDailyDeath = data[1].daily_deceased.slice().reverse().findIndex(i => i !== "");
+                        const countDailyDeath = data[1].daily_deceased.length - 1;
+                        const DailyDeathIndex = indexDailyDeath >= 0 ? countDailyDeath - indexDailyDeath : indexDailyDeath;
+                        const DailyDeathFloat = (data[1].daily_deceased[DailyDeathIndex]);
+                        dailyDeath = DailyDeathFloat && DailyDeathFloat !== "" ? Math.floor(DailyDeathFloat) : "-";
+                        const DailyDeathFloatOld = (data[1].daily_deceased[DailyDeathIndex - 7]);
+                        dailyDeathOld = DailyDeathFloatOld && DailyDeathFloatOld !== "" ? (DailyDeathFloatOld).toFixed(2) : "NA";
+                     }
+                });
+
+                let dailyTests;
+                let dailyTestsOld;
+                posRateArr.forEach(data => {
+                     if (data[0] === name) {
+                        const indexDailyTests = data[1].daily_tests.slice().reverse().findIndex(i => i !== "");
+                        const countDailyTests = data[1].daily_tests.length - 1;
+                        const DailyTestsIndex = indexDailyTests >= 0 ? countDailyTests - indexDailyTests : indexDailyTests;
+                        const DailyTestsFloat = (data[1].daily_tests[DailyTestsIndex]);
+                        dailyTests = DailyTestsFloat && DailyTestsFloat !== "" ? Math.floor(DailyTestsFloat) : "-";
+                        const DailyTestsFloatOld = (data[1].daily_tests[DailyTestsIndex - 7]);
+                        dailyTestsOld = DailyTestsFloatOld && DailyTestsFloatOld !== "" ? (DailyTestsFloatOld).toFixed(2) : "NA";
+                     }
+                });
+
                 infoData.push({key: s, state: name, total: cumCases, totalDate: cumCasesDate, recovered: cumRecovered,
                 recoveredDate: cumRecoveredDate, deceased: cumDeceased, deceasedDate: cumDeceasedDate, tests: cumTests,
-                testsDate: cumTestsDate, rt: rtData, rtDate: rtDate, dbt: dbt, dbtDate: dbtDate});
+                testsDate: cumTestsDate, rt: rtData, rtDate: rtDate, dbt: dbt, dbtDate: dbtDate, cfr: cfrPoint2, posRate: maPosRate,
+                dailyPos: dailyPos, dailyPosOld: dailyPosOld, dailyRec: dailyRec, dailyRecOld: dailyRecOld,
+                dailyDeath: dailyDeath, dailyDeathOld: dailyDeathOld, dailyTests: dailyTests, dailyTestsOld: dailyTestsOld});
 
 				data.push({
-					key: s, state: name, rt: rtData, cumCases: cumCases, dailyCases: maCases, posRate: maPosRate, cumPosRate: cumulativePosRate,
-					ccfr: cfrPoint, rtCurrent: rtPoint, rtOld: rtToCompare, dailyCasesOld: maCasesOld, posRateOld: maPosRateOld, cfrOld: cfrPointOld,
+					key: s, state: name, rt: rtData, cumCases: cumCases, dailyCases: dailyPos, posRate: maPosRate, cumPosRate: cumulativePosRate,
+					ccfr: cfrPoint, rtCurrent: rtPoint, rtOld: rtToCompare, dailyCasesOld: dailyPosOld, posRateOld: maPosRateOld, cfrOld: cfrPointOld,
 					rtDate: rtDate, cumCasesDate: cumCasesDate, maCasesDate: maCasesDate, posRateDate: posRateDate, cumPRateDate: cumPRateDate, cfrDate: cfrDate,
 					testsPerMil: tpm, tpmDate: tpmDate
 				});
@@ -594,6 +657,7 @@ export default class Dashboard extends Component {
 		const cfrPointInd = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr3_point[cfrIndexInd]).toFixed(2) : "NA";
 		const cfrDate = cfrIndexInd > 0 ? this.state.allStateData.India.dates[cfrIndexInd] : "-";
 		const cfrPointOld = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr3_point[cfrIndexInd - 7]).toFixed(2) : "NA";
+		const cfrPointInd2 = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr2_point[cfrIndexInd]).toFixed(2) : "NA";
 
 		const posRateArrInd = this.state.allStateData.India;
 
@@ -653,13 +717,40 @@ export default class Dashboard extends Component {
         const dbtInd = Math.floor(posRateArrInd.dbt_point[dbtIndexInd]);
         const dbtIndDate = posRateArrInd.dates[dbtIndexInd];
 
+		const indexIndDailyPos = posRateArrInd.daily_positive_cases.slice().reverse().findIndex(i => i !== "");
+		const countIndDailyPos = posRateArrInd.daily_positive_cases.length - 1;
+		const DailyPosIndexInd = indexIndDailyPos >= 0 ? countIndDailyPos - indexIndDailyPos : indexIndDailyPos;
+		const DailyPosInd = Math.floor(posRateArrInd.daily_positive_cases[DailyPosIndexInd]);
+		const DailyPosIndOld = Math.floor(posRateArrInd.daily_positive_cases[DailyPosIndexInd - 7]);
+
+		const indexIndDailyRec = posRateArrInd.daily_recovered.slice().reverse().findIndex(i => i !== "");
+		const countIndDailyRec = posRateArrInd.daily_recovered.length - 1;
+		const DailyRecIndexInd = indexIndDailyRec >= 0 ? countIndDailyRec - indexIndDailyRec : indexIndDailyRec;
+		const DailyRecInd = Math.floor(posRateArrInd.daily_recovered[DailyRecIndexInd]);
+		const DailyRecIndOld = Math.floor(posRateArrInd.daily_recovered[DailyRecIndexInd - 7]);
+
+		const indexIndDailyDeath = posRateArrInd.daily_deceased.slice().reverse().findIndex(i => i !== "");
+		const countIndDailyDeath = posRateArrInd.daily_deceased.length - 1;
+		const DailyDeathIndexInd = indexIndDailyDeath >= 0 ? countIndDailyDeath - indexIndDailyDeath : indexIndDailyDeath;
+		const DailyDeathInd = Math.floor(posRateArrInd.daily_deceased[DailyDeathIndexInd]);
+		const DailyDeathIndOld = Math.floor(posRateArrInd.daily_deceased[DailyDeathIndexInd - 7]);
+
+		const indexIndDailyTests = posRateArrInd.daily_tests.slice().reverse().findIndex(i => i !== "");
+		const countIndDailyTests = posRateArrInd.daily_tests.length - 1;
+		const DailyTestsIndexInd = indexIndDailyTests >= 0 ? countIndDailyTests - indexIndDailyTests : indexIndDailyTests;
+		const DailyTestsInd = Math.floor(posRateArrInd.daily_tests[DailyTestsIndexInd]);
+		const DailyTestsIndOld = Math.floor(posRateArrInd.daily_tests[DailyTestsIndexInd - 7]);
+
         infoData.push({key: "TT", state: "India", total: cumCasesInd, totalDate: cumCasesIndDate, recovered: cumRecoveredInd,
                         recoveredDate: cumRecoveredIndDate, deceased: cumDeceasedInd, deceasedDate: cumDeceasedIndDate,
-                        tests: testsInd, testsDate: testsIndDate, rt: rtDataInd, rtDate: rtDate, dbt: dbtInd, dbtDate: dbtIndDate});
+                        tests: testsInd, testsDate: testsIndDate, rt: rtDataInd, rtDate: rtDate, dbt: dbtInd, dbtDate: dbtIndDate,
+                        cfr: cfrPointInd2, posRate: PosRateMaInd, dailyPos: DailyPosInd, dailyPosOld: DailyPosIndOld, dailyRec: DailyRecInd,
+                        dailyRecOld: DailyRecIndOld, dailyDeath: DailyDeathInd, dailyDeathOld: DailyDeathIndOld, dailyTests: DailyTestsInd,
+                        dailyTestsOld: DailyTestsIndOld});
 
 		pinnedData.push({
-			key: "TT", state: "India", rt: rtDataInd, cumCases: cumCasesInd, dailyCases: casesMaInd, posRate: PosRateMaInd, cumPosRate: cumulativePosRateInd,
-			ccfr: cfrPointInd, rtCurrent: rtPointInd, rtOld: rtToCompareInd, rtDate: rtDate, cfrDate: cfrDate, cfrOld: cfrPointOld, dailyCasesOld: casesMaIndOld,
+			key: "TT", state: "India", rt: rtDataInd, cumCases: cumCasesInd, dailyCases: DailyPosInd, posRate: PosRateMaInd, cumPosRate: cumulativePosRateInd,
+			ccfr: cfrPointInd, rtCurrent: rtPointInd, rtOld: rtToCompareInd, rtDate: rtDate, cfrDate: cfrDate, cfrOld: cfrPointOld, dailyCasesOld: DailyPosIndOld,
 			posRateOld: PosRateMaIndOld, cumCasesDate: cumCasesIndDate, maCasesDate: maCasesIndDate, posRateDate: posRateDateInd, cumPRateDate: cumPRDateInd,
 			testsPerMil: tpmInd, tpmDate: tpmIndDate
 		})
@@ -1141,8 +1232,24 @@ export default class Dashboard extends Component {
         )
     }
 
+    compareArr = (a,b) => {
+        const itemA = a && a.state && a.state.toUpperCase();
+        const itemB = b && b.state && b.state.toUpperCase();
+
+        let comparison = 0;
+        if(itemA > itemB){
+            comparison = 1;
+        } else if(itemA < itemB){
+            comparison = -1;
+        }
+
+        return comparison;
+    }
+
 	DropdownRenderer = () => {
 		const fontSize = this.state.mobileView ? "x-small" : "smaller";
+		const array = this.state.rowData && this.state.rowData;
+		array.sort(this.compareArr);
 
 		return <div className="sub-header-row sticky-top">
 			<span className="header-bar-nav"><this.NavDropdown/></span>
@@ -1157,8 +1264,8 @@ export default class Dashboard extends Component {
 					</Dropdown.Toggle>
 
 					<Dropdown.Menu className="dropdown-state-list">
-						<Dropdown.Item onSelect={() => this.onStateSelect("TT")}>India</Dropdown.Item>
-						{this.state.rowData && this.state.rowData.map((item) => {
+						{!this.state.showDistricts && <Dropdown.Item onSelect={() => this.onStateSelect("TT")}>India</Dropdown.Item>}
+						{array.map((item) => {
 							return <Dropdown.Item onSelect={() => this.onStateSelect(item.key)}>
 							            {!this.state.showDistricts ? this.getName(item.key) : item.key}
 							       </Dropdown.Item>
@@ -1215,6 +1322,16 @@ export default class Dashboard extends Component {
 				block: "nearest"
 			})
 		}
+	}
+
+	getCompareImage = (value, valueOld) => {
+	    if(value > valueOld) {
+	        return upIcon;
+	    } else if(value < valueOld) {
+	        return downIcon;
+	    } else {
+	        return yellowDash;
+	    }
 	}
 
 
@@ -1288,15 +1405,30 @@ export default class Dashboard extends Component {
 			window.innerWidth > '500' ? "large" : "small";
 		const licenceWidth = mobileView ? "45px" : "90px";
 		const licenceFont = mobileView ? "x-small" : "small";
-		const cardsArrIndex = this.state.cardsData && this.state.cardsData.length > 1 &&
-		    this.state.cardsData.findIndex(d => d.state === this.state.selectedState);
-		const totalCases = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].total;
-		const deceasedCases = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].deceased;
-		const recoveredCases = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].recovered;
-		const activeCases = totalCases && deceasedCases && recoveredCases && (totalCases - (deceasedCases + recoveredCases));
-		const tests = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].tests;
-		const rt = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].rt;
-		const dbt = cardsArrIndex && cardsArrIndex !== -1 && this.state.cardsData && this.state.cardsData[cardsArrIndex].dbt;
+		const cardsArrIndex = this.state.cardsData && this.state.cardsData.length > 1 ?
+		    this.state.cardsData.findIndex(d => d.state === this.state.selectedState) : -1;
+
+		//summary card values
+		const totalCases = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].total : 0;
+		const deceasedCases = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].deceased : 0;
+		const recoveredCases = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].recovered : 0;
+		const activeCases = totalCases && deceasedCases && recoveredCases ? (totalCases - (deceasedCases + recoveredCases)) : 0;
+		const tests = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].tests : 0;
+		const rt = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].rt : 0;
+		const dbt = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dbt : 0;
+		const recoveryRate = recoveredCases && totalCases ? (recoveredCases/(recoveredCases + deceasedCases))*100 : 0;
+		const fatRate = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].cfr : 0;
+		const posRate = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].posRate : 0;
+		const dailyPos = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyPos : 0;
+		const dailyPosOld = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyPosOld : 0;
+		const dailyRec = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyRec : 0;
+		const dailyRecOld = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyRecOld : 0;
+		const dailyDeath = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyDeath : 0;
+		const dailyDeathOld = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyDeathOld : 0;
+		const dailyTests = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyTests : 0;
+		const dailyTestsOld = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyTestsOld : 0;
+		const dailyActive = dailyPos && dailyDeath && dailyRec ? (dailyPos - (dailyDeath + dailyRec)) : 0;
+		const dailyActiveOld = dailyPosOld && dailyDeathOld && dailyRecOld ? (dailyPosOld - (dailyDeathOld + dailyRecOld)) : 0;
 
 		return (
 			<div>
@@ -1319,157 +1451,208 @@ export default class Dashboard extends Component {
 							{this.state.mobileView && <Container>
 								<Row>
 									<Col className="mobile-summary-cards">
-										<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Confirmed </b><br/><a style={{fontFamily : "Varela Round"}}>
-											    {totalCases ? totalCases : 0}
-											</a></span>
+										<Card className={"blue-card summary-card-mobile"} v>
+											<span style={{ fontSize: fontSizeDynamic }}>
+											    <span className="summary-card-heading-mobile">Confirmed </span><br/>
+											    <span className="summary-card-number-mobile">{numbro(totalCases).format({thousandSeparated: true})}</span><br/>
+											    <span className="summary-card-number-secondary-mobile">{numbro(dailyPos).format({thousandSeparated: true})}</span>
+											    <span><img src={this.getCompareImage(dailyPos, dailyPosOld)} className="cell-icon"/></span>
+											</span>
 										</Card>
 									</Col>
 									<Col className="mobile-summary-cards">
-										<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Reproduction N</b><br/><a style={{fontFamily : "Varela Round"}}>
-											    {rt ? rt : 0}
-											</a></span>
-										</Card>
-									</Col>
-								</Row>
-								<Row>
-									<Col className="mobile-summary-cards">
-										<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}>
-											    {activeCases ? activeCases : 0}
-											</a></span>
-										</Card>
-									</Col>
-									<Col className="mobile-summary-cards">
-										<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Doubling Time</b><br/><a style={{fontFamily : "Varela Round"}}>
-											    {dbt ? dbt : 0}
-											</a></span>
+										<Card className={"blue-card summary-card-mobile"} v>
+											<span style={{ fontSize: fontSizeDynamic }}>
+											    <span className="summary-card-heading-mobile">Reproduction No</span><br/>
+											    <span className="summary-card-description-mobile">Each covid+ spreads it to</span><br/>
+											    <span className="summary-card-number-mobile-rt">{rt} persons</span>
+											</span>
 										</Card>
 									</Col>
 								</Row>
 								<Row>
 									<Col className="mobile-summary-cards">
-										<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>
-											    {recoveredCases ? recoveredCases : 0}
-											</a></span>
+										<Card className={"red-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+											    <span className="summary-card-heading-mobile">Active </span><br/>
+											    <span className="summary-card-number-mobile">{numbro(activeCases).format({thousandSeparated: true})}</span><br/>
+											    <span className="summary-card-number-secondary-mobile">{numbro(dailyActive).format({thousandSeparated: true})}</span>
+                                                <span><img src={this.getCompareImage(dailyActive, dailyActiveOld)} className="cell-icon"/></span>
+											</span>
 										</Card>
 									</Col>
 									<Col className="mobile-summary-cards">
-										<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Recovery Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
-											    0
-											</a></span>
-										</Card>
-									</Col>
-								</Row>
-								<Row>
-									<Col className="mobile-summary-cards">
-										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Deaths </b><br/> <a style={{fontFamily : "Varela Round"}}>
-											    {deceasedCases ? deceasedCases : 0}
-											</a></span>
-										</Card>
-									</Col>
-									<Col className="mobile-summary-cards">
-										<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Fatality Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
-											    0
-											</a></span>
+										<Card className={"red-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+											    <span className="summary-card-heading-mobile">Doubling Time</span><br/>
+											    <span className="summary-card-description-mobile">Total cases double in</span><br/>
+											    <span className="summary-card-number-mobile">{numbro(dbt).format({mantissa: 1})} days</span>
+											</span>
 										</Card>
 									</Col>
 								</Row>
 								<Row>
 									<Col className="mobile-summary-cards">
-										<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
-											<span style={{ fontSize: fontSizeDynamic }}><b>Tests </b><br/> <a style={{fontFamily : "Varela Round"}}>
-											    {tests ? tests : 0}
-											</a></span>
+										<Card className={"green-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+											    <span className="summary-card-heading-mobile">Recovered </span><br/>
+											    <span className="summary-card-number-mobile">{numbro(recoveredCases).format({thousandSeparated: true})}</span><br/>
+											    <span className="summary-card-number-secondary-mobile">{numbro(dailyRec).format({thousandSeparated: true})}</span>
+                                                <span><img src={this.getCompareImage(dailyRec, dailyRecOld)} className="cell-icon"/></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="mobile-summary-cards">
+										<Card className={"green-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+											    <span className="summary-card-heading-mobile">Recovery Rate</span><br/>
+											    <span className="summary-card-number-mobile">{numbro(recoveryRate).format({mantissa: 1})}%</span><br/>
+											    <span className="summary-card-description-mobile">of closed cases have recovered</span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card className={"grey-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+											    <span className="summary-card-heading-mobile">Deaths </span><br/>
+											    <span className="summary-card-number-mobile">{numbro(deceasedCases).format({thousandSeparated: true})}</span><br/>
+											    <span className="summary-card-number-secondary-mobile">{numbro(dailyDeath).format({thousandSeparated: true})}</span>
+                                                <span><img src={this.getCompareImage(dailyDeath, dailyDeathOld)} className="cell-icon"/></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="mobile-summary-cards">
+										<Card className={"grey-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+											    <span className="summary-card-heading-mobile">Fatality Rate</span><br/>
+											    <span className="summary-card-number-mobile">{numbro(fatRate).format({mantissa: 1})}%</span><br/>
+                                                <span className="summary-card-description-mobile">of closed cases have died</span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card className={"yellow-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+											    <span className="summary-card-heading-mobile">Tests </span><br/>
+											    <span className="summary-card-number-mobile">{numbro(tests).format({thousandSeparated: true})}</span><br/>
+											    <span className="summary-card-number-secondary-mobile">{numbro(dailyTests).format({thousandSeparated: true})}</span>
+                                                <span><img src={this.getCompareImage(dailyTests, dailyTestsOld)} className="cell-icon"/></span>
+											</span>
 										</Card>
 									</Col>
 								    <Col className="mobile-summary-cards">
-                                    	<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
-                                    		<span style={{ fontSize: fontSizeDynamic }}><b>Test Positivity</b><br/> <a style={{fontFamily : "Varela Round"}}>
-                                    	        0
-                                    		</a></span>
+                                    	<Card className={"yellow-card summary-card-mobile"}>
+                                    		<span style={{ fontSize: fontSizeDynamic }}>
+                                    		    <span className="summary-card-heading-mobile">Test Positivity</span><br/>
+                                    		    <span className="summary-card-number-mobile">{numbro(posRate).format({mantissa: 1})}%</span><br/>
+                                                <span className="summary-card-description-mobile">of tests are positive</span>
+                                    		</span>
                                     	</Card>
                                     </Col>
 								</Row>
 							</Container>}
 							{!this.state.mobileView && <Container>
                             	<Row>
-                            		<Col>
-                            			<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}><b>Confirmed </b><br/><a style={{fontFamily : "Varela Round"}}>
-                            					{totalCases}
-                            			    </a></span>
+                            		<Col className="summary-cards">
+                            			<Card className={"blue-card summary-card"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}>
+                            				    <span className="summary-card-heading">Confirmed </span><br/>
+                            				    <span className="summary-card-number">{numbro(totalCases).format({thousandSeparated: true})}</span><br/>
+                                                <span className="summary-card-number-secondary">{numbro(dailyPos).format({thousandSeparated: true})}</span>
+                                                <span><img src={this.getCompareImage(dailyPos, dailyPosOld)} className="cell-icon"/></span>
+                            			    </span>
                             		    </Card>
                             		</Col>
-                            		<Col>
-                            			<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}><b>Active </b><br/><a style={{fontFamily : "Varela Round"}}>
-                            					{activeCases}
-                            				</a></span>
+                            		<Col className="summary-cards">
+                            			<Card className={"red-card summary-card"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}>
+                            				    <span className="summary-card-heading">Active </span><br/>
+                            				    <span className="summary-card-number">{numbro(activeCases).format({thousandSeparated: true})}</span><br/>
+                            				    <span className="summary-card-number-secondary">{numbro(dailyActive).format({thousandSeparated: true})}</span>
+                                                <span><img src={this.getCompareImage(dailyActive, dailyActiveOld)} className="cell-icon"/></span>
+                            				</span>
                             			</Card>
                             		</Col>
-                            		<Col>
-                            			<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
-                            			    <span style={{ fontSize: fontSizeDynamic }}><b>Recovered </b><br/> <a style={{fontFamily : "Varela Round"}}>
-                            					{recoveredCases}
-                            				</a></span>
+                            		<Col className="summary-cards">
+                            			<Card className={"green-card summary-card"}>
+                            			    <span style={{ fontSize: fontSizeDynamic }}>
+                            			        <span className="summary-card-heading">Recovered </span><br/>
+                            			        <span className="summary-card-number">{numbro(recoveredCases).format({thousandSeparated: true})}</span><br/>
+                            			        <span className="summary-card-number-secondary">{numbro(dailyRec).format({thousandSeparated: true})}</span>
+                                                <span><img src={this.getCompareImage(dailyRec, dailyRecOld)} className="cell-icon"/></span>
+                            				</span>
                             			</Card>
                             		</Col>
-                            		<Col>
-                            			<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
-                            			    <span style={{ fontSize: fontSizeDynamic }}><b>Deaths </b><br/> <a style={{fontFamily : "Varela Round"}}>
-                            					{deceasedCases}
-                            				</a></span>
+                            		<Col className="summary-cards">
+                            			<Card className={"grey-card summary-card"}>
+                            			    <span style={{ fontSize: fontSizeDynamic }}>
+                            			        <span className="summary-card-heading">Deaths </span><br/>
+                            			        <span className="summary-card-number">{numbro(deceasedCases).format({thousandSeparated: true})}</span><br/>
+                            			        <span className="summary-card-number-secondary">{numbro(dailyDeath).format({thousandSeparated: true})}</span>
+                                                <span><img src={this.getCompareImage(dailyDeath, dailyDeathOld)} className="cell-icon"/></span>
+                            				</span>
                             			</Card>
                             		</Col>
-                            		<Col>
-                            			<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}><b>Tests </b><br/> <a style={{fontFamily : "Varela Round"}}>
-                            					 {tests}
-                            				</a></span>
+                            		<Col className="summary-cards">
+                            			<Card className={"yellow-card summary-card"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}>
+                            				    <span className="summary-card-heading">Tests </span><br/>
+                            				    <span className="summary-card-number">{numbro(tests).format({thousandSeparated: true})}</span><br/>
+                            				    <span className="summary-card-number-secondary">{numbro(dailyTests).format({thousandSeparated: true})}</span>
+                                                <span><img src={this.getCompareImage(dailyTests, dailyTestsOld)} className="cell-icon"/></span>
+                            				</span>
                             			</Card>
                             		</Col>
                             	</Row>
                             	<Row>
-                            		<Col>
-                            			<Card border='primary' className={mobileView ? "shadow" : "plots-card shadow"} v>
-                            			    <span style={{ fontSize: fontSizeDynamic }}><b>Reproduction N</b><br/><a style={{fontFamily : "Varela Round"}}>
-                            					{rt}
-                            				</a></span>
+                            		<Col className="summary-cards">
+                            			<Card className={"summary-card blue-card"}>
+                            			    <span style={{ fontSize: fontSizeDynamic }}>
+                            			        <span className="summary-card-heading">Reproduction No</span><br/>
+                            			        <span className="summary-card-description">Each covid+ spread it to</span><br/>
+                            			        <span className="summary-card-number-rt">{rt}</span>
+                            			        <span className="summary-card-number-rt"> persons</span>
+                            				</span>
                             			</Card>
                             		</Col>
-                            		<Col>
-                            			<Card border='danger' className={mobileView ? "shadow" : "plots-card shadow"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}><b>Doubling Time</b><br/><a style={{fontFamily : "Varela Round"}}>
-                            					{dbt}
-                            			    </a></span>
+                            		<Col className="summary-cards">
+                            			<Card className={"summary-card red-card"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}>
+                            				    <span className="summary-card-heading">Doubling Time</span><br/>
+                            				    <span className="summary-card-description">Total cases double in</span><br/>
+                            				    <span className="summary-card-number">{numbro(dbt).format({mantissa: 1})} days</span>
+                            			    </span>
                             			</Card>
                             		</Col>
-                            		<Col>
-                            			<Card border='success' className={mobileView ? "shadow" : "plots-card shadow"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}><b>Recovery Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
-                            					0
-                            				</a></span>
+                            		<Col className="summary-cards">
+                            			<Card className={"summary-card green-card"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}>
+                            				    <span className="summary-card-heading">Recovery Rate</span><br/>
+                            				    <span className="summary-card-number">{numbro(recoveryRate).format({mantissa: 1})}%</span><br/>
+                            				    <span className="summary-card-description">of closed cases have recovered</span>
+                            				</span>
                             			</Card>
                             		</Col>
-                            		<Col>
-                            			<Card border='dark' className={mobileView ? "shadow" : "plots-card shadow"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}><b>Fatality Rate</b><br/> <a style={{fontFamily : "Varela Round"}}>
-                            				    0
-                            				</a></span>
+                            		<Col className="summary-cards">
+                            			<Card className={"summary-card grey-card"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}>
+                            				    <span className="summary-card-heading">Fatality Rate</span><br/>
+                            				    <span className="summary-card-number">{numbro(fatRate).format({mantissa: 1})}%</span><br/>
+                            				    <span className="summary-card-description">of closed cases have died</span>
+                            				</span>
                             			</Card>
                             		</Col>
-                            	    <Col>
-                            			<Card border='warning' className={mobileView ? "shadow" : "plots-card shadow"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}><b>Test Positivity</b><br/> <a style={{fontFamily : "Varela Round"}}>
-                            					0
-                            				</a></span>
+                            	    <Col className="summary-cards">
+                            			<Card className={"summary-card yellow-card"}>
+                            				<span style={{ fontSize: fontSizeDynamic }}>
+                            				    <span className="summary-card-heading">Test Positivity</span><br/>
+                            				    <span className="summary-card-number">{numbro(posRate).format({mantissa: 1})}%</span><br/>
+                            				    <span className="summary-card-description">of tests are positive</span>
+                            				</span>
                             			</Card>
                             		</Col>
                             	</Row>
