@@ -1351,7 +1351,7 @@ export default class Dashboard extends Component {
 			<span className="header-bar-text">
 				<span style={{ marginRight: "15px" }}>
 				    <Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle" onClick={() => this.switchStateDistrict()}>
-                    				{this.state.showDistricts ? "Show State Data" : "Show District Data"}
+                    				{this.state.showDistricts ? "Show State Data" : "Show District Data (Beta)"}
                     </Button>
 				</span>
 			</span>
