@@ -1493,26 +1493,26 @@ export default class Dashboard extends Component {
 		    this.state.cardsData.findIndex(d => d.state === this.state.selectedState) : -1;
 
 		//summary card values
-		const totalCases = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].total : 0;
-		const deceasedCases = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].deceased : 0;
-		const recoveredCases = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].recovered : 0;
-		const activeCases = totalCases && deceasedCases && recoveredCases ? (totalCases - (deceasedCases + recoveredCases)) : 0;
-		const tests = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].tests : 0;
-		const rt = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].rt : 0;
-		const dbt = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dbt : 0;
-		const recoveryRate = recoveredCases && totalCases ? (recoveredCases/(recoveredCases + deceasedCases))*100 : 0;
-		const fatRate = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].cfr : 0;
-		const posRate = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].posRate : 0;
-		const dailyPos = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyPos : 0;
-		const dailyPosOld = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyPosOld : 0;
-		const dailyRec = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyRec : 0;
-		const dailyRecOld = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyRecOld : 0;
-		const dailyDeath = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyDeath : 0;
-		const dailyDeathOld = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyDeathOld : 0;
-		const dailyTests = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyTests : 0;
-		const dailyTestsOld = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyTestsOld : 0;
-		const dailyActive = dailyPos && dailyDeath && dailyRec ? (dailyPos - (dailyDeath + dailyRec)) : 0;
-		const dailyActiveOld = dailyPosOld && dailyDeathOld && dailyRecOld ? (dailyPosOld - (dailyDeathOld + dailyRecOld)) : 0;
+		const totalCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].total) ? this.state.cardsData[cardsArrIndex].total : 0;
+		const deceasedCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].deceased) ? this.state.cardsData[cardsArrIndex].deceased : 0;
+		const recoveredCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].recovered) ? this.state.cardsData[cardsArrIndex].recovered : 0;
+		const activeCases = totalCases && deceasedCases && recoveredCases && !isNaN((totalCases - (deceasedCases + recoveredCases))) ? (totalCases - (deceasedCases + recoveredCases)) : 0;
+		const tests = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].tests) ? this.state.cardsData[cardsArrIndex].tests : 0;
+		const rt = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].rt) ? this.state.cardsData[cardsArrIndex].rt : 0;
+		const dbt = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dbt) ? this.state.cardsData[cardsArrIndex].dbt : 0;
+		const recoveryRate = recoveredCases && totalCases && !isNaN((recoveredCases/(recoveredCases + deceasedCases))*100) ? (recoveredCases/(recoveredCases + deceasedCases))*100 : 0;
+		const fatRate = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].cfr) ? this.state.cardsData[cardsArrIndex].cfr : 0;
+		const posRate = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].posRate) ? this.state.cardsData[cardsArrIndex].posRate : 0;
+		const dailyPos = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyPos) ? this.state.cardsData[cardsArrIndex].dailyPos : 0;
+		const dailyPosOld = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyPosOld) ? this.state.cardsData[cardsArrIndex].dailyPosOld : 0;
+		const dailyRec = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyRec) ? this.state.cardsData[cardsArrIndex].dailyRec : 0;
+		const dailyRecOld = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyRecOld) ? this.state.cardsData[cardsArrIndex].dailyRecOld : 0;
+		const dailyDeath = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyDeath) ? this.state.cardsData[cardsArrIndex].dailyDeath : 0;
+		const dailyDeathOld = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyDeathOld) ? this.state.cardsData[cardsArrIndex].dailyDeathOld : 0;
+		const dailyTests = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyTests) ? this.state.cardsData[cardsArrIndex].dailyTests : 0;
+		const dailyTestsOld = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyTestsOld) ? this.state.cardsData[cardsArrIndex].dailyTestsOld : 0;
+		const dailyActive = dailyPos && dailyDeath && dailyRec && !isNaN((dailyPos - (dailyDeath + dailyRec))) ? (dailyPos - (dailyDeath + dailyRec)) : 0;
+		const dailyActiveOld = dailyPosOld && dailyDeathOld && dailyRecOld && !isNaN((dailyPosOld - (dailyDeathOld + dailyRecOld))) ? (dailyPosOld - (dailyDeathOld + dailyRecOld)) : 0;
 
 		return (
 			<div>
