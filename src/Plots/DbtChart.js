@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 
-export default class RtChart extends Component {
+export default class DbtChart extends Component {
     constructor(props) {
         super(props);
       }
     render() {
-        const { minRtDataPoint, maxRtDataPoint, rtPointGraphData, lockdownDates, lockdownChartText } = this.props;
+        const { minDbtDataPoint, dbtGraphData, lockdownDates, lockdownChartText } = this.props;
         		return <Line
-        			data={rtPointGraphData}
+        			data={dbtGraphData}
         			height={300}
         			plugins={{
         				verticalLineAtIndex: lockdownDates,
@@ -62,9 +62,7 @@ export default class RtChart extends Component {
         					yAxes: [{
         						display: true,
         						ticks: {
-        						    max: 4,
-        							suggestedMin: minRtDataPoint,
-        							// suggestedMax: maxRtDataPoint,
+        							suggestedMin: minDbtDataPoint,
         							stepSize: 0.5
         						},
         					}],

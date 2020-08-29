@@ -41,13 +41,16 @@ import DailyTestsChart from ".././Plots/DailyTestsChart.js"
 import MobilityChart from ".././Plots/MobilityChart.js"
 import RtChart from ".././Plots/RtChart.js"
 import DailyCasesChart from ".././Plots/DailyCasesChart.js"
+import DbtChart from ".././Plots/DbtChart.js"
 import * as StateEnums from ".././Commons/StateEnums.js"
 import ComparisionChart from '.././Plots/ComparisionChart';
 import featured from ".././images/featured.png";
 import numbro from 'numbro';
-import upIcon from ".././images/up red.png"
-import downIcon from ".././images/down green.png"
-import yellowDash from ".././images/yellowDash.png"
+import upIcon from ".././images/up red.png";
+import downIcon from ".././images/down green.png";
+import yellowDash from ".././images/yellowDash.png";
+import greenUp from ".././images/greenUp.svg";
+import redDown from ".././images/redDown.png";
 
 export default class Dashboard extends Component {
 	constructor(props) {
@@ -150,9 +153,10 @@ export default class Dashboard extends Component {
 			allDistrictData: [],
 			minRtDataPoint: 0,
 			maxRtDataPoint: 0,
+			minDbtDataPoint: 0,
 			maxCFRPoint: 0,
 			lockdownDates: ["25 March", "15 April", "04 May", "18 May", "08 June", "01 July", "01 August"],
-			lockdownChartText: ['Lockdown 1', 'Lockdown 2', 'Lockdown 3', 'Lockdown 4', 'Unlock 1', 'Unlock 2', 'Unlock 3'],
+			lockdownChartText: ['LD 1', 'LD 2', 'LD 3', 'LD 4', 'Unlock 1', 'Unlock 2', 'Unlock 3'],
 			graphStartDate: '22 March',
 			rtPointGraphData: { datasets: [{ data: [] }], labels: [] },
 			cfrGraphData: { datasets: [{ data: [] }], labels: [] },
@@ -160,6 +164,7 @@ export default class Dashboard extends Component {
 			positivityRateGraphData: { datasets: [{ data: [] }], lables: [] },
 			dailyCasesGraphData: { datasets: [{ data: [] }], lables: [] },
 			dailyTestsGraphData: { datasets: [{ data: [] }], lables: [] },
+			dbtGraphData: { datasets: [{ data: [] }], labels: [] },
 			comparisionGraphData: { datasets: [{ data: [] }], lables: [] },
 			statesForComparision: ["Delhi", "Gujarat", "Punjab"],
 			objectsForComparision: '',
@@ -174,7 +179,7 @@ export default class Dashboard extends Component {
 				rtRenderer: RtRenderer,
 				cumPosRateRenderer: CumPosRateRenderer,
 				cumCasesRenderer: CumCasesRenderer,
-				TPMRenderer: TPMRenderer
+				TPMRenderer: TPMRenderer,
 			},
 			lastUpdatedTime: "",
 			cardsData: [],
@@ -300,6 +305,7 @@ export default class Dashboard extends Component {
         				this.getPositivityRateGraphData(this.state.allStateData.India);
                         this.getDailyCasesGraphData(this.state.allStateData.India);
                         this.getDailyTestsGraphData(this.state.allStateData.India);
+                        this.getDbtGraphData(this.state.allStateData.India);
                         this.getComparisionGraphData(this.state.allStateData, "daily_positive_cases");
         			});
 
@@ -810,7 +816,14 @@ export default class Dashboard extends Component {
 				backgroundColor: 'rgba(225, 105, 126,0.4)',
 				radius: 1,
 				fill: false,
-			},];
+			}, {
+             	type: 'line',
+             	label: 'Daily Tests Moving Average',
+             	data: dataFromApi.daily_tests_ma.slice(dateIndex, dataFromApi.dates.length),
+             	borderColor: '#004065',
+             	radius: 1,
+             	fill: false
+            }];
 			data.datasets.push(...mainData);
 			this.setState({
 				dailyTestsGraphData: data,
@@ -919,6 +932,66 @@ export default class Dashboard extends Component {
 			}, this.RtChartRender);
 		}
 	}
+
+	getDbtGraphData = (dataFromApi) => {
+    		if (dataFromApi) {
+    			let data = {
+    				datasets: [],
+    				labels: []
+    			};
+    			let dateIndex = dataFromApi.dates.indexOf(this.state.graphStartDate);
+    			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
+    			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
+
+    			let minDbtDataPoint = Math.floor(Math.min(...dataFromApi.dbt_l95.slice(dateIndex, dataFromApi.dates.length)));
+    			minDbtDataPoint = Math.min(minDbtDataPoint, 0.5);
+
+    			//Horizontal line
+    			let horizontalLineData = [];
+    			for (let i = 0; i < data.labels.length; i++) {
+    				horizontalLineData.push(1);
+    			}
+    			data.datasets.push({
+    				label: 'fixed value',
+    				data: horizontalLineData,
+    				borderColor: 'rgba(0,100,0,0.5)',
+    				borderWidth: 2,
+    				fill: false,
+    				radius: 0,
+    				hoverRadius: 0,
+    			});
+
+    			// Main data
+    			let mainData = [{
+    				label: 'DBT l95',
+    				data: dataFromApi.dbt_l95.slice(dateIndex, dataFromApi.dates.length),
+    				fill: '2',// + (verticalLineData.length + 2),
+    				backgroundColor: '#d3efff',
+    				borderWidth: 1,
+    				radius: 0,
+    				hoverRadius: 0,
+    			}, {
+    				label: 'DBT',
+    				data: dataFromApi.dbt_point.slice(dateIndex, dataFromApi.dates.length),
+    				radius: 1,
+    				borderColor: '#004065',
+    				fill: false
+    			}, {
+    				label: 'DBT u95',
+    				data: dataFromApi.dbt_u95.slice(dateIndex, dataFromApi.dates.length),
+    				fill: '-4',
+    				backgroundColor: '#d3efff',
+    				borderWidth: 1,
+    				radius: 0,
+    				hoverRadius: 0,
+    			}];
+    			data.datasets.push(...mainData);
+    			this.setState({
+    				dbtGraphData: data,
+    				minDbtDataPoint: minDbtDataPoint,
+    			}, this.DbtChartRender);
+    		}
+    	}
 
 	getCfrGraphData = (dataFromApi) => {
 		if (dataFromApi) {
@@ -1170,6 +1243,7 @@ export default class Dashboard extends Component {
 		this.getPositivityRateGraphData(this.state.allDataFromApi[state]);
 		this.getDailyCasesGraphData(this.state.allDataFromApi[state]);
 		this.getDailyTestsGraphData(this.state.allDataFromApi[state]);
+		this.getDbtGraphData(this.state.allDataFromApi[state]);
 		this.setState({ selectedState: state });
 	}
 
@@ -1182,6 +1256,7 @@ export default class Dashboard extends Component {
 		this.getCfrGraphData(this.state.allDataFromApi[stateName]);
 		this.getDailyCasesGraphData(this.state.allDataFromApi[stateName]);
 		this.getDailyTestsGraphData(this.state.allDataFromApi[stateName]);
+		this.getDbtGraphData(this.state.allDataFromApi[stateName]);
 	}
 
 		blog = ()=>{
@@ -1334,6 +1409,15 @@ export default class Dashboard extends Component {
 	    }
 	}
 
+	getCompareImageReverse = (value, valueOld) => {
+	    if(value > valueOld) {
+	        return greenUp;
+	    } else if(value < valueOld) {
+	        return redDown;
+	    } else {
+	        return yellowDash;
+	    }
+	}
 
 	render() {
 
@@ -1365,17 +1449,17 @@ export default class Dashboard extends Component {
 				<Popover.Content style={{ fontSize: popoverFont }}>
 					Rt is the average number of people infected by a single case at a particular time during the outbreak.<br />
 					Green line at Rt=1 below which epidemic is controlled.<br />
-					Dark band and light band show 50% and 95% confidence intervals respectively.
+					Light bands show 95% confidence intervals.
 				</Popover.Content>
 			</Popover>
 		);
 
-		const cfrPopover = (
-			<Popover id="cfr-popover" style={{ maxWidth: popoverMaxWidth }}>
-				<Popover.Title as="h3" style={{ fontSize: popoverFont }}>Corrected Case Fatality Rate (CFR)</Popover.Title>
+		const dbtPopover = (
+			<Popover id="dbt-popover" style={{ maxWidth: popoverMaxWidth }}>
+				<Popover.Title as="h3" style={{ fontSize: popoverFont }}>Doubling Time</Popover.Title>
 				<Popover.Content style={{ fontSize: popoverFont }}>
-					Out of every 100 COVID+ cases whose outcome is expected to be known, this many have passed away. Lower corrected CFR means better testing in general.
-					<br />The corrected CFR is naturally high early in the epidemic and indicates low testing at that time. <br />Interpret with caution where healthcare capacity is overwhelmed.
+					The total COVID+ cases doubles in this many days.<br/>
+					Light bands show 95% confidence intervals.
 				</Popover.Content>
 			</Popover>
 		);
@@ -1442,11 +1526,11 @@ export default class Dashboard extends Component {
 							<br/>
 						</div>
 
-						<this.blog/>
 						<this.DropdownRenderer />
 						<br/>
 					<div id="Summary">
 							<br/>
+							<this.blog/>
 							<br/>
 							{this.state.mobileView && <Container>
 								<Row>
@@ -1456,7 +1540,7 @@ export default class Dashboard extends Component {
 											    <span className="summary-card-heading-mobile">Confirmed </span><br/>
 											    <span className="summary-card-number-mobile">{numbro(totalCases).format({thousandSeparated: true})}</span><br/>
 											    <span className="summary-card-number-secondary-mobile">{numbro(dailyPos).format({thousandSeparated: true})}</span>
-											    <span><img src={this.getCompareImage(dailyPos, dailyPosOld)} className="cell-icon"/></span>
+											    <span><img src={upIcon} className="cell-icon"/></span>
 											</span>
 										</Card>
 									</Col>
@@ -1498,7 +1582,7 @@ export default class Dashboard extends Component {
 											    <span className="summary-card-heading-mobile">Recovered </span><br/>
 											    <span className="summary-card-number-mobile">{numbro(recoveredCases).format({thousandSeparated: true})}</span><br/>
 											    <span className="summary-card-number-secondary-mobile">{numbro(dailyRec).format({thousandSeparated: true})}</span>
-                                                <span><img src={this.getCompareImage(dailyRec, dailyRecOld)} className="cell-icon"/></span>
+                                                <span><img src={greenUp} className="cell-icon"/></span>
 											</span>
 										</Card>
 									</Col>
@@ -1519,7 +1603,7 @@ export default class Dashboard extends Component {
 											    <span className="summary-card-heading-mobile">Deaths </span><br/>
 											    <span className="summary-card-number-mobile">{numbro(deceasedCases).format({thousandSeparated: true})}</span><br/>
 											    <span className="summary-card-number-secondary-mobile">{numbro(dailyDeath).format({thousandSeparated: true})}</span>
-                                                <span><img src={this.getCompareImage(dailyDeath, dailyDeathOld)} className="cell-icon"/></span>
+                                                <span><img src={upIcon} className="cell-icon"/></span>
 											</span>
 										</Card>
 									</Col>
@@ -1540,7 +1624,7 @@ export default class Dashboard extends Component {
 											    <span className="summary-card-heading-mobile">Tests </span><br/>
 											    <span className="summary-card-number-mobile">{numbro(tests).format({thousandSeparated: true})}</span><br/>
 											    <span className="summary-card-number-secondary-mobile">{numbro(dailyTests).format({thousandSeparated: true})}</span>
-                                                <span><img src={this.getCompareImage(dailyTests, dailyTestsOld)} className="cell-icon"/></span>
+                                                <span><img src={greenUp} className="cell-icon"/></span>
 											</span>
 										</Card>
 									</Col>
@@ -1549,7 +1633,7 @@ export default class Dashboard extends Component {
                                     		<span style={{ fontSize: fontSizeDynamic }}>
                                     		    <span className="summary-card-heading-mobile">Test Positivity</span><br/>
                                     		    <span className="summary-card-number-mobile">{numbro(posRate).format({mantissa: 1})}%</span><br/>
-                                                <span className="summary-card-description-mobile">of tests are positive</span>
+                                                <span className="summary-card-description-mobile">of tests are positive (7 day)</span>
                                     		</span>
                                     	</Card>
                                     </Col>
@@ -1563,7 +1647,7 @@ export default class Dashboard extends Component {
                             				    <span className="summary-card-heading">Confirmed </span><br/>
                             				    <span className="summary-card-number">{numbro(totalCases).format({thousandSeparated: true})}</span><br/>
                                                 <span className="summary-card-number-secondary">{numbro(dailyPos).format({thousandSeparated: true})}</span>
-                                                <span><img src={this.getCompareImage(dailyPos, dailyPosOld)} className="cell-icon"/></span>
+                                                <span><img src={upIcon} className="cell-icon"/></span>
                             			    </span>
                             		    </Card>
                             		</Col>
@@ -1583,7 +1667,7 @@ export default class Dashboard extends Component {
                             			        <span className="summary-card-heading">Recovered </span><br/>
                             			        <span className="summary-card-number">{numbro(recoveredCases).format({thousandSeparated: true})}</span><br/>
                             			        <span className="summary-card-number-secondary">{numbro(dailyRec).format({thousandSeparated: true})}</span>
-                                                <span><img src={this.getCompareImage(dailyRec, dailyRecOld)} className="cell-icon"/></span>
+                                                <span><img src={greenUp} className="cell-icon"/></span>
                             				</span>
                             			</Card>
                             		</Col>
@@ -1593,7 +1677,7 @@ export default class Dashboard extends Component {
                             			        <span className="summary-card-heading">Deaths </span><br/>
                             			        <span className="summary-card-number">{numbro(deceasedCases).format({thousandSeparated: true})}</span><br/>
                             			        <span className="summary-card-number-secondary">{numbro(dailyDeath).format({thousandSeparated: true})}</span>
-                                                <span><img src={this.getCompareImage(dailyDeath, dailyDeathOld)} className="cell-icon"/></span>
+                                                <span><img src={upIcon} className="cell-icon"/></span>
                             				</span>
                             			</Card>
                             		</Col>
@@ -1603,7 +1687,7 @@ export default class Dashboard extends Component {
                             				    <span className="summary-card-heading">Tests </span><br/>
                             				    <span className="summary-card-number">{numbro(tests).format({thousandSeparated: true})}</span><br/>
                             				    <span className="summary-card-number-secondary">{numbro(dailyTests).format({thousandSeparated: true})}</span>
-                                                <span><img src={this.getCompareImage(dailyTests, dailyTestsOld)} className="cell-icon"/></span>
+                                                <span><img src={greenUp} className="cell-icon"/></span>
                             				</span>
                             			</Card>
                             		</Col>
@@ -1613,7 +1697,7 @@ export default class Dashboard extends Component {
                             			<Card className={"summary-card blue-card"}>
                             			    <span style={{ fontSize: fontSizeDynamic }}>
                             			        <span className="summary-card-heading">Reproduction No</span><br/>
-                            			        <span className="summary-card-description">Each covid+ spread it to</span><br/>
+                            			        <span className="summary-card-description">Each covid+ spreads it to</span><br/>
                             			        <span className="summary-card-number-rt">{rt}</span>
                             			        <span className="summary-card-number-rt"> persons</span>
                             				</span>
@@ -1651,13 +1735,17 @@ export default class Dashboard extends Component {
                             				<span style={{ fontSize: fontSizeDynamic }}>
                             				    <span className="summary-card-heading">Test Positivity</span><br/>
                             				    <span className="summary-card-number">{numbro(posRate).format({mantissa: 1})}%</span><br/>
-                            				    <span className="summary-card-description">of tests are positive</span>
+                            				    <span className="summary-card-description">of tests are positive (7 day)</span>
                             				</span>
                             			</Card>
                             		</Col>
                             	</Row>
                             </Container>}
 					</div>
+
+                    <div className={mobileView ? "featured-pic-container-mobile" : "featured-pic-container"}>
+                        <img src={featured} className="featured-pic"/>
+                    </div>
 						
 					<div id="Graph">
 								<div ref={this.plotsRef} className="sub-header-row mt-4">
@@ -1711,19 +1799,19 @@ export default class Dashboard extends Component {
 												</Card>
 											</Col>
 										</Row>
-										<div className="mt-2"></div>
-										{/* Mobility Graph */}
+										{/* DBT Graph */}
 										<Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Mobility Index (% change from pre-lockdown)
-													<OverlayTrigger placement="left" overlay={mobilityPopover}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Doubling Time (Days)
+													<OverlayTrigger placement="left" overlay={dbtPopover}>
 															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
 														</OverlayTrigger>
 													</h5>
-													<div className="mobilityGraph">
-														<MobilityChart
-															mobilityGraphData={this.state.mobilityGraphData}
+													<div className="dbt-graph">
+														<DbtChart
+														    minDbtDataPoint={this.state.minDbtDataPoint}
+															dbtGraphData={this.state.dbtGraphData}
 															lockdownDates={this.state.lockdownDates}
 															lockdownChartText={this.state.lockdownChartText}
 														/>
@@ -1776,35 +1864,30 @@ export default class Dashboard extends Component {
 												</Card>
 											</Col>
 										</Row>
-										<div className="mt-2"></div>
-										{/* CFR Graph */}
-										<Row>
+										{/* Mobility Graph */}
+										{!this.state.showDistricts && <Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Corrected Case Fatality Rate (%)
-													<OverlayTrigger placement="left" overlay={cfrPopover}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Mobility Index (% change from pre-lockdown)
+													<OverlayTrigger placement="left" overlay={mobilityPopover}>
 															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
 														</OverlayTrigger>
 													</h5>
-													<div className="cfr-graph">
-														<CfrChart
-															cfrGraphData={this.state.cfrGraphData}
+													<div className="mobilityGraph">
+														<MobilityChart
+															mobilityGraphData={this.state.mobilityGraphData}
 															lockdownDates={this.state.lockdownDates}
 															lockdownChartText={this.state.lockdownChartText}
-															maxCFRPoint={this.state.maxCFRPoint}
 														/>
 													</div>
 												</Card>
 											</Col>
-										</Row>
+										</Row>}
+										<div className="mt-2"></div>
 									</Col>
 								</Row>
 							</Container>
 					</div>
-
-                    <div className={mobileView ? "featured-pic-container-mobile" : "featured-pic-container"}>
-                        <img src={featured} className="featured-pic"/>
-                    </div>
 
 					<div id="Table">
 							<div className="sub-header-row mt-4">
