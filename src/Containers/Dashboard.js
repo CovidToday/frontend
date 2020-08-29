@@ -1360,7 +1360,7 @@ export default class Dashboard extends Component {
 			<span className="header-bar-text">
 				<span style={{ marginRight: "15px" }}>
 					<Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle" onClick={() => this.switchStateDistrict()}>
-						{this.state.showDistricts ? "Show State Data" : "Show District Data (Beta)"}
+						{this.state.showDistricts ? "Show State Data" : "Show District Data"}
 					</Button>
 				</span>
 			</span>
@@ -1881,7 +1881,7 @@ export default class Dashboard extends Component {
 										{!this.state.showDistricts && <Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Mobility Index (% change from pre-lockdown)
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Social Distancing (% mobility change)
 													<OverlayTrigger placement="left" overlay={mobilityPopover}>
 															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
 														</OverlayTrigger>
