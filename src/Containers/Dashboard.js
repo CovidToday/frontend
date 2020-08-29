@@ -9,7 +9,7 @@ import axios from 'axios';
 import { Line, Chart, Bar } from 'react-chartjs-2';
 import {
 	Container, Row, Col, Dropdown, Card, Tabs, Tab, Button, Popover, OverlayTrigger,
-	CardGroup, Accordion, ButtonToolbar
+	CardGroup, Accordion, ButtonToolbar, Alert
 } from 'react-bootstrap';
 import Header from ".././images/header.png"
 import Footer from ".././images/footer.jpg"
@@ -1538,6 +1538,9 @@ export default class Dashboard extends Component {
 						<this.DropdownRenderer />
 						<br />
 						<div id="Summary">
+							{this.state.showDistricts && <Alert variant="warning">
+								The functionality for districts is in Beta Version. We are working on improving the data.
+                            </Alert>}
 							<br />
 							<this.blog />
 							<br />
