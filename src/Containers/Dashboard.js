@@ -60,8 +60,8 @@ export default class Dashboard extends Component {
 		this.tableRef = React.createRef();
 
 		this.state = {
-			blogtitle:"",
-			blogdescription:"",
+			blogtitle: "",
+			blogdescription: "",
 			columnDefs: [
 				{
 					headerName: '', children: [
@@ -153,8 +153,9 @@ export default class Dashboard extends Component {
 			allDistrictData: [],
 			minRtDataPoint: 0,
 			maxRtDataPoint: 0,
-			minDbtDataPoint: 0,
+			maxDbtDatapoint: 0,
 			maxCFRPoint: 0,
+			maxPosRatePoint: 0,
 			lockdownDates: ["25 March", "15 April", "04 May", "18 May", "08 June", "01 July", "01 August"],
 			lockdownChartText: ['LD 1', 'LD 2', 'LD 3', 'LD 4', 'Unlock 1', 'Unlock 2', 'Unlock 3'],
 			graphStartDate: '22 March',
@@ -284,60 +285,60 @@ export default class Dashboard extends Component {
 
 
 	async setData() {
-        //RT
-	    await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/rt_graph.json')
-    				.then(response => {
-    					this.setState({ rtStateDataApi : response.data });
-    					this.setState({rtDataFromApi: this.state.rtStateDataApi});
-                        this.getRtPointGraphData(this.state.rtDataFromApi.TT);
-    				});
+		//RT
+		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/rt_graph.json')
+			.then(response => {
+				this.setState({ rtStateDataApi: response.data });
+				this.setState({ rtDataFromApi: this.state.rtStateDataApi });
+				this.getRtPointGraphData(this.state.rtDataFromApi.TT);
+			});
 
-        await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/rt_graph.json')
-                	.then(response => {
-                		this.setState({ rtDistrictDataApi : response.data });
-                	});
-        //OTHER METRICS
-    	await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/allmetrics_states.json')
-        			.then(response => {
-        				this.setState({ allStateData : response.data });
-        				this.setState({ allDataFromApi : response.data });
-        				this.getCfrGraphData(this.state.allStateData.India);
-        				this.getPositivityRateGraphData(this.state.allStateData.India);
-                        this.getDailyCasesGraphData(this.state.allStateData.India);
-                        this.getDailyTestsGraphData(this.state.allStateData.India);
-                        this.getDbtGraphData(this.state.allStateData.India);
-                        this.getComparisionGraphData(this.state.allStateData, "daily_positive_cases");
-        			});
+		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/rt_graph.json')
+			.then(response => {
+				this.setState({ rtDistrictDataApi: response.data });
+			});
+		//OTHER METRICS
+		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/allmetrics_states.json')
+			.then(response => {
+				this.setState({ allStateData: response.data });
+				this.setState({ allDataFromApi: response.data });
+				this.getCfrGraphData(this.state.allStateData.India);
+				this.getPositivityRateGraphData(this.state.allStateData.India);
+				this.getDailyCasesGraphData(this.state.allStateData.India);
+				this.getDailyTestsGraphData(this.state.allStateData.India);
+				this.getDbtGraphData(this.state.allStateData.India);
+				this.getComparisionGraphData(this.state.allStateData, "daily_positive_cases");
+			});
 
-        await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/allmetrics_districts.json')
-        			.then(response => {
-        				this.setState({ allDistrictData : response.data });
-        			});
-        //BLOG
+		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/allmetrics_districts.json')
+			.then(response => {
+				this.setState({ allDistrictData: response.data });
+			});
+		//BLOG
 		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Title.txt')
-				    .then(response => {
-					    this.setState({ blogtitle: response.data });
-					    if(response.data[0]!="#")
-					    this.setState({showblog : this.state.showblog +1});
-				    });
-			
+			.then(response => {
+				this.setState({ blogtitle: response.data });
+				if (response.data[0] != "#")
+					this.setState({ showblog: this.state.showblog + 1 });
+			});
+
 		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Description.txt')
-				    .then(response => {
-					    this.setState({ blogdescription: response.data });
-					    if(response.data[0]!="#")
-					    this.setState({showblog : this.state.showblog +1});
-				    });
+			.then(response => {
+				this.setState({ blogdescription: response.data });
+				if (response.data[0] != "#")
+					this.setState({ showblog: this.state.showblog + 1 });
+			});
 
 		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/mobility-index/india_mobility_indented.json')
-				    .then(response => {
-					    this.setState({ mobilityDataFromApi: response.data });
-					    this.getMobilityGraphData(this.state.mobilityDataFromApi.India);
-				    });
-		
+			.then(response => {
+				this.setState({ mobilityDataFromApi: response.data });
+				this.getMobilityGraphData(this.state.mobilityDataFromApi.India);
+			});
+
 		const lastUpdated = this.state.allStateData.datetime;
 		const timestamp = lastUpdated ? lastUpdated.split(":", 2).join(":") : "NA";
 		this.setState({ lastUpdatedTime: timestamp });
-		
+
 		this.setRowData();
 	}
 
@@ -419,9 +420,9 @@ export default class Dashboard extends Component {
 		const pinnedData = [];
 
 		const rtApi = this.state.showDistricts ? this.state.rtDistrictDataApi : this.state.rtStateDataApi;
-		this.setState({rtDataFromApi: rtApi});
+		this.setState({ rtDataFromApi: rtApi });
 		const allApi = this.state.showDistricts ? this.state.allDistrictData : this.state.allStateData;
-        		this.setState({allDataFromApi: allApi});
+		this.setState({ allDataFromApi: allApi });
 
 		if (rtApi && allApi && Object.keys(rtApi).length > 0 && Object.keys(allApi).length > 0) {
 			list && list.forEach(s => {
@@ -463,29 +464,29 @@ export default class Dashboard extends Component {
 					}
 				});
 				let cumDeceased;
-                let cumDeceasedDate;
-                posRateArr.forEach(data => {
-                	if (data[0] === name) {
-                		const indexCases = data[1].cum_deceased.slice().reverse().findIndex(i => i !== "");
-                		const countCases = data[1].cum_deceased.length - 1;
-                		const cumCasesIndex = indexCases >= 0 ? countCases - indexCases : indexCases;
-                		const cumulativeCasesFloat = data[1].cum_deceased[cumCasesIndex];
-                		cumDeceased = cumulativeCasesFloat && cumulativeCasesFloat !== "" ? cumulativeCasesFloat : "-";
-                		cumDeceasedDate = data[1].dates[cumCasesIndex];
-                	}
-                });
-                let cumRecovered;
-                let cumRecoveredDate;
-                posRateArr.forEach(data => {
-                	if (data[0] === name) {
-                		const indexCases = data[1].cum_recovered.slice().reverse().findIndex(i => i !== "");
-                		const countCases = data[1].cum_recovered.length - 1;
-                		const cumCasesIndex = indexCases >= 0 ? countCases - indexCases : indexCases;
-                		const cumulativeCasesFloat = data[1].cum_recovered[cumCasesIndex];
-                		cumRecovered = cumulativeCasesFloat && cumulativeCasesFloat !== "" ? cumulativeCasesFloat : "-";
-                		cumRecoveredDate = data[1].dates[cumCasesIndex];
-                	}
-                });
+				let cumDeceasedDate;
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexCases = data[1].cum_deceased.slice().reverse().findIndex(i => i !== "");
+						const countCases = data[1].cum_deceased.length - 1;
+						const cumCasesIndex = indexCases >= 0 ? countCases - indexCases : indexCases;
+						const cumulativeCasesFloat = data[1].cum_deceased[cumCasesIndex];
+						cumDeceased = cumulativeCasesFloat && cumulativeCasesFloat !== "" ? cumulativeCasesFloat : "-";
+						cumDeceasedDate = data[1].dates[cumCasesIndex];
+					}
+				});
+				let cumRecovered;
+				let cumRecoveredDate;
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexCases = data[1].cum_recovered.slice().reverse().findIndex(i => i !== "");
+						const countCases = data[1].cum_recovered.length - 1;
+						const cumCasesIndex = indexCases >= 0 ? countCases - indexCases : indexCases;
+						const cumulativeCasesFloat = data[1].cum_recovered[cumCasesIndex];
+						cumRecovered = cumulativeCasesFloat && cumulativeCasesFloat !== "" ? cumulativeCasesFloat : "-";
+						cumRecoveredDate = data[1].dates[cumCasesIndex];
+					}
+				});
 				let cumulativePosRate;
 				let cumPRateDate;
 				posRateArr.forEach(data => {
@@ -543,92 +544,94 @@ export default class Dashboard extends Component {
 				});
 
 				let cumTests;
-                let cumTestsDate;
-                posRateArr.forEach(data => {
-                	if (data[0] === name) {
-                		const indexTests = data[1].cum_tests.slice().reverse().findIndex(i => i !== "");
-                		const countTests = data[1].cum_tests.length - 1;
-                		const testsIndex = indexTests >= 0 ? countTests - indexTests : indexTests;
-                		const testsFloat = (data[1].cum_tests[testsIndex]);
-                		cumTests = testsFloat && testsFloat !== "" ? Math.floor(testsFloat) : "-";
-                		cumTestsDate = data[1].dates[testsIndex];
-                	}
-                });
+				let cumTestsDate;
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexTests = data[1].cum_tests.slice().reverse().findIndex(i => i !== "");
+						const countTests = data[1].cum_tests.length - 1;
+						const testsIndex = indexTests >= 0 ? countTests - indexTests : indexTests;
+						const testsFloat = (data[1].cum_tests[testsIndex]);
+						cumTests = testsFloat && testsFloat !== "" ? Math.floor(testsFloat) : "-";
+						cumTestsDate = data[1].dates[testsIndex];
+					}
+				});
 
-                let dbt;
-                let dbtDate;
-                posRateArr.forEach(data => {
-                     if (data[0] === name) {
-                        const indexDbt = data[1].dbt_point.slice().reverse().findIndex(i => i !== "");
-                        const countDbt = data[1].dbt_point.length - 1;
-                        const dbtIndex = indexDbt >= 0 ? countDbt - indexDbt : indexDbt;
-                        const dbtFloat = (data[1].dbt_point[dbtIndex]);
-                        dbt = dbtFloat && dbtFloat !== "" ? Math.floor(dbtFloat) : "-";
-                        dbtDate = data[1].dates[dbtIndex];
-                     }
-                });
+				let dbt;
+				let dbtDate;
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexDbt = data[1].dbt_point.slice().reverse().findIndex(i => i !== "");
+						const countDbt = data[1].dbt_point.length - 1;
+						const dbtIndex = indexDbt >= 0 ? countDbt - indexDbt : indexDbt;
+						const dbtFloat = (data[1].dbt_point[dbtIndex]);
+						dbt = dbtFloat && dbtFloat !== "" ? Math.floor(dbtFloat) : "-";
+						dbtDate = data[1].dates[dbtIndex];
+					}
+				});
 
-                let dailyPos;
-                let dailyPosOld;
-                posRateArr.forEach(data => {
-                     if (data[0] === name) {
-                        const indexDailyPos = data[1].daily_positive_cases.slice().reverse().findIndex(i => i !== "");
-                        const countDailyPos = data[1].daily_positive_cases.length - 1;
-                        const DailyPosIndex = indexDailyPos >= 0 ? countDailyPos - indexDailyPos : indexDailyPos;
-                        const DailyPosFloat = (data[1].daily_positive_cases[DailyPosIndex]);
-                        dailyPos = DailyPosFloat && DailyPosFloat !== "" ? Math.floor(DailyPosFloat) : "-";
-                        const DailyPosFloatOld = (data[1].daily_positive_cases[DailyPosIndex - 7]);
-                        dailyPosOld = DailyPosFloatOld && DailyPosFloatOld !== "" ? (DailyPosFloatOld).toFixed(2) : "NA";
-                     }
-                });
+				let dailyPos;
+				let dailyPosOld;
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexDailyPos = data[1].daily_positive_cases.slice().reverse().findIndex(i => i !== "");
+						const countDailyPos = data[1].daily_positive_cases.length - 1;
+						const DailyPosIndex = indexDailyPos >= 0 ? countDailyPos - indexDailyPos : indexDailyPos;
+						const DailyPosFloat = (data[1].daily_positive_cases[DailyPosIndex]);
+						dailyPos = DailyPosFloat && DailyPosFloat !== "" ? Math.floor(DailyPosFloat) : "-";
+						const DailyPosFloatOld = (data[1].daily_positive_cases[DailyPosIndex - 7]);
+						dailyPosOld = DailyPosFloatOld && DailyPosFloatOld !== "" ? (DailyPosFloatOld).toFixed(2) : "NA";
+					}
+				});
 
-                let dailyRec;
-                let dailyRecOld;
-                posRateArr.forEach(data => {
-                     if (data[0] === name) {
-                        const indexDailyRec = data[1].daily_recovered.slice().reverse().findIndex(i => i !== "");
-                        const countDailyRec = data[1].daily_recovered.length - 1;
-                        const DailyRecIndex = indexDailyRec >= 0 ? countDailyRec - indexDailyRec : indexDailyRec;
-                        const DailyRecFloat = (data[1].daily_recovered[DailyRecIndex]);
-                        dailyRec = DailyRecFloat && DailyRecFloat !== "" ? Math.floor(DailyRecFloat) : "-";
-                        const DailyRecFloatOld = (data[1].daily_recovered[DailyRecIndex - 7]);
-                        dailyRecOld = DailyRecFloatOld && DailyRecFloatOld !== "" ? (DailyRecFloatOld).toFixed(2) : "NA";
-                     }
-                });
+				let dailyRec;
+				let dailyRecOld;
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexDailyRec = data[1].daily_recovered.slice().reverse().findIndex(i => i !== "");
+						const countDailyRec = data[1].daily_recovered.length - 1;
+						const DailyRecIndex = indexDailyRec >= 0 ? countDailyRec - indexDailyRec : indexDailyRec;
+						const DailyRecFloat = (data[1].daily_recovered[DailyRecIndex]);
+						dailyRec = DailyRecFloat && DailyRecFloat !== "" ? Math.floor(DailyRecFloat) : "-";
+						const DailyRecFloatOld = (data[1].daily_recovered[DailyRecIndex - 7]);
+						dailyRecOld = DailyRecFloatOld && DailyRecFloatOld !== "" ? (DailyRecFloatOld).toFixed(2) : "NA";
+					}
+				});
 
-                let dailyDeath;
-                let dailyDeathOld;
-                posRateArr.forEach(data => {
-                     if (data[0] === name) {
-                        const indexDailyDeath = data[1].daily_deceased.slice().reverse().findIndex(i => i !== "");
-                        const countDailyDeath = data[1].daily_deceased.length - 1;
-                        const DailyDeathIndex = indexDailyDeath >= 0 ? countDailyDeath - indexDailyDeath : indexDailyDeath;
-                        const DailyDeathFloat = (data[1].daily_deceased[DailyDeathIndex]);
-                        dailyDeath = DailyDeathFloat && DailyDeathFloat !== "" ? Math.floor(DailyDeathFloat) : "-";
-                        const DailyDeathFloatOld = (data[1].daily_deceased[DailyDeathIndex - 7]);
-                        dailyDeathOld = DailyDeathFloatOld && DailyDeathFloatOld !== "" ? (DailyDeathFloatOld).toFixed(2) : "NA";
-                     }
-                });
+				let dailyDeath;
+				let dailyDeathOld;
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexDailyDeath = data[1].daily_deceased.slice().reverse().findIndex(i => i !== "");
+						const countDailyDeath = data[1].daily_deceased.length - 1;
+						const DailyDeathIndex = indexDailyDeath >= 0 ? countDailyDeath - indexDailyDeath : indexDailyDeath;
+						const DailyDeathFloat = (data[1].daily_deceased[DailyDeathIndex]);
+						dailyDeath = DailyDeathFloat && DailyDeathFloat !== "" ? Math.floor(DailyDeathFloat) : "-";
+						const DailyDeathFloatOld = (data[1].daily_deceased[DailyDeathIndex - 7]);
+						dailyDeathOld = DailyDeathFloatOld && DailyDeathFloatOld !== "" ? (DailyDeathFloatOld).toFixed(2) : "NA";
+					}
+				});
 
-                let dailyTests;
-                let dailyTestsOld;
-                posRateArr.forEach(data => {
-                     if (data[0] === name) {
-                        const indexDailyTests = data[1].daily_tests.slice().reverse().findIndex(i => i !== "");
-                        const countDailyTests = data[1].daily_tests.length - 1;
-                        const DailyTestsIndex = indexDailyTests >= 0 ? countDailyTests - indexDailyTests : indexDailyTests;
-                        const DailyTestsFloat = (data[1].daily_tests[DailyTestsIndex]);
-                        dailyTests = DailyTestsFloat && DailyTestsFloat !== "" ? Math.floor(DailyTestsFloat) : "-";
-                        const DailyTestsFloatOld = (data[1].daily_tests[DailyTestsIndex - 7]);
-                        dailyTestsOld = DailyTestsFloatOld && DailyTestsFloatOld !== "" ? (DailyTestsFloatOld).toFixed(2) : "NA";
-                     }
-                });
+				let dailyTests;
+				let dailyTestsOld;
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexDailyTests = data[1].daily_tests.slice().reverse().findIndex(i => i !== "");
+						const countDailyTests = data[1].daily_tests.length - 1;
+						const DailyTestsIndex = indexDailyTests >= 0 ? countDailyTests - indexDailyTests : indexDailyTests;
+						const DailyTestsFloat = (data[1].daily_tests[DailyTestsIndex]);
+						dailyTests = DailyTestsFloat && DailyTestsFloat !== "" ? Math.floor(DailyTestsFloat) : "-";
+						const DailyTestsFloatOld = (data[1].daily_tests[DailyTestsIndex - 7]);
+						dailyTestsOld = DailyTestsFloatOld && DailyTestsFloatOld !== "" ? (DailyTestsFloatOld).toFixed(2) : "NA";
+					}
+				});
 
-                infoData.push({key: s, state: name, total: cumCases, totalDate: cumCasesDate, recovered: cumRecovered,
-                recoveredDate: cumRecoveredDate, deceased: cumDeceased, deceasedDate: cumDeceasedDate, tests: cumTests,
-                testsDate: cumTestsDate, rt: rtData, rtDate: rtDate, dbt: dbt, dbtDate: dbtDate, cfr: cfrPoint2, posRate: maPosRate,
-                dailyPos: dailyPos, dailyPosOld: dailyPosOld, dailyRec: dailyRec, dailyRecOld: dailyRecOld,
-                dailyDeath: dailyDeath, dailyDeathOld: dailyDeathOld, dailyTests: dailyTests, dailyTestsOld: dailyTestsOld});
+				infoData.push({
+					key: s, state: name, total: cumCases, totalDate: cumCasesDate, recovered: cumRecovered,
+					recoveredDate: cumRecoveredDate, deceased: cumDeceased, deceasedDate: cumDeceasedDate, tests: cumTests,
+					testsDate: cumTestsDate, rt: rtData, rtDate: rtDate, dbt: dbt, dbtDate: dbtDate, cfr: cfrPoint2, posRate: maPosRate,
+					dailyPos: dailyPos, dailyPosOld: dailyPosOld, dailyRec: dailyRec, dailyRecOld: dailyRecOld,
+					dailyDeath: dailyDeath, dailyDeathOld: dailyDeathOld, dailyTests: dailyTests, dailyTestsOld: dailyTestsOld
+				});
 
 				data.push({
 					key: s, state: name, rt: rtData, cumCases: cumCases, dailyCases: dailyPos, posRate: maPosRate, cumPosRate: cumulativePosRate,
@@ -645,7 +648,7 @@ export default class Dashboard extends Component {
 			this.setState({ rowData: data })
 		}
 
-        //India data
+		//India data
 		const rtIndexInd = this.state.rtStateDataApi["TT"].rt_point.length - 1;
 		const rtPointInd = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_point[rtIndexInd]).toFixed(2) : "NA";
 		const rtl95Ind = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_l95[rtIndexInd]).toFixed(2) : "NA";
@@ -674,16 +677,16 @@ export default class Dashboard extends Component {
 		const cumCasesIndDate = posRateArrInd.dates[resultIndex];
 
 		const cumRecoveredIndIndex = posRateArrInd.cum_recovered.slice().reverse().findIndex(i => i !== "");
-        const cumRecoveredIndCount = posRateArrInd.cum_recovered.length - 1;
-        const recoveredIndex = cumRecoveredIndIndex >= 0 ? cumRecoveredIndCount - cumRecoveredIndIndex : cumRecoveredIndIndex;
-        const cumRecoveredInd = (posRateArrInd.cum_recovered[recoveredIndex]);
-        const cumRecoveredIndDate = posRateArrInd.dates[recoveredIndex];
+		const cumRecoveredIndCount = posRateArrInd.cum_recovered.length - 1;
+		const recoveredIndex = cumRecoveredIndIndex >= 0 ? cumRecoveredIndCount - cumRecoveredIndIndex : cumRecoveredIndIndex;
+		const cumRecoveredInd = (posRateArrInd.cum_recovered[recoveredIndex]);
+		const cumRecoveredIndDate = posRateArrInd.dates[recoveredIndex];
 
-        const cumDeceasedIndIndex = posRateArrInd.cum_deceased.slice().reverse().findIndex(i => i !== "");
-        const cumDeceasedIndCount = posRateArrInd.cum_deceased.length - 1;
-        const deceasedIndex = cumDeceasedIndIndex >= 0 ? cumDeceasedIndCount - cumDeceasedIndIndex : cumDeceasedIndIndex;
-        const cumDeceasedInd = (posRateArrInd.cum_deceased[deceasedIndex]);
-        const cumDeceasedIndDate = posRateArrInd.dates[deceasedIndex];
+		const cumDeceasedIndIndex = posRateArrInd.cum_deceased.slice().reverse().findIndex(i => i !== "");
+		const cumDeceasedIndCount = posRateArrInd.cum_deceased.length - 1;
+		const deceasedIndex = cumDeceasedIndIndex >= 0 ? cumDeceasedIndCount - cumDeceasedIndIndex : cumDeceasedIndIndex;
+		const cumDeceasedInd = (posRateArrInd.cum_deceased[deceasedIndex]);
+		const cumDeceasedIndDate = posRateArrInd.dates[deceasedIndex];
 
 		const indexInd = posRateArrInd.cum_positivity_rate.slice().reverse().findIndex(i => i !== "");
 		const countInd = posRateArrInd.cum_positivity_rate.length - 1;
@@ -712,16 +715,16 @@ export default class Dashboard extends Component {
 		const tpmIndDate = posRateArrInd.dates[tpmIndexInd];
 
 		const indexIndTests = posRateArrInd.cum_tests.slice().reverse().findIndex(i => i !== "");
-        const countIndTests = posRateArrInd.cum_tests.length - 1;
-        const testsIndexInd = indexIndTests >= 0 ? countIndTests - indexIndTests : indexIndTests;
-        const testsInd = Math.floor(posRateArrInd.cum_tests[testsIndexInd]);
-        const testsIndDate = posRateArrInd.dates[testsIndexInd];
+		const countIndTests = posRateArrInd.cum_tests.length - 1;
+		const testsIndexInd = indexIndTests >= 0 ? countIndTests - indexIndTests : indexIndTests;
+		const testsInd = Math.floor(posRateArrInd.cum_tests[testsIndexInd]);
+		const testsIndDate = posRateArrInd.dates[testsIndexInd];
 
-        const indexIndDbt = posRateArrInd.dbt_point.slice().reverse().findIndex(i => i !== "");
-        const countIndDbt = posRateArrInd.dbt_point.length - 1;
-        const dbtIndexInd = indexIndDbt >= 0 ? countIndDbt - indexIndDbt : indexIndDbt;
-        const dbtInd = Math.floor(posRateArrInd.dbt_point[dbtIndexInd]);
-        const dbtIndDate = posRateArrInd.dates[dbtIndexInd];
+		const indexIndDbt = posRateArrInd.dbt_point.slice().reverse().findIndex(i => i !== "");
+		const countIndDbt = posRateArrInd.dbt_point.length - 1;
+		const dbtIndexInd = indexIndDbt >= 0 ? countIndDbt - indexIndDbt : indexIndDbt;
+		const dbtInd = Math.floor(posRateArrInd.dbt_point[dbtIndexInd]);
+		const dbtIndDate = posRateArrInd.dates[dbtIndexInd];
 
 		const indexIndDailyPos = posRateArrInd.daily_positive_cases.slice().reverse().findIndex(i => i !== "");
 		const countIndDailyPos = posRateArrInd.daily_positive_cases.length - 1;
@@ -747,12 +750,14 @@ export default class Dashboard extends Component {
 		const DailyTestsInd = Math.floor(posRateArrInd.daily_tests[DailyTestsIndexInd]);
 		const DailyTestsIndOld = Math.floor(posRateArrInd.daily_tests[DailyTestsIndexInd - 7]);
 
-        infoData.push({key: "TT", state: "India", total: cumCasesInd, totalDate: cumCasesIndDate, recovered: cumRecoveredInd,
-                        recoveredDate: cumRecoveredIndDate, deceased: cumDeceasedInd, deceasedDate: cumDeceasedIndDate,
-                        tests: testsInd, testsDate: testsIndDate, rt: rtDataInd, rtDate: rtDate, dbt: dbtInd, dbtDate: dbtIndDate,
-                        cfr: cfrPointInd2, posRate: PosRateMaInd, dailyPos: DailyPosInd, dailyPosOld: DailyPosIndOld, dailyRec: DailyRecInd,
-                        dailyRecOld: DailyRecIndOld, dailyDeath: DailyDeathInd, dailyDeathOld: DailyDeathIndOld, dailyTests: DailyTestsInd,
-                        dailyTestsOld: DailyTestsIndOld});
+		infoData.push({
+			key: "TT", state: "India", total: cumCasesInd, totalDate: cumCasesIndDate, recovered: cumRecoveredInd,
+			recoveredDate: cumRecoveredIndDate, deceased: cumDeceasedInd, deceasedDate: cumDeceasedIndDate,
+			tests: testsInd, testsDate: testsIndDate, rt: rtDataInd, rtDate: rtDate, dbt: dbtInd, dbtDate: dbtIndDate,
+			cfr: cfrPointInd2, posRate: PosRateMaInd, dailyPos: DailyPosInd, dailyPosOld: DailyPosIndOld, dailyRec: DailyRecInd,
+			dailyRecOld: DailyRecIndOld, dailyDeath: DailyDeathInd, dailyDeathOld: DailyDeathIndOld, dailyTests: DailyTestsInd,
+			dailyTestsOld: DailyTestsIndOld
+		});
 
 		pinnedData.push({
 			key: "TT", state: "India", rt: rtDataInd, cumCases: cumCasesInd, dailyCases: DailyPosInd, posRate: PosRateMaInd, cumPosRate: cumulativePosRateInd,
@@ -761,7 +766,7 @@ export default class Dashboard extends Component {
 			testsPerMil: tpmInd, tpmDate: tpmIndDate
 		})
 		this.setState({ pinnedTopRowData: pinnedData });
-		this.setState({cardsData: infoData});
+		this.setState({ cardsData: infoData });
 	}
 
 	getDailyCasesGraphData = (dataFromApi) => {
@@ -780,7 +785,7 @@ export default class Dashboard extends Component {
 			let mainData = [{
 				label: 'Daily Cases',
 				data: dataFromApi.daily_positive_cases.slice(dateIndex, dataFromApi.dates.length),
-				borderColor: '#004065',
+				borderColor: 'rgba(0, 64, 101,0.1)',//'#004065',
 				radius: 1,
 			}, {
 				type: 'line',
@@ -813,17 +818,17 @@ export default class Dashboard extends Component {
 				label: 'Daily Tests',
 				data: dataFromApi.daily_tests.slice(dateIndex, dataFromApi.dates.length),
 				// borderColor: '#004065',
-				backgroundColor: 'rgba(225, 105, 126,0.4)',
+				backgroundColor: 'rgba(0, 64, 101,0.1)',
 				radius: 1,
 				fill: false,
 			}, {
-             	type: 'line',
-             	label: 'Daily Tests Moving Average',
-             	data: dataFromApi.daily_tests_ma.slice(dateIndex, dataFromApi.dates.length),
-             	borderColor: '#004065',
-             	radius: 1,
-             	fill: false
-            }];
+				type: 'line',
+				label: 'Daily Tests Moving Average',
+				data: dataFromApi.daily_tests_ma.slice(dateIndex, dataFromApi.dates.length),
+				borderColor: '#004065',
+				radius: 1,
+				fill: false
+			}];
 			data.datasets.push(...mainData);
 			this.setState({
 				dailyTestsGraphData: data,
@@ -841,8 +846,8 @@ export default class Dashboard extends Component {
 			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
 			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
 
-			// let maxRtDataPoint = Math.ceil(Math.max(...dataFromApi.rt_u95.slice(dateIndex, dataFromApi.dates.length)));
-			// maxRtDataPoint = Math.min(maxRtDataPoint,2.5);
+			let maxRtDataPoint = Math.ceil(Math.max(...dataFromApi.rt_u95.slice(dateIndex, dataFromApi.dates.length)));
+			maxRtDataPoint = Math.min(maxRtDataPoint, 4);
 			let minRtDataPoint = Math.floor(Math.min(...dataFromApi.rt_l95.slice(dateIndex, dataFromApi.dates.length)));
 			minRtDataPoint = Math.min(minRtDataPoint, 0.5);
 
@@ -927,71 +932,71 @@ export default class Dashboard extends Component {
 			data.datasets.push(...mainData);
 			this.setState({
 				rtPointGraphData: data,
-				// maxRtDataPoint: maxRtDataPoint,
+				maxRtDataPoint: maxRtDataPoint,
 				minRtDataPoint: minRtDataPoint,
 			}, this.RtChartRender);
 		}
 	}
 
 	getDbtGraphData = (dataFromApi) => {
-    		if (dataFromApi) {
-    			let data = {
-    				datasets: [],
-    				labels: []
-    			};
-    			let dateIndex = dataFromApi.dates.indexOf(this.state.graphStartDate);
-    			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
-    			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
+		if (dataFromApi) {
+			let data = {
+				datasets: [],
+				labels: []
+			};
+			let dateIndex = dataFromApi.dates.indexOf(this.state.graphStartDate);
+			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
+			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
 
-    			let minDbtDataPoint = Math.floor(Math.min(...dataFromApi.dbt_l95.slice(dateIndex, dataFromApi.dates.length)));
-    			minDbtDataPoint = Math.min(minDbtDataPoint, 0.5);
+			let maxDbtDatapoint = Math.floor(Math.max(...dataFromApi.dbt_u95.slice(dateIndex, dataFromApi.dates.length)));
+			maxDbtDatapoint = Math.min(maxDbtDatapoint, 100);
 
-    			//Horizontal line
-    			let horizontalLineData = [];
-    			for (let i = 0; i < data.labels.length; i++) {
-    				horizontalLineData.push(1);
-    			}
-    			data.datasets.push({
-    				label: 'fixed value',
-    				data: horizontalLineData,
-    				borderColor: 'rgba(0,100,0,0.5)',
-    				borderWidth: 2,
-    				fill: false,
-    				radius: 0,
-    				hoverRadius: 0,
-    			});
+			//Horizontal line
+			// let horizontalLineData = [];
+			// for (let i = 0; i < data.labels.length; i++) {
+			// 	horizontalLineData.push(1);
+			// }
+			// data.datasets.push({
+			// 	label: 'fixed value',
+			// 	data: horizontalLineData,
+			// 	borderColor: 'rgba(0,100,0,0.5)',
+			// 	borderWidth: 2,
+			// 	fill: false,
+			// 	radius: 0,
+			// 	hoverRadius: 0,
+			// });
 
-    			// Main data
-    			let mainData = [{
-    				label: 'DBT l95',
-    				data: dataFromApi.dbt_l95.slice(dateIndex, dataFromApi.dates.length),
-    				fill: '2',// + (verticalLineData.length + 2),
-    				backgroundColor: '#d3efff',
-    				borderWidth: 1,
-    				radius: 0,
-    				hoverRadius: 0,
-    			}, {
-    				label: 'DBT',
-    				data: dataFromApi.dbt_point.slice(dateIndex, dataFromApi.dates.length),
-    				radius: 1,
-    				borderColor: '#004065',
-    				fill: false
-    			}, {
-    				label: 'DBT u95',
-    				data: dataFromApi.dbt_u95.slice(dateIndex, dataFromApi.dates.length),
-    				fill: '-4',
-    				backgroundColor: '#d3efff',
-    				borderWidth: 1,
-    				radius: 0,
-    				hoverRadius: 0,
-    			}];
-    			data.datasets.push(...mainData);
-    			this.setState({
-    				dbtGraphData: data,
-    				minDbtDataPoint: minDbtDataPoint,
-    			}, this.DbtChartRender);
-    		}
-    	}
+			// Main data
+			let mainData = [{
+				label: 'DBT l95',
+				data: dataFromApi.dbt_l95.slice(dateIndex, dataFromApi.dates.length),
+				fill: '2',// + (verticalLineData.length + 2),
+				backgroundColor: '#d3efff',
+				borderWidth: 1,
+				radius: 0,
+				hoverRadius: 0,
+			}, {
+				label: 'DBT',
+				data: dataFromApi.dbt_point.slice(dateIndex, dataFromApi.dates.length),
+				radius: 1,
+				borderColor: '#004065',
+				fill: false
+			}, {
+				label: 'DBT u95',
+				data: dataFromApi.dbt_u95.slice(dateIndex, dataFromApi.dates.length),
+				fill: '-2',
+				backgroundColor: '#d3efff',
+				borderWidth: 1,
+				radius: 0,
+				hoverRadius: 0,
+			}];
+			data.datasets.push(...mainData);
+			this.setState({
+				dbtGraphData: data,
+				maxDbtDatapoint: maxDbtDatapoint,
+			}, this.DbtChartRender);
+		}
+	}
 
 	getCfrGraphData = (dataFromApi) => {
 		if (dataFromApi) {
@@ -1142,10 +1147,10 @@ export default class Dashboard extends Component {
 				labels: []
 			};
 			let dateIndex = api["India"] && api["India"].dates &&
-			    api["India"].dates.indexOf(this.state.graphStartDate);
+				api["India"].dates.indexOf(this.state.graphStartDate);
 			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
 			data.labels = api["India"] && api["India"].dates &&
-			    api["India"].dates.slice(dateIndex, api["India"].dates.length);
+				api["India"].dates.slice(dateIndex, api["India"].dates.length);
 
 
 			// Main data
@@ -1189,6 +1194,9 @@ export default class Dashboard extends Component {
 			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
 			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
 
+			let maxPosRatePoint = Math.ceil(Math.max(...dataFromApi.daily_positivity_rate_ma.slice(dateIndex, dataFromApi.daily_positivity_rate_ma.length)))
+			maxPosRatePoint = Math.min(75, maxPosRatePoint);
+
 			// Horizontal line
 			let horizontalLineData = [];
 			for (let i = 0; i < data.labels.length; i++) {
@@ -1229,6 +1237,7 @@ export default class Dashboard extends Component {
 			data.datasets.push(...mainData);
 			this.setState({
 				positivityRateGraphData: data,
+				maxPosRatePoint: maxPosRatePoint
 			});
 		}
 	}
@@ -1259,67 +1268,67 @@ export default class Dashboard extends Component {
 		this.getDbtGraphData(this.state.allDataFromApi[stateName]);
 	}
 
-		blog = ()=>{
-			let newText = this.state.blogdescription.split('\n').map(i => {
-				return <p style={{marginTop : "0px",marginBottom : "0px"}}>{i}</p>
-			});
-			console.log(this.state.showblog)
-			return(
+	blog = () => {
+		let newText = this.state.blogdescription.split('\n').map(i => {
+			return <p style={{ marginTop: "0px", marginBottom: "0px" }}>{i}</p>
+		});
+		console.log(this.state.showblog)
+		return (
 
-				<div>
+			<div>
 				{this.state.showblog === 2 && <>
-						<Card className={this.state.mobileView ? "blog-container-mobile text-center" : "blog-container text-center"}>
-							<Card.Body>
-								<Card.Title>{this.state.blogtitle}</Card.Title>
-								<Card.Text>{newText}</Card.Text>
-							</Card.Body>
-						</Card>
-						<br />
-						<br />
-						</>
+					<Card className={this.state.mobileView ? "blog-container-mobile text-center" : "blog-container text-center"}>
+						<Card.Body>
+							<Card.Title>{this.state.blogtitle}</Card.Title>
+							<Card.Text>{newText}</Card.Text>
+						</Card.Body>
+					</Card>
+					<br />
+					<br />
+				</>
 				}
-				</div>
-				
-			)
-		}
+			</div>
 
-    NavDropdown = ()=>{
-        return (
-            <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-dash" className="dropdown-dash">
-                <span><img src={menuIcon} style={{width : "40px"}}  className="quicklink-icon" /></span>
-                </Dropdown.Toggle>
-                <Dropdown.Menu id="dropdown-dash-menu">
-                <Dropdown.Item href="#Summary"><img src={summaryIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Summary</Dropdown.Item>
-                <Dropdown.Divider/>
-                <Dropdown.Item href="#Graph"><img src={graphIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }} />  Graph</Dropdown.Item>
-                <Dropdown.Divider/>
-                <Dropdown.Item href="#Table"><img src={tableIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Table</Dropdown.Item>
-                <Dropdown.Divider/>
-                {/*<Dropdown.Item href="#Map"><img src={mapIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Map</Dropdown.Item>
+		)
+	}
+
+	NavDropdown = () => {
+		return (
+			<Dropdown>
+				<Dropdown.Toggle variant="success" id="dropdown-dash" className="dropdown-dash">
+					<span><img src={menuIcon} style={{ width: "40px" }} className="quicklink-icon" /></span>
+				</Dropdown.Toggle>
+				<Dropdown.Menu id="dropdown-dash-menu">
+					<Dropdown.Item href="#Summary"><img src={summaryIcon} style={{ height: "25px", width: "25px", marginLeft: "-10px" }} />  Summary</Dropdown.Item>
+					<Dropdown.Divider />
+					<Dropdown.Item href="#Graph"><img src={graphIcon} style={{ height: "25px", width: "25px", marginLeft: "-10px" }} />  Graph</Dropdown.Item>
+					<Dropdown.Divider />
+					<Dropdown.Item href="#Table"><img src={tableIcon} style={{ height: "25px", width: "25px", marginLeft: "-10px" }} />  Table</Dropdown.Item>
+					<Dropdown.Divider />
+					{/*<Dropdown.Item href="#Map"><img src={mapIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Map</Dropdown.Item>
                 <Dropdown.Divider/>
                 <Dropdown.Item href="#Compare"><img src={compareIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Compare State</Dropdown.Item>
                 <Dropdown.Divider/>*/}
-                <Dropdown.Item href="#Analysis"><img src={analysisIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Analysis</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
+					<Dropdown.Item href="#Analysis"><img src={analysisIcon} style={{ height: "25px", width: "25px", marginLeft: "-10px" }} />  Analysis</Dropdown.Item>
+				</Dropdown.Menu>
+			</Dropdown>
 
-        )
-    }
+		)
+	}
 
-    compareArr = (a,b) => {
-        const itemA = a && a.state && a.state.toUpperCase();
-        const itemB = b && b.state && b.state.toUpperCase();
+	compareArr = (a, b) => {
+		const itemA = a && a.state && a.state.toUpperCase();
+		const itemB = b && b.state && b.state.toUpperCase();
 
-        let comparison = 0;
-        if(itemA > itemB){
-            comparison = 1;
-        } else if(itemA < itemB){
-            comparison = -1;
-        }
+		let comparison = 0;
+		if (itemA > itemB) {
+			comparison = 1;
+		} else if (itemA < itemB) {
+			comparison = -1;
+		}
 
-        return comparison;
-    }
+		return comparison;
+	}
 
 	DropdownRenderer = () => {
 		const fontSize = this.state.mobileView ? "x-small" : "smaller";
@@ -1327,11 +1336,11 @@ export default class Dashboard extends Component {
 		array.sort(this.compareArr);
 
 		return <div className="sub-header-row sticky-top">
-			<span className="header-bar-nav"><this.NavDropdown/></span>
+			<span className="header-bar-nav"><this.NavDropdown /></span>
 			{!this.state.mobileView &&
-			<span className="header-bar-text" style={{ fontSize: fontSize }}>
-			    Last Updated -{this.state.mobileView && <br />} {this.state.lastUpdatedTime}
-			</span>}
+				<span className="header-bar-text" style={{ fontSize: fontSize }}>
+					Last Updated -{this.state.mobileView && <br />} {this.state.lastUpdatedTime}
+				</span>}
 			<span className="header-bar-dropdown">
 				<Dropdown>
 					<Dropdown.Toggle variant="success" id="dropdown-basic" className="dropdown-state">
@@ -1342,28 +1351,28 @@ export default class Dashboard extends Component {
 						{!this.state.showDistricts && <Dropdown.Item onSelect={() => this.onStateSelect("TT")}>India</Dropdown.Item>}
 						{array.map((item) => {
 							return <Dropdown.Item onSelect={() => this.onStateSelect(item.key)}>
-							            {!this.state.showDistricts ? this.getName(item.key) : item.key}
-							       </Dropdown.Item>
+								{!this.state.showDistricts ? this.getName(item.key) : item.key}
+							</Dropdown.Item>
 						})}
 					</Dropdown.Menu>
 				</Dropdown>
 			</span>
 			<span className="header-bar-text">
 				<span style={{ marginRight: "15px" }}>
-				    <Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle" onClick={() => this.switchStateDistrict()}>
-                    				{this.state.showDistricts ? "Show State Data" : "Show District Data"}
-                    </Button>
+					<Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle" onClick={() => this.switchStateDistrict()}>
+						{this.state.showDistricts ? "Show State Data" : "Show District Data"}
+					</Button>
 				</span>
 			</span>
-			{!this.state.mobileView && <span className="header-bar-text"> 
+			{!this.state.mobileView && <span className="header-bar-text">
 			</span>}
 		</div>
 	}
 
 	async switchStateDistrict() {
-	    const {showDistricts} = this.state
-	    await this.setState({ showDistricts: !showDistricts });
-	    this.setRowData();
+		const { showDistricts } = this.state
+		await this.setState({ showDistricts: !showDistricts });
+		this.setRowData();
 	};
 
 	handleDivScroll = (event) => {
@@ -1400,23 +1409,23 @@ export default class Dashboard extends Component {
 	}
 
 	getCompareImage = (value, valueOld) => {
-	    if(value > valueOld) {
-	        return upIcon;
-	    } else if(value < valueOld) {
-	        return downIcon;
-	    } else {
-	        return yellowDash;
-	    }
+		if (value > valueOld) {
+			return upIcon;
+		} else if (value < valueOld) {
+			return downIcon;
+		} else {
+			return yellowDash;
+		}
 	}
 
 	getCompareImageReverse = (value, valueOld) => {
-	    if(value > valueOld) {
-	        return greenUp;
-	    } else if(value < valueOld) {
-	        return redDown;
-	    } else {
-	        return yellowDash;
-	    }
+		if (value > valueOld) {
+			return greenUp;
+		} else if (value < valueOld) {
+			return redDown;
+		} else {
+			return yellowDash;
+		}
 	}
 
 	render() {
@@ -1458,7 +1467,7 @@ export default class Dashboard extends Component {
 			<Popover id="dbt-popover" style={{ maxWidth: popoverMaxWidth }}>
 				<Popover.Title as="h3" style={{ fontSize: popoverFont }}>Doubling Time</Popover.Title>
 				<Popover.Content style={{ fontSize: popoverFont }}>
-					The total COVID+ cases doubles in this many days.<br/>
+					The total COVID+ cases doubles in this many days.<br />
 					Light bands show 95% confidence intervals.
 				</Popover.Content>
 			</Popover>
@@ -1490,7 +1499,7 @@ export default class Dashboard extends Component {
 		const licenceWidth = mobileView ? "45px" : "90px";
 		const licenceFont = mobileView ? "x-small" : "small";
 		const cardsArrIndex = this.state.cardsData && this.state.cardsData.length > 1 ?
-		    this.state.cardsData.findIndex(d => d.state === this.state.selectedState) : -1;
+			this.state.cardsData.findIndex(d => d.state === this.state.selectedState) : -1;
 
 		//summary card values
 		const totalCases = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].total : 0;
@@ -1500,7 +1509,7 @@ export default class Dashboard extends Component {
 		const tests = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].tests : 0;
 		const rt = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].rt : 0;
 		const dbt = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dbt : 0;
-		const recoveryRate = recoveredCases && totalCases ? (recoveredCases/(recoveredCases + deceasedCases))*100 : 0;
+		const recoveryRate = recoveredCases && totalCases ? (recoveredCases / (recoveredCases + deceasedCases)) * 100 : 0;
 		const fatRate = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].cfr : 0;
 		const posRate = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].posRate : 0;
 		const dailyPos = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].dailyPos : 0;
@@ -1517,39 +1526,39 @@ export default class Dashboard extends Component {
 		return (
 			<div>
 
-			{selectedView === "Home" && <>
-				<div className="App">
+				{selectedView === "Home" && <>
+					<div className="App">
 
 						<div className="home-text">
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicHeading }}>Tracking India's Progress Through The Coronavirus Pandemic, Today</div>
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicSH, fontWeight: "bolder" }}>Understanding Your State's Response Through Live Outbreak Indicators</div>
-							<br/>
+							<br />
 						</div>
 
 						<this.DropdownRenderer />
-						<br/>
-					<div id="Summary">
-							<br/>
-							<this.blog/>
-							<br/>
+						<br />
+						<div id="Summary">
+							<br />
+							<this.blog />
+							<br />
 							{this.state.mobileView && <Container>
 								<Row>
 									<Col className="mobile-summary-cards">
 										<Card className={"blue-card summary-card-mobile"} v>
 											<span style={{ fontSize: fontSizeDynamic }}>
-											    <span className="summary-card-heading-mobile">Confirmed </span><br/>
-											    <span className="summary-card-number-mobile">{numbro(totalCases).format({thousandSeparated: true})}</span><br/>
-											    <span className="summary-card-number-secondary-mobile">{numbro(dailyPos).format({thousandSeparated: true})}</span>
-											    <span><img src={upIcon} className="cell-icon"/></span>
+												<span className="summary-card-heading-mobile">Confirmed </span><br />
+												<span className="summary-card-number-mobile">{numbro(totalCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyPos).format({ thousandSeparated: true })}</span>
+												<span><img src={upIcon} className="cell-icon" /></span>
 											</span>
 										</Card>
 									</Col>
 									<Col className="mobile-summary-cards">
 										<Card className={"blue-card summary-card-mobile"} v>
 											<span style={{ fontSize: fontSizeDynamic }}>
-											    <span className="summary-card-heading-mobile">Reproduction No</span><br/>
-											    <span className="summary-card-description-mobile">Each covid+ spreads it to</span><br/>
-											    <span className="summary-card-number-mobile-rt">{rt} persons</span>
+												<span className="summary-card-heading-mobile">Reproduction No</span><br />
+												<span className="summary-card-description-mobile">Each covid+ spreads it to</span><br />
+												<span className="summary-card-number-mobile-rt">{rt} persons</span>
 											</span>
 										</Card>
 									</Col>
@@ -1558,19 +1567,19 @@ export default class Dashboard extends Component {
 									<Col className="mobile-summary-cards">
 										<Card className={"red-card summary-card-mobile"}>
 											<span style={{ fontSize: fontSizeDynamic }}>
-											    <span className="summary-card-heading-mobile">Active </span><br/>
-											    <span className="summary-card-number-mobile">{numbro(activeCases).format({thousandSeparated: true})}</span><br/>
-											    <span className="summary-card-number-secondary-mobile">{numbro(dailyActive).format({thousandSeparated: true})}</span>
-                                                <span><img src={this.getCompareImage(dailyActive, dailyActiveOld)} className="cell-icon"/></span>
+												<span className="summary-card-heading-mobile">Active </span><br />
+												<span className="summary-card-number-mobile">{numbro(activeCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyActive).format({ thousandSeparated: true })}</span>
+												<span><img src={this.getCompareImage(dailyActive, dailyActiveOld)} className="cell-icon" /></span>
 											</span>
 										</Card>
 									</Col>
 									<Col className="mobile-summary-cards">
 										<Card className={"red-card summary-card-mobile"}>
 											<span style={{ fontSize: fontSizeDynamic }}>
-											    <span className="summary-card-heading-mobile">Doubling Time</span><br/>
-											    <span className="summary-card-description-mobile">Total cases double in</span><br/>
-											    <span className="summary-card-number-mobile">{numbro(dbt).format({mantissa: 1})} days</span>
+												<span className="summary-card-heading-mobile">Doubling Time</span><br />
+												<span className="summary-card-description-mobile">Total cases double in</span><br />
+												<span className="summary-card-number-mobile">{numbro(dbt).format({ mantissa: 1 })} days</span>
 											</span>
 										</Card>
 									</Col>
@@ -1579,19 +1588,19 @@ export default class Dashboard extends Component {
 									<Col className="mobile-summary-cards">
 										<Card className={"green-card summary-card-mobile"}>
 											<span style={{ fontSize: fontSizeDynamic }}>
-											    <span className="summary-card-heading-mobile">Recovered </span><br/>
-											    <span className="summary-card-number-mobile">{numbro(recoveredCases).format({thousandSeparated: true})}</span><br/>
-											    <span className="summary-card-number-secondary-mobile">{numbro(dailyRec).format({thousandSeparated: true})}</span>
-                                                <span><img src={greenUp} className="cell-icon"/></span>
+												<span className="summary-card-heading-mobile">Recovered </span><br />
+												<span className="summary-card-number-mobile">{numbro(recoveredCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyRec).format({ thousandSeparated: true })}</span>
+												<span><img src={greenUp} className="cell-icon" /></span>
 											</span>
 										</Card>
 									</Col>
 									<Col className="mobile-summary-cards">
 										<Card className={"green-card summary-card-mobile"}>
 											<span style={{ fontSize: fontSizeDynamic }}>
-											    <span className="summary-card-heading-mobile">Recovery Rate</span><br/>
-											    <span className="summary-card-number-mobile">{numbro(recoveryRate).format({mantissa: 1})}%</span><br/>
-											    <span className="summary-card-description-mobile">of closed cases have recovered</span>
+												<span className="summary-card-heading-mobile">Recovery Rate</span><br />
+												<span className="summary-card-number-mobile">{numbro(recoveryRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description-mobile">of closed cases have recovered</span>
 											</span>
 										</Card>
 									</Col>
@@ -1600,19 +1609,19 @@ export default class Dashboard extends Component {
 									<Col className="mobile-summary-cards">
 										<Card className={"grey-card summary-card-mobile"}>
 											<span style={{ fontSize: fontSizeDynamic }}>
-											    <span className="summary-card-heading-mobile">Deaths </span><br/>
-											    <span className="summary-card-number-mobile">{numbro(deceasedCases).format({thousandSeparated: true})}</span><br/>
-											    <span className="summary-card-number-secondary-mobile">{numbro(dailyDeath).format({thousandSeparated: true})}</span>
-                                                <span><img src={upIcon} className="cell-icon"/></span>
+												<span className="summary-card-heading-mobile">Deaths </span><br />
+												<span className="summary-card-number-mobile">{numbro(deceasedCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyDeath).format({ thousandSeparated: true })}</span>
+												<span><img src={upIcon} className="cell-icon" /></span>
 											</span>
 										</Card>
 									</Col>
 									<Col className="mobile-summary-cards">
 										<Card className={"grey-card summary-card-mobile"}>
 											<span style={{ fontSize: fontSizeDynamic }}>
-											    <span className="summary-card-heading-mobile">Fatality Rate</span><br/>
-											    <span className="summary-card-number-mobile">{numbro(fatRate).format({mantissa: 1})}%</span><br/>
-                                                <span className="summary-card-description-mobile">of closed cases have died</span>
+												<span className="summary-card-heading-mobile">Fatality Rate</span><br />
+												<span className="summary-card-number-mobile">{numbro(fatRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description-mobile">of closed cases have died</span>
 											</span>
 										</Card>
 									</Col>
@@ -1621,136 +1630,136 @@ export default class Dashboard extends Component {
 									<Col className="mobile-summary-cards">
 										<Card className={"yellow-card summary-card-mobile"}>
 											<span style={{ fontSize: fontSizeDynamic }}>
-											    <span className="summary-card-heading-mobile">Tests </span><br/>
-											    <span className="summary-card-number-mobile">{numbro(tests).format({thousandSeparated: true})}</span><br/>
-											    <span className="summary-card-number-secondary-mobile">{numbro(dailyTests).format({thousandSeparated: true})}</span>
-                                                <span><img src={greenUp} className="cell-icon"/></span>
+												<span className="summary-card-heading-mobile">Tests </span><br />
+												<span className="summary-card-number-mobile">{numbro(tests).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyTests).format({ thousandSeparated: true })}</span>
+												<span><img src={greenUp} className="cell-icon" /></span>
 											</span>
 										</Card>
 									</Col>
-								    <Col className="mobile-summary-cards">
-                                    	<Card className={"yellow-card summary-card-mobile"}>
-                                    		<span style={{ fontSize: fontSizeDynamic }}>
-                                    		    <span className="summary-card-heading-mobile">Test Positivity</span><br/>
-                                    		    <span className="summary-card-number-mobile">{numbro(posRate).format({mantissa: 1})}%</span><br/>
-                                                <span className="summary-card-description-mobile">of tests are positive (7 day)</span>
-                                    		</span>
-                                    	</Card>
-                                    </Col>
+									<Col className="mobile-summary-cards">
+										<Card className={"yellow-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Test Positivity</span><br />
+												<span className="summary-card-number-mobile">{numbro(posRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description-mobile">of tests are positive (7 day)</span>
+											</span>
+										</Card>
+									</Col>
 								</Row>
 							</Container>}
 							{!this.state.mobileView && <Container>
-                            	<Row>
-                            		<Col className="summary-cards">
-                            			<Card className={"blue-card summary-card"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}>
-                            				    <span className="summary-card-heading">Confirmed </span><br/>
-                            				    <span className="summary-card-number">{numbro(totalCases).format({thousandSeparated: true})}</span><br/>
-                                                <span className="summary-card-number-secondary">{numbro(dailyPos).format({thousandSeparated: true})}</span>
-                                                <span><img src={upIcon} className="cell-icon"/></span>
-                            			    </span>
-                            		    </Card>
-                            		</Col>
-                            		<Col className="summary-cards">
-                            			<Card className={"red-card summary-card"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}>
-                            				    <span className="summary-card-heading">Active </span><br/>
-                            				    <span className="summary-card-number">{numbro(activeCases).format({thousandSeparated: true})}</span><br/>
-                            				    <span className="summary-card-number-secondary">{numbro(dailyActive).format({thousandSeparated: true})}</span>
-                                                <span><img src={this.getCompareImage(dailyActive, dailyActiveOld)} className="cell-icon"/></span>
-                            				</span>
-                            			</Card>
-                            		</Col>
-                            		<Col className="summary-cards">
-                            			<Card className={"green-card summary-card"}>
-                            			    <span style={{ fontSize: fontSizeDynamic }}>
-                            			        <span className="summary-card-heading">Recovered </span><br/>
-                            			        <span className="summary-card-number">{numbro(recoveredCases).format({thousandSeparated: true})}</span><br/>
-                            			        <span className="summary-card-number-secondary">{numbro(dailyRec).format({thousandSeparated: true})}</span>
-                                                <span><img src={greenUp} className="cell-icon"/></span>
-                            				</span>
-                            			</Card>
-                            		</Col>
-                            		<Col className="summary-cards">
-                            			<Card className={"grey-card summary-card"}>
-                            			    <span style={{ fontSize: fontSizeDynamic }}>
-                            			        <span className="summary-card-heading">Deaths </span><br/>
-                            			        <span className="summary-card-number">{numbro(deceasedCases).format({thousandSeparated: true})}</span><br/>
-                            			        <span className="summary-card-number-secondary">{numbro(dailyDeath).format({thousandSeparated: true})}</span>
-                                                <span><img src={upIcon} className="cell-icon"/></span>
-                            				</span>
-                            			</Card>
-                            		</Col>
-                            		<Col className="summary-cards">
-                            			<Card className={"yellow-card summary-card"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}>
-                            				    <span className="summary-card-heading">Tests </span><br/>
-                            				    <span className="summary-card-number">{numbro(tests).format({thousandSeparated: true})}</span><br/>
-                            				    <span className="summary-card-number-secondary">{numbro(dailyTests).format({thousandSeparated: true})}</span>
-                                                <span><img src={greenUp} className="cell-icon"/></span>
-                            				</span>
-                            			</Card>
-                            		</Col>
-                            	</Row>
-                            	<Row>
-                            		<Col className="summary-cards">
-                            			<Card className={"summary-card blue-card"}>
-                            			    <span style={{ fontSize: fontSizeDynamic }}>
-                            			        <span className="summary-card-heading">Reproduction No</span><br/>
-                            			        <span className="summary-card-description">Each covid+ spreads it to</span><br/>
-                            			        <span className="summary-card-number-rt">{rt}</span>
-                            			        <span className="summary-card-number-rt"> persons</span>
-                            				</span>
-                            			</Card>
-                            		</Col>
-                            		<Col className="summary-cards">
-                            			<Card className={"summary-card red-card"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}>
-                            				    <span className="summary-card-heading">Doubling Time</span><br/>
-                            				    <span className="summary-card-description">Total cases double in</span><br/>
-                            				    <span className="summary-card-number">{numbro(dbt).format({mantissa: 1})} days</span>
-                            			    </span>
-                            			</Card>
-                            		</Col>
-                            		<Col className="summary-cards">
-                            			<Card className={"summary-card green-card"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}>
-                            				    <span className="summary-card-heading">Recovery Rate</span><br/>
-                            				    <span className="summary-card-number">{numbro(recoveryRate).format({mantissa: 1})}%</span><br/>
-                            				    <span className="summary-card-description">of closed cases have recovered</span>
-                            				</span>
-                            			</Card>
-                            		</Col>
-                            		<Col className="summary-cards">
-                            			<Card className={"summary-card grey-card"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}>
-                            				    <span className="summary-card-heading">Fatality Rate</span><br/>
-                            				    <span className="summary-card-number">{numbro(fatRate).format({mantissa: 1})}%</span><br/>
-                            				    <span className="summary-card-description">of closed cases have died</span>
-                            				</span>
-                            			</Card>
-                            		</Col>
-                            	    <Col className="summary-cards">
-                            			<Card className={"summary-card yellow-card"}>
-                            				<span style={{ fontSize: fontSizeDynamic }}>
-                            				    <span className="summary-card-heading">Test Positivity</span><br/>
-                            				    <span className="summary-card-number">{numbro(posRate).format({mantissa: 1})}%</span><br/>
-                            				    <span className="summary-card-description">of tests are positive (7 day)</span>
-                            				</span>
-                            			</Card>
-                            		</Col>
-                            	</Row>
-                            </Container>}
-					</div>
+								<Row>
+									<Col className="summary-cards">
+										<Card className={"blue-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Confirmed </span><br />
+												<span className="summary-card-number">{numbro(totalCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyPos).format({ thousandSeparated: true })}</span>
+												<span><img src={upIcon} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"red-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Active </span><br />
+												<span className="summary-card-number">{numbro(activeCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyActive).format({ thousandSeparated: true })}</span>
+												<span><img src={this.getCompareImage(dailyActive, dailyActiveOld)} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"green-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Recovered </span><br />
+												<span className="summary-card-number">{numbro(recoveredCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyRec).format({ thousandSeparated: true })}</span>
+												<span><img src={greenUp} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"grey-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Deaths </span><br />
+												<span className="summary-card-number">{numbro(deceasedCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyDeath).format({ thousandSeparated: true })}</span>
+												<span><img src={upIcon} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"yellow-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Tests </span><br />
+												<span className="summary-card-number">{numbro(tests).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyTests).format({ thousandSeparated: true })}</span>
+												<span><img src={greenUp} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+								<Row>
+									<Col className="summary-cards">
+										<Card className={"summary-card blue-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Reproduction No</span><br />
+												<span className="summary-card-description">Each covid+ spreads it to</span><br />
+												<span className="summary-card-number-rt">{rt}</span>
+												<span className="summary-card-number-rt"> persons</span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"summary-card red-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Doubling Time</span><br />
+												<span className="summary-card-description">Total cases double in</span><br />
+												<span className="summary-card-number">{numbro(dbt).format({ mantissa: 1 })} days</span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"summary-card green-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Recovery Rate</span><br />
+												<span className="summary-card-number">{numbro(recoveryRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description">of closed cases have recovered</span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"summary-card grey-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Fatality Rate</span><br />
+												<span className="summary-card-number">{numbro(fatRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description">of closed cases have died</span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"summary-card yellow-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Test Positivity</span><br />
+												<span className="summary-card-number">{numbro(posRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description">of tests are positive (7 day)</span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+							</Container>}
+						</div>
 
-                    <div className={mobileView ? "featured-pic-container-mobile" : "featured-pic-container"}>
-                        <img src={featured} className="featured-pic"/>
-                    </div>
-						
-					<div id="Graph">
-								<div ref={this.plotsRef} className="sub-header-row mt-4">
-                                    <span className="header-bar-text">GRAPHICAL REPRESENTATION</span>
-                                </div>
+						<div className={mobileView ? "featured-pic-container-mobile" : "featured-pic-container"}>
+							<img src={featured} className="featured-pic" />
+						</div>
+
+						<div id="Graph">
+							<div ref={this.plotsRef} className="sub-header-row mt-4">
+								<span className="header-bar-text">GRAPHICAL REPRESENTATION</span>
+							</div>
 
 							<Container>
 								<Row>
@@ -1810,7 +1819,7 @@ export default class Dashboard extends Component {
 													</h5>
 													<div className="dbt-graph">
 														<DbtChart
-														    minDbtDataPoint={this.state.minDbtDataPoint}
+															maxDbtDatapoint={this.state.maxDbtDatapoint}
 															dbtGraphData={this.state.dbtGraphData}
 															lockdownDates={this.state.lockdownDates}
 															lockdownChartText={this.state.lockdownChartText}
@@ -1859,6 +1868,7 @@ export default class Dashboard extends Component {
 															lockdownDates={this.state.lockdownDates}
 															lockdownChartText={this.state.lockdownChartText}
 															positivityRateGraphData={positivityRateGraphData}
+															maxPosRatePoint={this.state.maxPosRatePoint}
 														/>
 													</div>
 												</Card>
@@ -1887,9 +1897,9 @@ export default class Dashboard extends Component {
 									</Col>
 								</Row>
 							</Container>
-					</div>
+						</div>
 
-					<div id="Table">
+						<div id="Table">
 							<div className="sub-header-row mt-4">
 								<span className="header-bar-text">LATEST STATEWISE DATA</span>
 							</div>
@@ -1920,10 +1930,10 @@ export default class Dashboard extends Component {
 											Understand what the parameters mean
 											<a className="link-text" style={{ color: "blue" }} onClick={this.handleDivScroll}> here</a>.<br />
 											Raw data sources and detailed method of calculation
-											<a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
-                                                                                                       	e.preventDefault();
-                                                                                                       	window.location = "https://www.covidtoday.in/methods"
-                                                                                                        }}> here</a>.
+											<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+														e.preventDefault();
+														window.location = "https://www.covidtoday.in/methods"
+													}}> here</a>.
 										</div>
 											</Card.Body>
 										</Accordion.Collapse>
@@ -1949,9 +1959,9 @@ export default class Dashboard extends Component {
 										onSelectionChanged={this.onSelectionChanged.bind(this)} />
 								</div>
 							</Container>
-					</div>
-				
-					{/*<div id="Map">
+						</div>
+
+						{/*<div id="Map">
 						<h1>MAP</h1>
 					</div>
 
@@ -2023,54 +2033,54 @@ export default class Dashboard extends Component {
 							</Row>
 						</Container>
 					</div>*/}
-						
-					<div id="Analysis">									
-						<div className="sub-header-row mt-4">
-							<span className="header-bar-text">KNOW ABOUT THE INDICATORS</span>
-						</div>
 
-						<div className="home-text" ref={this.textDivRef}>
-							<IndicatorDescriptionCards fontSize={fontSizeDynamic} />
-						</div>
-						<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
-							<a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
-                                                                                       		e.preventDefault();
-                                                                                       		window.location = "https://www.covidtoday.in/methods"
-                                                                                       	    }}> Methods</a> page.
+						<div id="Analysis">
+							<div className="sub-header-row mt-4">
+								<span className="header-bar-text">KNOW ABOUT THE INDICATORS</span>
+							</div>
+
+							<div className="home-text" ref={this.textDivRef}>
+								<IndicatorDescriptionCards fontSize={fontSizeDynamic} />
+							</div>
+							<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
+							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+									e.preventDefault();
+									window.location = "https://www.covidtoday.in/methods"
+								}}> Methods</a> page.
 							Caution should be used in interpretation as the transmission and testing indicators are not entirely independent, and one may affect the other.
 							We use best practices in all calculations, however some inadvertent errors may creep in despite our efforts.
-							<a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
-                                                                                       		e.preventDefault();
-                                                                                       	    window.location = "https://www.covidtoday.in/contribute"
-                                                                                       		}}> Report an error.</a></div>
+							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+									e.preventDefault();
+									window.location = "https://www.covidtoday.in/contribute"
+								}}> Report an error.</a></div>
 
-						<LinkButtons fontSize={fontSizeDynamic} />
+							<LinkButtons fontSize={fontSizeDynamic} />
 
-						<div class="wrapper"><div class="divider div-transparent" style={{ marginTop: "10px" }}></div></div>
-						<div className="for-the-people">
-							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamic }}>For The People, By The People</div>
-							<div className="for-the-people-text" style={{ fontSize: fontSizeDynamic }}>COVID TODAY is an initiative by iCART, a multidisciplinary volunteer team of passionate doctors,
-							researchers, coders, and public health experts from institutes across India.
-							<a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
-                                                                                            e.preventDefault();
-                                                                                       		window.location = "https://www.covidtoday.in/aboutUs"
-                                                                                       		}}> Learn more about the team</a>. This pandemic demands everyone to
+							<div class="wrapper"><div class="divider div-transparent" style={{ marginTop: "10px" }}></div></div>
+							<div className="for-the-people">
+								<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamic }}>For The People, By The People</div>
+								<div className="for-the-people-text" style={{ fontSize: fontSizeDynamic }}>COVID TODAY is an initiative by iCART, a multidisciplinary volunteer team of passionate doctors,
+								researchers, coders, and public health experts from institutes across India.
+							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+										e.preventDefault();
+										window.location = "https://www.covidtoday.in/aboutUs"
+									}}> Learn more about the team</a>. This pandemic demands everyone to
 							come together so that we can gradually move towards a new normal in the coming months while ensuring those who are vulnerable are protected.
 							We envisage this platform to grow with your contribution and we welcome anyone who can contribute meaningfully to the project. Head over to
-							the <a className="link-text" style={{ color: "blue" }} onClick={ (e) => {
-                                                                                           	e.preventDefault();
-                                                                                           	window.location = "https://www.covidtoday.in/contribute"
-                                                                                           	}}>Contribute </a>page to see how you can pitch in.
+							the <a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+										e.preventDefault();
+										window.location = "https://www.covidtoday.in/contribute"
+									}}>Contribute </a>page to see how you can pitch in.
+							</div>
 							</div>
 						</div>
 					</div>
-				</div>
 				</>}
 				<div className="footer-pic-container">
-					<img src={Footer} className="footer-pic" onClick={ (e) => {
-					        e.preventDefault();
-					        window.location = "https://www.covidtoday.in/aboutUs"
-					    }} />
+					<img src={Footer} className="footer-pic" onClick={(e) => {
+						e.preventDefault();
+						window.location = "https://www.covidtoday.in/aboutUs"
+					}} />
 				</div>
 				<Licence font={licenceFont} width={licenceWidth} />
 			</div>
