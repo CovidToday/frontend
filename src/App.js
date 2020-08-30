@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Match, Switch } from 'react-router-dom';
 import Dashboard from './Containers/Dashboard';
 import About from './Containers/About';
 import Contribute from './Containers/Contribute';
@@ -41,11 +41,11 @@ export default class App extends Component {
             	</span>
             </div>
 				<Switch>
-                    <Route exact path="/" component={Dashboard} />
-                    <Route path="/methods" component={Methods} />
-                    <Route path="/contribute" component={Contribute} />
-                    <Route path="/aboutUs" component={About} />
-                    <Route component={Dashboard} />
+                    <Match exact path="/" component={Dashboard} />
+                    <Match path="/methods" component={Methods} />
+                    <Match path="/contribute" component={Contribute} />
+                    <Match path="/aboutUs" component={About} />
+                    <Match component={Dashboard} />
                 </Switch>
             </BrowserRouter>
 			</div>
