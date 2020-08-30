@@ -47,7 +47,7 @@ export default class App extends Component {
                     <Route path="/methods" component={Methods} />
                     <Route path="/contribute" component={Contribute} />
                     <Route path="/aboutUs" component={About} />
-                    <Route component={Error} />
+                    <Route component={Dashboard} />
                 </Switch>
             </BrowserRouter>
 			</div>
