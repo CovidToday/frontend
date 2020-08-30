@@ -3,13 +3,11 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Dashboard from './Containers/Dashboard';
 import About from './Containers/About';
 import Contribute from './Containers/Contribute';
-import Error from './Containers/Error';
 import Methods from './Containers/Methods';
 import { Button, Nav } from 'react-bootstrap';
 import Header from "./images/header.png";
 
 export default class App extends Component {
-
 	render() {
 	    const mobileView = window.innerWidth <= '1000';
 	    const tabFontSize = window.innerWidth > '1058' ? "larger" : window.innerWidth > '1028' ? "large" : window.innerWidth > '1000' ? "medium" :
