@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Dashboard from './Containers/Dashboard';
 import About from './Containers/About';
 import Contribute from './Containers/Contribute';
@@ -8,17 +8,13 @@ import { Button, Nav } from 'react-bootstrap';
 import Header from "./images/header.png";
 
 export default class App extends Component {
-    constructor(props) {
-        super(props);
-      }
-
 	render() {
 	    const mobileView = window && window.innerWidth <= '1000';
 	    const tabFontSize = window && window.innerWidth > '1058' ? "larger" : window && window.innerWidth > '1028' ? "large" :
 	        window && window.innerWidth > '1000' ? "medium" : window && window.innerWidth > '500' ? "large" : "small";
 		return (
 			<div>
-
+			<BrowserRouter>
 			<div>
             	<span className={mobileView ? "header-pic-container-mobile" : "header-pic-container"}>
             		<img src={Header} className={mobileView ? "header-pic-mobile" : "header-pic"} />
@@ -42,14 +38,16 @@ export default class App extends Component {
             		</span>
             	</span>
             	<span>
-            	    <Dashboard />
-            	    <About />
-            	    <Methods />
-            	    <Contribute />
             	</span>
             </div>
-
-
+				<Switch>
+                    <Route exact path="/" ><Dashboard /> </Route>
+                    <Route path="/methods" ><Methods /> </Route>
+                    <Route path="/contribute" ><Contribute /> </Route>
+                    <Route path="/aboutUs" ><About /> </Route>
+                    <Route ><Dashboard /> </Route>
+                </Switch>
+            </BrowserRouter>
 			</div>
 
 		);
