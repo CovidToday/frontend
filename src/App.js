@@ -9,9 +9,9 @@ import Header from "./images/header.png";
 
 export default class App extends Component {
 	render() {
-	    const mobileView = window.innerWidth <= '1000';
-	    const tabFontSize = window.innerWidth > '1058' ? "larger" : window.innerWidth > '1028' ? "large" : window.innerWidth > '1000' ? "medium" :
-        			window.innerWidth > '500' ? "large" : "small";
+	    const mobileView = window && window.innerWidth <= '1000';
+	    const tabFontSize = window && window.innerWidth > '1058' ? "larger" : window && window.innerWidth > '1028' ? "large" :
+	        window && window.innerWidth > '1000' ? "medium" : window && window.innerWidth > '500' ? "large" : "small";
 		return (
 			<div>
 			<BrowserRouter>
