@@ -285,7 +285,7 @@ export default class Dashboard extends Component {
 
 
 	async setData() {
-		//RT
+
 		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/rt_graph.json')
 			.then(response => {
 				this.setState({ rtStateDataApi: response.data });
@@ -297,7 +297,7 @@ export default class Dashboard extends Component {
 			.then(response => {
 				this.setState({ rtDistrictDataApi: response.data });
 			});
-		//OTHER METRICS
+
 		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/allmetrics_states.json')
 			.then(response => {
 				this.setState({ allStateData: response.data });
@@ -314,7 +314,7 @@ export default class Dashboard extends Component {
 			.then(response => {
 				this.setState({ allDistrictData: response.data });
 			});
-		//BLOG
+
 		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Title.txt')
 			.then(response => {
 				this.setState({ blogtitle: response.data });
@@ -365,7 +365,7 @@ export default class Dashboard extends Component {
 	configureVerticalLinesPlugin() {
 		const verticalLinePlugin = {
 			getLinePosition: function (chart, pointIndex) {
-				const meta = chart.getDatasetMeta(0); // first dataset is used to discover X coordinate of a point
+				const meta = chart.getDatasetMeta(0);
 				const data = meta.data;
 				if (data[pointIndex])
 					return data[pointIndex]._model.x;
@@ -375,14 +375,14 @@ export default class Dashboard extends Component {
 				const scale = chartInstance.scales['y-axis-0'];
 				const context = chartInstance.chart.ctx;
 
-				// render vertical line
+
 				context.beginPath();
 				context.strokeStyle = 'rgb(0,64,101,0.3)';
 				context.moveTo(lineLeftOffset, scale.top);
 				context.lineTo(lineLeftOffset, scale.bottom);
 				context.stroke();
 
-				// write label
+
 				context.fillStyle = "#004065";
 				context.textAlign = 'left';
 				context.font = '11px "Titillium Web"';
@@ -428,7 +428,7 @@ export default class Dashboard extends Component {
 			list && list.forEach(s => {
 				const name = !this.state.showDistricts ? this.getName(s) : s;
 
-				//rt
+
 				const rtIndex = rtApi[s] ? rtApi[s].rt_point.length - 1 : -1;
 				const rtPoint = rtIndex > 0 ? (rtApi[s].rt_point[rtIndex]).toFixed(2) : "NA";
 				const rtl95 = rtIndex > 0 ? (rtApi[s].rt_l95[rtIndex]).toFixed(2) : "NA";
@@ -442,14 +442,14 @@ export default class Dashboard extends Component {
 				}
 				const rtData = rtPoint === "NA" ? "NA" : `${rtPoint} (${rtl95}-${rtu95})`;
 
-				//cfr
+
 				const cfrIndex = allApi[name] ? allApi[name].cfr3_point.length - 1 : -1;
 				const cfrPoint = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex]).toFixed(2) : "NA";
 				const cfrPointOld = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex - 7]).toFixed(2) : "NA";
 				const cfrDate = cfrIndex > 0 ? allApi[name].dates[cfrIndex] : "-";
 				const cfrPoint2 = cfrIndex > 0 ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
 
-				//posRate
+
 				const posRateArr = Object.entries(allApi);
 				let cumCases;
 				let cumCasesDate;
@@ -648,7 +648,7 @@ export default class Dashboard extends Component {
 			this.setState({ rowData: data })
 		}
 
-		//India data
+
 		const rtIndexInd = this.state.rtStateDataApi["TT"].rt_point.length - 1;
 		const rtPointInd = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_point[rtIndexInd]).toFixed(2) : "NA";
 		const rtl95Ind = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_l95[rtIndexInd]).toFixed(2) : "NA";
@@ -781,11 +781,11 @@ export default class Dashboard extends Component {
 
 
 
-			// Main data
+
 			let mainData = [{
 				label: 'Daily Cases',
 				data: dataFromApi.daily_positive_cases.slice(dateIndex, dataFromApi.dates.length),
-				borderColor: 'rgba(0, 64, 101,0.1)',//'#004065',
+				borderColor: 'rgba(0, 64, 101,0.1)',
 				radius: 1,
 			}, {
 				type: 'line',
@@ -813,11 +813,10 @@ export default class Dashboard extends Component {
 
 
 
-			// Main data
+
 			let mainData = [{
 				label: 'Daily Tests',
 				data: dataFromApi.daily_tests.slice(dateIndex, dataFromApi.dates.length),
-				// borderColor: '#004065',
 				backgroundColor: 'rgba(0, 64, 101,0.1)',
 				radius: 1,
 				fill: false,
@@ -851,7 +850,7 @@ export default class Dashboard extends Component {
 			let minRtDataPoint = Math.floor(Math.min(...dataFromApi.rt_l95.slice(dateIndex, dataFromApi.dates.length)));
 			minRtDataPoint = Math.min(minRtDataPoint, 0.5);
 
-			//Horizontal line
+
 			let horizontalLineData = [];
 			for (let i = 0; i < data.labels.length; i++) {
 				horizontalLineData.push(1);
@@ -866,34 +865,11 @@ export default class Dashboard extends Component {
 				hoverRadius: 0,
 			});
 
-			//The vertical lines data logic
-			// let verticalLineData = [];
-			// const lockdownDates = this.state.lockdownDates;
-			// for (let j = 0; j < lockdownDates.length; j++) {
-			// 	let obj = {
-			// 		//type: 'line',
-			// 		label: 'Lockdown ' + (j + 1),
-			// 		backgroundColor: 'red',
-			// 		borderColor: 'red',
-			// 		radius: 0,
-			// 		hoverRadius: 0,
-			// 		data: []
-			// 	};
-			// 	for (let i = minRtDataPoint; i <= maxRtDataPoint; i++) {
-			// 		obj.data.push({
-			// 			x: lockdownDates[j],
-			// 			y: i
-			// 		});
-			// 	}
-			// 	verticalLineData.push(obj);
-			// }
-			// data.datasets.push(...verticalLineData);
 
-			// Main data
 			let mainData = [{
 				label: 'Rt l95',
 				data: dataFromApi.rt_l95.slice(dateIndex, dataFromApi.dates.length),
-				fill: '2',// + (verticalLineData.length + 2),
+				fill: '2',
 				backgroundColor: '#d3efff',
 				borderWidth: 1,
 				radius: 0,
@@ -901,7 +877,7 @@ export default class Dashboard extends Component {
 			}, {
 				label: 'Rt l50',
 				data: dataFromApi.rt_l50.slice(dateIndex, dataFromApi.dates.length),
-				fill: '1',// + (verticalLineData.length + 3),
+				fill: '1',
 				backgroundColor: '#558aaf',
 				borderWidth: 1,
 				radius: 0,
@@ -951,26 +927,10 @@ export default class Dashboard extends Component {
 			let maxDbtDatapoint = Math.floor(Math.max(...dataFromApi.dbt_u95.slice(dateIndex, dataFromApi.dates.length)));
 			maxDbtDatapoint = Math.min(maxDbtDatapoint, 100);
 
-			//Horizontal line
-			// let horizontalLineData = [];
-			// for (let i = 0; i < data.labels.length; i++) {
-			// 	horizontalLineData.push(1);
-			// }
-			// data.datasets.push({
-			// 	label: 'fixed value',
-			// 	data: horizontalLineData,
-			// 	borderColor: 'rgba(0,100,0,0.5)',
-			// 	borderWidth: 2,
-			// 	fill: false,
-			// 	radius: 0,
-			// 	hoverRadius: 0,
-			// });
-
-			// Main data
 			let mainData = [{
 				label: 'DBT l95',
 				data: dataFromApi.dbt_l95.slice(dateIndex, dataFromApi.dates.length),
-				fill: '2',// + (verticalLineData.length + 2),
+				fill: '2',
 				backgroundColor: '#d3efff',
 				borderWidth: 1,
 				radius: 0,
@@ -1013,7 +973,6 @@ export default class Dashboard extends Component {
 			maxCFRPoint = Math.max(maxCFRPoint, 10);
 			maxCFRPoint = Math.min(maxCFRPoint, 20);
 
-			// Horizontal line
 			let horizontalLineData = [];
 			for (let i = 0; i < data.labels.length; i++) {
 				horizontalLineData.push(10);
@@ -1042,7 +1001,7 @@ export default class Dashboard extends Component {
 			});
 			const cfrDataSet = dataFromApi.cfr3_point.slice();
 
-			// Main data
+
 			let mainData = [{
 				label: 'CFR',
 				data: cfrDataSet.slice(dateIndex, cfrDataSet.length),
@@ -1067,7 +1026,7 @@ export default class Dashboard extends Component {
 			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
 			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
 
-			// Horizontal line
+
 			let horizontalLineData = [];
 			for (let i = 0; i < data.labels.length; i++) {
 				horizontalLineData.push(0);
@@ -1082,7 +1041,7 @@ export default class Dashboard extends Component {
 				hoverRadius: 0,
 			});
 
-			// Main data
+
 			let mainData = [{
 				label: 'Mobility Average',
 				data: dataFromApi.average_mobility.slice(dateIndex, dataFromApi.dates.length),
@@ -1153,7 +1112,7 @@ export default class Dashboard extends Component {
 				api["India"].dates.slice(dateIndex, api["India"].dates.length);
 
 
-			// Main data
+
 			let mainData = [];
 			states && states.forEach(s => {
 				mainData.push({
@@ -1197,7 +1156,7 @@ export default class Dashboard extends Component {
 			let maxPosRatePoint = Math.ceil(Math.max(...dataFromApi.daily_positivity_rate_ma.slice(dateIndex, dataFromApi.daily_positivity_rate_ma.length)))
 			maxPosRatePoint = Math.min(75, maxPosRatePoint);
 
-			// Horizontal line
+
 			let horizontalLineData = [];
 			for (let i = 0; i < data.labels.length; i++) {
 				horizontalLineData.push(10);
@@ -1226,7 +1185,7 @@ export default class Dashboard extends Component {
 			});
 			const positivityRateDataSet = dataFromApi.daily_positivity_rate_ma.slice();
 
-			// Main data
+
 			let mainData = [{
 				label: 'Positivity Rate',
 				data: positivityRateDataSet.slice(dateIndex, positivityRateDataSet.length),
@@ -1501,7 +1460,7 @@ export default class Dashboard extends Component {
 		const cardsArrIndex = this.state.cardsData && this.state.cardsData.length > 1 ?
 			this.state.cardsData.findIndex(d => d.state === this.state.selectedState) : -1;
 
-		//summary card values
+
 		const totalCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].total) ? this.state.cardsData[cardsArrIndex].total : 0;
 		const deceasedCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].deceased) ? this.state.cardsData[cardsArrIndex].deceased : 0;
 		const recoveredCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].recovered) ? this.state.cardsData[cardsArrIndex].recovered : 0;
@@ -1972,7 +1931,7 @@ export default class Dashboard extends Component {
 							<div className="sub-header-row mt-4">
 							<span className="header-bar-text">COMPARE DATA FOR STATES</span>
 							</div>
-						{*//* Comparision chart *//*}
+						{* Comparision chart *}
 						<Container>
 							<Row>
 								<Col>
@@ -2017,19 +1976,19 @@ export default class Dashboard extends Component {
 											></ComparisionChart>
 										</Tab>
 										<Tab eventKey="profile" title="2">
-											{*//* <Sonnet /> *//*}
+											{ <Sonnet /> }
 											wfejbgk
 										</Tab>
 										<Tab eventKey="contact" title="3">
-											{*//* <Sonnet /> *//*}
+											{ <Sonnet /> }
 										</Tab>
 										<Tab eventKey="profil" title="4">
-											{*//* <Sonnet /> *//*}
+											{ <Sonnet /> }
 										</Tab><Tab eventKey="proile" title="5">
-											{*//* <Sonnet /> *//*}
+											{ <Sonnet /> }
 										</Tab>
 										<Tab eventKey="profie" title="6">
-											{*//* <Sonnet /> *//*}
+											{ <Sonnet /> }
 										</Tab>
 									</Tabs>
 								</Col>
