@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Dashboard from './Containers/Dashboard';
 import About from './Containers/About';
 import Contribute from './Containers/Contribute';
-import Error from './Containers/Error';
 import Methods from './Containers/Methods';
 import { Button, Nav } from 'react-bootstrap';
 import Header from "./images/header.png";
@@ -43,11 +42,11 @@ export default class App extends Component {
             	</span>
             </div>
 				<Switch>
-                    <Route exact path="/" component={Dashboard} />
-                    <Route path="/methods" component={Methods} />
-                    <Route path="/contribute" component={Contribute} />
-                    <Route path="/aboutUs" component={About} />
-                    <Route component={Error} />
+                    <Route exact path="/" ><Dashboard /> </Route>
+                    <Route path="/methods" ><Methods /> </Route>
+                    <Route path="/contribute" ><Contribute /> </Route>
+                    <Route path="/aboutUs" ><About /> </Route>
+                    <Route ><Dashboard /> </Route>
                 </Switch>
             </BrowserRouter>
 			</div>

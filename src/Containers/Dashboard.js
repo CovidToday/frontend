@@ -1330,45 +1330,6 @@ export default class Dashboard extends Component {
 		return comparison;
 	}
 
-	DropdownRenderer = () => {
-		const fontSize = this.state.mobileView ? "x-small" : "smaller";
-		const array = this.state.rowData && this.state.rowData;
-		array.sort(this.compareArr);
-
-		return <div className="sub-header-row sticky-top">
-			<span className="header-bar-nav"><this.NavDropdown /></span>
-			{!this.state.mobileView &&
-				<span className="header-bar-text" style={{ fontSize: fontSize }}>
-					Last Updated -{this.state.mobileView && <br />} {this.state.lastUpdatedTime}
-				</span>}
-			<span className="header-bar-dropdown">
-				<Dropdown>
-					<Dropdown.Toggle variant="success" id="dropdown-basic" className="dropdown-state">
-						{this.state.selectedState}
-					</Dropdown.Toggle>
-
-					<Dropdown.Menu className="dropdown-state-list">
-						{!this.state.showDistricts && <Dropdown.Item onSelect={() => this.onStateSelect("TT")}>India</Dropdown.Item>}
-						{array.map((item) => {
-							return <Dropdown.Item onSelect={() => this.onStateSelect(item.key)}>
-								{!this.state.showDistricts ? this.getName(item.key) : item.key}
-							</Dropdown.Item>
-						})}
-					</Dropdown.Menu>
-				</Dropdown>
-			</span>
-			<span className="header-bar-text">
-				<span style={{ marginRight: "15px" }}>
-					<Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle" onClick={() => this.switchStateDistrict()}>
-						{this.state.showDistricts ? "Show State Data" : "Show District Data"}
-					</Button>
-				</span>
-			</span>
-			{!this.state.mobileView && <span className="header-bar-text">
-			</span>}
-		</div>
-	}
-
 	async switchStateDistrict() {
 		const { showDistricts } = this.state
 		await this.setState({ showDistricts: !showDistricts });
@@ -1523,6 +1484,10 @@ export default class Dashboard extends Component {
 		const dailyActive = dailyPos && dailyDeath && dailyRec && !isNaN((dailyPos - (dailyDeath + dailyRec))) ? (dailyPos - (dailyDeath + dailyRec)) : 0;
 		const dailyActiveOld = dailyPosOld && dailyDeathOld && dailyRecOld && !isNaN((dailyPosOld - (dailyDeathOld + dailyRecOld))) ? (dailyPosOld - (dailyDeathOld + dailyRecOld)) : 0;
 
+        const fontSize = this.state.mobileView ? "x-small" : "smaller";
+        const array = this.state.rowData && this.state.rowData;
+        array.sort(this.compareArr);
+
 		return (
 			<div>
 
@@ -1535,7 +1500,38 @@ export default class Dashboard extends Component {
 							<br />
 						</div>
 
-						<this.DropdownRenderer />
+						<div className="sub-header-row sticky-top">
+                        	<span className="header-bar-nav"><this.NavDropdown /></span>
+                        	{!this.state.mobileView &&
+                        		<span className="header-bar-text" style={{ fontSize: fontSize }}>
+                        			Last Updated -{this.state.mobileView && <br />} {this.state.lastUpdatedTime}
+                        		</span>}
+                        	<span className="header-bar-dropdown">
+                        		<Dropdown>
+                        			<Dropdown.Toggle variant="success" id="dropdown-basic" className="dropdown-state">
+                        				{this.state.selectedState}
+                        			</Dropdown.Toggle>
+
+                        			<Dropdown.Menu className="dropdown-state-list">
+                        				{!this.state.showDistricts && <Dropdown.Item onSelect={() => this.onStateSelect("TT")}>India</Dropdown.Item>}
+                        				{array.map((item) => {
+                        					return <Dropdown.Item onSelect={() => this.onStateSelect(item.key)}>
+                        						{!this.state.showDistricts ? this.getName(item.key) : item.key}
+                        					</Dropdown.Item>
+                        				})}
+                        			</Dropdown.Menu>
+                        		</Dropdown>
+                        	</span>
+                        	<span className="header-bar-text">
+                        		<span style={{ marginRight: "15px" }}>
+                        			<Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle" onClick={() => this.switchStateDistrict()}>
+                        				{this.state.showDistricts ? "Show State Data" : "Show District Data"}
+                        			</Button>
+                        		</span>
+                        	</span>
+                        	{!this.state.mobileView && <span className="header-bar-text">
+                        	</span>}
+                        </div>
 						<br />
 						<div id="Summary">
 							{this.state.showDistricts && <Alert variant="warning">
