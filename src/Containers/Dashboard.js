@@ -1484,8 +1484,569 @@ export default class Dashboard extends Component {
 		const dailyActiveOld = dailyPosOld && dailyDeathOld && dailyRecOld && !isNaN((dailyPosOld - (dailyDeathOld + dailyRecOld))) ? (dailyPosOld - (dailyDeathOld + dailyRecOld)) : 0;
 
 		return (
-		    <div>test</div>
+			<div>
 
+				{selectedView === "Home" && <>
+					<div className="App">
+
+						<div className="home-text">
+							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicHeading }}>Tracking India's Progress Through The Coronavirus Pandemic, Today</div>
+							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicSH, fontWeight: "bolder" }}>Understanding Your State's Response Through Live Outbreak Indicators</div>
+							<br />
+						</div>
+
+						<this.DropdownRenderer />
+						<br />
+						<div id="Summary">
+							{this.state.showDistricts && <Alert variant="warning">
+								The functionality for districts is in Beta Version. We are working on improving the data.
+                            </Alert>}
+							<br />
+							<this.blog />
+							<br />
+							{this.state.mobileView && <Container>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card className={"blue-card summary-card-mobile"} v>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Confirmed </span><br />
+												<span className="summary-card-number-mobile">{numbro(totalCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyPos).format({ thousandSeparated: true })}</span>
+												<span><img src={upIcon} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="mobile-summary-cards">
+										<Card className={"blue-card summary-card-mobile"} v>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Reproduction No</span><br />
+												<span className="summary-card-description-mobile">Each covid+ spreads it to</span><br />
+												<span className="summary-card-number-mobile-rt">{rt} persons</span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card className={"red-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Active </span><br />
+												<span className="summary-card-number-mobile">{numbro(activeCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyActive).format({ thousandSeparated: true })}</span>
+												<span><img src={this.getCompareImage(dailyActive, dailyActiveOld)} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="mobile-summary-cards">
+										<Card className={"red-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Doubling Time</span><br />
+												<span className="summary-card-description-mobile">Total cases double in</span><br />
+												<span className="summary-card-number-mobile">{numbro(dbt).format({ mantissa: 1 })} days</span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card className={"green-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Recovered </span><br />
+												<span className="summary-card-number-mobile">{numbro(recoveredCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyRec).format({ thousandSeparated: true })}</span>
+												<span><img src={greenUp} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="mobile-summary-cards">
+										<Card className={"green-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Recovery Rate</span><br />
+												<span className="summary-card-number-mobile">{numbro(recoveryRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description-mobile">of closed cases have recovered</span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card className={"grey-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Deaths </span><br />
+												<span className="summary-card-number-mobile">{numbro(deceasedCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyDeath).format({ thousandSeparated: true })}</span>
+												<span><img src={upIcon} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="mobile-summary-cards">
+										<Card className={"grey-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Fatality Rate</span><br />
+												<span className="summary-card-number-mobile">{numbro(fatRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description-mobile">of closed cases have died</span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+								<Row>
+									<Col className="mobile-summary-cards">
+										<Card className={"yellow-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Tests </span><br />
+												<span className="summary-card-number-mobile">{numbro(tests).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary-mobile">{numbro(dailyTests).format({ thousandSeparated: true })}</span>
+												<span><img src={greenUp} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="mobile-summary-cards">
+										<Card className={"yellow-card summary-card-mobile"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading-mobile">Test Positivity</span><br />
+												<span className="summary-card-number-mobile">{numbro(posRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description-mobile">of tests are positive (7 day)</span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+							</Container>}
+							{!this.state.mobileView && <Container>
+								<Row>
+									<Col className="summary-cards">
+										<Card className={"blue-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Confirmed </span><br />
+												<span className="summary-card-number">{numbro(totalCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyPos).format({ thousandSeparated: true })}</span>
+												<span><img src={upIcon} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"red-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Active </span><br />
+												<span className="summary-card-number">{numbro(activeCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyActive).format({ thousandSeparated: true })}</span>
+												<span><img src={this.getCompareImage(dailyActive, dailyActiveOld)} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"green-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Recovered </span><br />
+												<span className="summary-card-number">{numbro(recoveredCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyRec).format({ thousandSeparated: true })}</span>
+												<span><img src={greenUp} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"grey-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Deaths </span><br />
+												<span className="summary-card-number">{numbro(deceasedCases).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyDeath).format({ thousandSeparated: true })}</span>
+												<span><img src={upIcon} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"yellow-card summary-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Tests </span><br />
+												<span className="summary-card-number">{numbro(tests).format({ thousandSeparated: true })}</span><br />
+												<span className="summary-card-number-secondary">{numbro(dailyTests).format({ thousandSeparated: true })}</span>
+												<span><img src={greenUp} className="cell-icon" /></span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+								<Row>
+									<Col className="summary-cards">
+										<Card className={"summary-card blue-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Reproduction No</span><br />
+												<span className="summary-card-description">Each covid+ spreads it to</span><br />
+												<span className="summary-card-number-rt">{rt}</span>
+												<span className="summary-card-number-rt"> persons</span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"summary-card red-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Doubling Time</span><br />
+												<span className="summary-card-description">Total cases double in</span><br />
+												<span className="summary-card-number">{numbro(dbt).format({ mantissa: 1 })} days</span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"summary-card green-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Recovery Rate</span><br />
+												<span className="summary-card-number">{numbro(recoveryRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description">of closed cases have recovered</span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"summary-card grey-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Fatality Rate</span><br />
+												<span className="summary-card-number">{numbro(fatRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description">of closed cases have died</span>
+											</span>
+										</Card>
+									</Col>
+									<Col className="summary-cards">
+										<Card className={"summary-card yellow-card"}>
+											<span style={{ fontSize: fontSizeDynamic }}>
+												<span className="summary-card-heading">Test Positivity</span><br />
+												<span className="summary-card-number">{numbro(posRate).format({ mantissa: 1 })}%</span><br />
+												<span className="summary-card-description">of tests are positive (7 day)</span>
+											</span>
+										</Card>
+									</Col>
+								</Row>
+							</Container>}
+						</div>
+
+						<div className={mobileView ? "featured-pic-container-mobile" : "featured-pic-container"}>
+							<img src={featured} className="featured-pic" />
+						</div>
+
+						<div id="Graph">
+							<div ref={this.plotsRef} className="sub-header-row mt-4">
+								<span className="header-bar-text">GRAPHICAL REPRESENTATION</span>
+							</div>
+
+							<Container>
+								<Row>
+									<Col lg="6">
+										{mobileView && <div className="plot-headers">
+											<span className="span-plot-title-mobile"><hr class="hr-text" data-content="How fast is the spread?" /></span>
+										</div>}
+										{/* Daily Cases Graph */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Positive Cases
+													<OverlayTrigger placement="left" overlay={dailyCasesPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="rtgraph">
+														<DailyCasesChart
+															dailyCasesGraphData={this.state.dailyCasesGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+										<div className="mt-2"></div>
+										{/* RT Graph */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Effective Reproduction Number
+													<OverlayTrigger placement="left" overlay={rtPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="rtgraph">
+														<RtChart
+															minRtDataPoint={this.state.minRtDataPoint}
+															maxRtDataPoint={this.state.maxRtDataPoint}
+															rtPointGraphData={this.state.rtPointGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+										{/* DBT Graph */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Doubling Time (Days)
+													<OverlayTrigger placement="left" overlay={dbtPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="dbt-graph">
+														<DbtChart
+															maxDbtDatapoint={this.state.maxDbtDatapoint}
+															dbtGraphData={this.state.dbtGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+									</Col>
+									<Col>
+										{mobileView && <div className="mt-2"></div>}
+										{mobileView && <div className="plot-headers">
+											<span className="span-plot-title-mobile"><hr class="hr-text" data-content="Are we testing enough?" /></span>
+										</div>}
+										{/* Daily Tests */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Tests
+													<OverlayTrigger placement="left" overlay={dailyTestsPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="rtgraph">
+														<DailyTestsChart
+															dailyTestsGraphData={this.state.dailyTestsGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+										<div className="mt-2"></div>
+										{/* Pos Rate Graph */}
+										<Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Positivity Rate (%)
+													<OverlayTrigger placement="left" overlay={positivityPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="positivityrate-graph">
+														<PosRateChart
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+															positivityRateGraphData={positivityRateGraphData}
+															maxPosRatePoint={this.state.maxPosRatePoint}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>
+										{/* Mobility Graph */}
+										{!this.state.showDistricts && <Row>
+											<Col>
+												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Social Distancing (% mobility change)
+													<OverlayTrigger placement="left" overlay={mobilityPopover}>
+															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+														</OverlayTrigger>
+													</h5>
+													<div className="mobilityGraph">
+														<MobilityChart
+															mobilityGraphData={this.state.mobilityGraphData}
+															lockdownDates={this.state.lockdownDates}
+															lockdownChartText={this.state.lockdownChartText}
+														/>
+													</div>
+												</Card>
+											</Col>
+										</Row>}
+										<div className="mt-2"></div>
+									</Col>
+								</Row>
+							</Container>
+						</div>
+
+						<div id="Table">
+							{/*<div className="sub-header-row mt-4">
+								<span className="header-bar-text">LATEST STATEWISE DATA</span>
+							</div>
+							<div className={mobileView ? "table-info-mobile" : "table-info"} style={{ backgroundColor: "white" }}>
+								<Accordion>
+									<Card>
+										<Card.Header style={{ textAlign: "center" }}>
+											<Accordion.Toggle as={Button} variant="link" eventKey="0">
+												<img src={informationIcon} className="ml-1 information-icon" />
+												{` Click here to know how to use the table`}
+											</Accordion.Toggle>
+										</Card.Header>
+										<Accordion.Collapse eventKey="0">
+											<Card.Body>
+												<div>
+													<b>How to interact with the table</b><br />
+											Click on the parameter heading to sort states in order of that parameter. <br />
+											Click on the state to load data for that state in the graphs above.<br />
+											Hover on the headings for more info about the parameter.<br />
+											Hover on the cells to see the date for which parameter is shown.<br /><br />
+
+													<b>What do the colours mean</b><br />
+											Up and Down arrows indicate change in respective parameters as compared to 7 days ago. <br />
+													{`Rt is Red: >1, Yellow: <1 for less than 2 weeks, Green: < 1 for more than 2 weeks (based on WHO criteria).`} <br />
+													{`Positivity Rate is Red: >10%, Yellow: 5-10%, Green: < 5% (based on WHO criteria).`} <br />
+													{`Corrected CFR is Red: >10%, Yellow: 5-10%, Green: < 5%.`} <br /><br />
+
+											Understand what the parameters mean
+											<a className="link-text" style={{ color: "blue" }} onClick={this.handleDivScroll}> here</a>.<br />
+											Raw data sources and detailed method of calculation
+											<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+														e.preventDefault();
+														window.location = "https://www.covidtoday.in/methods"
+													}}> here</a>.
+										</div>
+											</Card.Body>
+										</Accordion.Collapse>
+									</Card>
+								</Accordion>
+							</div>
+							<Container>
+								<div ref={this.tableRef}
+									id="myTable"
+									className="ag-theme-balham"
+									style={!this.state.mobileView ? {
+										padding: '20px'
+									} : { paddingTop: '20px' }}
+								>
+									<AgGridReact
+										columnDefs={this.state.columnDefs}
+										rowData={this.state.rowData}
+										rowSelection={"single"}
+										frameworkComponents={this.state.frameworkComponents}
+										headerHeight={window.innerWidth < '1200' ? '60' : '48'}
+										domLayout='autoHeight'
+										pinnedTopRowData={this.state.pinnedTopRowData}
+										onSelectionChanged={this.onSelectionChanged.bind(this)} />
+								</div>
+							</Container>*/}
+						</div>
+
+						{/*<div id="Map">
+						<h1>MAP</h1>
+					</div>
+
+					<div id="Compare">
+							<div className="sub-header-row mt-4">
+							<span className="header-bar-text">COMPARE DATA FOR STATES</span>
+							</div>
+						{* Comparision chart *}
+						<Container>
+							<Row>
+								<Col>
+									Download the dataset
+								</Col>
+								<Col xs="9">
+									List of objetcs
+								</Col>
+							</Row>
+							<Row>
+								<Col>
+									<table style={{ maxHeight: 450, overflowX: 'hidden' }} class="table table-responsive">
+										<thead>
+											<tr style={{ position: 'sticky', top: 0 }}>
+												<th></th>
+												<th>States</th>
+											</tr>
+										</thead>
+										<tbody>
+											{this.state.rowData && this.state.rowData.map((item) => {
+												const stateName = this.getName(item.key);
+												return (
+													<tr>
+														<td><input type="checkbox"
+															onChange={() => this.onStateCheckBoxChange(stateName)}
+															checked={this.state.statesForComparision.indexOf(stateName) > -1 ? true : false}
+														></input></td>
+														<td>{stateName}</td>
+													</tr>
+												);
+											})}
+										</tbody>
+									</table>
+								</Col>
+								<Col xs="9">
+									<Tabs defaultActiveKey="home" id="uncontrolled-tab-example">
+										<Tab eventKey="home" title="1">
+											<ComparisionChart
+											comparisionGraphData={this.state.comparisionGraphData}
+											lockdownDates={this.state.lockdownDates}
+											lockdownChartText={this.state.lockdownChartText}
+											></ComparisionChart>
+										</Tab>
+										<Tab eventKey="profile" title="2">
+											{ <Sonnet /> }
+											wfejbgk
+										</Tab>
+										<Tab eventKey="contact" title="3">
+											{ <Sonnet /> }
+										</Tab>
+										<Tab eventKey="profil" title="4">
+											{ <Sonnet /> }
+										</Tab><Tab eventKey="proile" title="5">
+											{ <Sonnet /> }
+										</Tab>
+										<Tab eventKey="profie" title="6">
+											{ <Sonnet /> }
+										</Tab>
+									</Tabs>
+								</Col>
+							</Row>
+						</Container>
+					</div>*/}
+
+						<div id="Analysis">
+							<div className="sub-header-row mt-4">
+								<span className="header-bar-text">KNOW ABOUT THE INDICATORS</span>
+							</div>
+
+							<div className="home-text" ref={this.textDivRef}>
+								<IndicatorDescriptionCards fontSize={fontSizeDynamic} />
+							</div>
+							<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
+							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+									e.preventDefault();
+									window.location = "https://www.covidtoday.in/methods"
+								}}> Methods</a> page.
+							Caution should be used in interpretation as the transmission and testing indicators are not entirely independent, and one may affect the other.
+							We use best practices in all calculations, however some inadvertent errors may creep in despite our efforts.
+							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+									e.preventDefault();
+									window.location = "https://www.covidtoday.in/contribute"
+								}}> Report an error.</a></div>
+
+							<LinkButtons fontSize={fontSizeDynamic} />
+
+							<div class="wrapper"><div class="divider div-transparent" style={{ marginTop: "10px" }}></div></div>
+							<div className="for-the-people">
+								<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamic }}>For The People, By The People</div>
+								<div className="for-the-people-text" style={{ fontSize: fontSizeDynamic }}>COVID TODAY is an initiative by iCART, a multidisciplinary volunteer team of passionate doctors,
+								researchers, coders, and public health experts from institutes across India.
+							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+										e.preventDefault();
+										window.location = "https://www.covidtoday.in/aboutUs"
+									}}> Learn more about the team</a>. This pandemic demands everyone to
+							come together so that we can gradually move towards a new normal in the coming months while ensuring those who are vulnerable are protected.
+							We envisage this platform to grow with your contribution and we welcome anyone who can contribute meaningfully to the project. Head over to
+							the <a className="link-text" style={{ color: "blue" }} onClick={(e) => {
+										e.preventDefault();
+										window.location = "https://www.covidtoday.in/contribute"
+									}}>Contribute </a>page to see how you can pitch in.
+							</div>
+							</div>
+						</div>
+					</div>
+				</>}
+				<div className="footer-pic-container">
+					<img src={Footer} className="footer-pic" onClick={(e) => {
+						e.preventDefault();
+						window.location = "https://www.covidtoday.in/aboutUs"
+					}} />
+				</div>
+				<Licence font={licenceFont} width={licenceWidth} />
+			</div>
 		);
 	}
 }
