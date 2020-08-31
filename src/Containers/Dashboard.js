@@ -1428,7 +1428,7 @@ export default class Dashboard extends Component {
 		const recoveredCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].recovered) ? this.state.cardsData[cardsArrIndex].recovered : 0;
 		const activeCases = totalCases && deceasedCases && recoveredCases && !isNaN((totalCases - (deceasedCases + recoveredCases))) ? (totalCases - (deceasedCases + recoveredCases)) : 0;
 		const tests = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].tests) ? this.state.cardsData[cardsArrIndex].tests : 0;
-		const rt = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].rt) ? this.state.cardsData[cardsArrIndex].rt : 0;
+		const rt = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].rt : 0;
 		const dbt = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dbt) ? this.state.cardsData[cardsArrIndex].dbt : 0;
 		const recoveryRate = recoveredCases && totalCases && !isNaN((recoveredCases / (recoveredCases + deceasedCases)) * 100) ? (recoveredCases / (recoveredCases + deceasedCases)) * 100 : 0;
 		const fatRate = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].cfr) ? this.state.cardsData[cardsArrIndex].cfr : 0;

@@ -234,13 +234,13 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 
 
 /* dropdown menu navbar animation */
-.dropdown-dash.btn-success:not(:disabled):not(.disabled).active:focus, 
+.dropdown-dash.btn-success:not(:disabled):not(.disabled).active:focus,
 .dropdown-dash.btn-success:not(:disabled):not(.disabled):active:focus, .dropdown-dash
 .show>.btn-success.dropdown-toggle:focus {
 	box-shadow: 0 0 0 0.1rem #004065;
 }
 
-.dropdown-dash.btn-success, .dropdown-dash.btn-success:not(:disabled):not(.disabled).active, 
+.dropdown-dash.btn-success, .dropdown-dash.btn-success:not(:disabled):not(.disabled).active,
 .dropdown-dash.btn-success:not(:disabled):not(.disabled):active, .dropdown-dash.show>.btn-success.dropdown-toggle, .dropdown-dash.btn-success:hover {
 	background-color:#004065;
 	border: 0;
@@ -260,7 +260,7 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 	border-color:#004065 !important;
 	color: #004065 !important;
 	border: 0;
-	
+
 }
 /* navbar dropdown menu */
 
