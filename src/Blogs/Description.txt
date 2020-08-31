@@ -1,1 +1,2 @@
-v2.0 
+[31 Aug] Selected hotspot districts are now available. Doubling time has been added as a transmission indicator. 
+[Coming soon] Upgraded data table. Interactive state comparison graphs. 
