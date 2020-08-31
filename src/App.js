@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Dashboard from './Containers/Dashboard';
 import About from './Containers/About';
 import Contribute from './Containers/Contribute';
 import Methods from './Containers/Methods';
@@ -40,11 +41,11 @@ export default class App extends Component {
             	</span>
             </div>
 				<Switch>
-                    <Route exact path="/" ><Methods /> </Route>
+                    <Route exact path="/" ><Dashboard /> </Route>
                     <Route path="/methods" ><Methods /> </Route>
                     <Route path="/contribute" ><Contribute /> </Route>
                     <Route path="/aboutUs" ><About /> </Route>
-                    <Route ><Methods /> </Route>
+                    <Route ><Dashboard /> </Route>
                 </Switch>
             </BrowserRouter>
 			</div>

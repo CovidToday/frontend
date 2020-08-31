@@ -35,15 +35,15 @@ import feedbackIcon from ".././images/feedback.png";
 import Licence from ".././Licence/Licence.js";
 import LinkButtons from ".././LinkButtons.js"
 import IndicatorDescriptionCards from ".././IndicatorDescriptionCards.js"
-import CfrChart from ".././Plots/CfrChart.js"
+/*import CfrChart from ".././Plots/CfrChart.js"
 import PosRateChart from ".././Plots/PosRateChart.js"
 import DailyTestsChart from ".././Plots/DailyTestsChart.js"
 import MobilityChart from ".././Plots/MobilityChart.js"
 import RtChart from ".././Plots/RtChart.js"
 import DailyCasesChart from ".././Plots/DailyCasesChart.js"
-import DbtChart from ".././Plots/DbtChart.js"
+import DbtChart from ".././Plots/DbtChart.js"*/
 import * as StateEnums from ".././Commons/StateEnums.js"
-import ComparisionChart from '.././Plots/ComparisionChart';
+//import ComparisionChart from '.././Plots/ComparisionChart';
 import featured from ".././images/featured.png";
 import numbro from 'numbro';
 import upIcon from ".././images/up red.png";
@@ -291,7 +291,7 @@ export default class Dashboard extends Component {
 			.then(response => {
 				this.setState({ rtStateDataApi: response.data });
 				this.setState({ rtDataFromApi: this.state.rtStateDataApi });
-				this.getRtPointGraphData(this.state.rtDataFromApi.TT);
+				//this.getRtPointGraphData(this.state.rtDataFromApi.TT);
 			});
 
 		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/rt_graph.json')
@@ -303,12 +303,12 @@ export default class Dashboard extends Component {
 			.then(response => {
 				this.setState({ allStateData: response.data });
 				this.setState({ allDataFromApi: response.data });
-				this.getCfrGraphData(this.state.allStateData.India);
-				this.getPositivityRateGraphData(this.state.allStateData.India);
-				this.getDailyCasesGraphData(this.state.allStateData.India);
-				this.getDailyTestsGraphData(this.state.allStateData.India);
-				this.getDbtGraphData(this.state.allStateData.India);
-				this.getComparisionGraphData(this.state.allStateData, "daily_positive_cases");
+				//this.getCfrGraphData(this.state.allStateData.India);
+				//this.getPositivityRateGraphData(this.state.allStateData.India);
+				//this.getDailyCasesGraphData(this.state.allStateData.India);
+				//this.getDailyTestsGraphData(this.state.allStateData.India);
+				//this.getDbtGraphData(this.state.allStateData.India);
+				//this.getComparisionGraphData(this.state.allStateData, "daily_positive_cases");
 			});
 
 		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/allmetrics_districts.json')
@@ -333,7 +333,7 @@ export default class Dashboard extends Component {
 		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/mobility-index/india_mobility_indented.json')
 			.then(response => {
 				this.setState({ mobilityDataFromApi: response.data });
-				this.getMobilityGraphData(this.state.mobilityDataFromApi.India);
+				//this.getMobilityGraphData(this.state.mobilityDataFromApi.India);
 			});
 
 		const lastUpdated = this.state.allStateData.datetime;
@@ -770,7 +770,7 @@ export default class Dashboard extends Component {
 		this.setState({ cardsData: infoData });
 	}
 
-	getDailyCasesGraphData = (dataFromApi) => {
+	/*getDailyCasesGraphData = (dataFromApi) => {
 		if (dataFromApi) {
 			let data = {
 				datasets: [],
@@ -1200,7 +1200,7 @@ export default class Dashboard extends Component {
 				maxPosRatePoint: maxPosRatePoint
 			});
 		}
-	}
+	}*/
 
 	onSelectionChanged = (data) => {
 		const selectedRows = data.api.getSelectedRows();
@@ -1389,11 +1389,12 @@ export default class Dashboard extends Component {
 	}
 
 	render() {
+        const { positivityRateGraphData, selectedView, mobileView } = this.state;
 
-		const popoverFont = this.state.mobileView ? "smaller" : "1 rem";
+		/*const popoverFont = this.state.mobileView ? "smaller" : "1 rem";
 		const popoverMaxWidth = this.state.mobileView ? "216px" : "276px";
 
-		const { positivityRateGraphData, selectedView, mobileView } = this.state;
+
 		const dailyCasesPopover = (
 			<Popover id="dailycases-popover" style={{ maxWidth: popoverMaxWidth }}>
 				<Popover.Title as="h3" style={{ fontSize: popoverFont }}>Daily Positive Cases</Popover.Title>
@@ -1450,7 +1451,7 @@ export default class Dashboard extends Component {
 					Positivity rate below green line (less than 5%) indicates good testing, between green and red line (5-10%) indicates need for improvement, and above red line (more than 10%) indicates poor testing.
 				</Popover.Content>
 			</Popover>
-		);
+		);*/
 		const fontSizeDynamic = mobileView ? "smaller" : "larger";
 		const fontSizeDynamicSH = mobileView ? "small" : "larger";
 		const fontSizeDynamicHeading = mobileView ? "medium" : "x-large";
@@ -1724,13 +1725,13 @@ export default class Dashboard extends Component {
 								<span className="header-bar-text">GRAPHICAL REPRESENTATION</span>
 							</div>
 
-							<Container>
+							{/*<Container>
 								<Row>
 									<Col lg="6">
 										{mobileView && <div className="plot-headers">
 											<span className="span-plot-title-mobile"><hr class="hr-text" data-content="How fast is the spread?" /></span>
 										</div>}
-										{/* Daily Cases Graph */}
+										{*//* Daily Cases Graph *//*}
 										<Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
@@ -1750,7 +1751,7 @@ export default class Dashboard extends Component {
 											</Col>
 										</Row>
 										<div className="mt-2"></div>
-										{/* RT Graph */}
+										{*//* RT Graph *//*}
 										<Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
@@ -1771,7 +1772,7 @@ export default class Dashboard extends Component {
 												</Card>
 											</Col>
 										</Row>
-										{/* DBT Graph */}
+										{*//* DBT Graph *//*}
 										<Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
@@ -1797,7 +1798,7 @@ export default class Dashboard extends Component {
 										{mobileView && <div className="plot-headers">
 											<span className="span-plot-title-mobile"><hr class="hr-text" data-content="Are we testing enough?" /></span>
 										</div>}
-										{/* Daily Tests */}
+										{*//* Daily Tests *//*}
 										<Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
@@ -1817,7 +1818,7 @@ export default class Dashboard extends Component {
 											</Col>
 										</Row>
 										<div className="mt-2"></div>
-										{/* Pos Rate Graph */}
+										{*//* Pos Rate Graph *//*}
 										<Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
@@ -1837,7 +1838,7 @@ export default class Dashboard extends Component {
 												</Card>
 											</Col>
 										</Row>
-										{/* Mobility Graph */}
+										{*//* Mobility Graph *//*}
 										{!this.state.showDistricts && <Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
@@ -1859,7 +1860,7 @@ export default class Dashboard extends Component {
 										<div className="mt-2"></div>
 									</Col>
 								</Row>
-							</Container>
+							</Container>*/}
 						</div>
 
 						<div id="Table">
