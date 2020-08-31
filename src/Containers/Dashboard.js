@@ -2039,13 +2039,13 @@ export default class Dashboard extends Component {
 						</div>
 					</div>
 				</>}
-				/*<div className="footer-pic-container">
+				{/*<div className="footer-pic-container">
 					<img src={Footer} className="footer-pic" onClick={(e) => {
 						e.preventDefault();
 						window.location = "https://www.covidtoday.in/aboutUs"
 					}} />
 				</div>
-				<Licence font={licenceFont} width={licenceWidth} />*/
+				<Licence font={licenceFont} width={licenceWidth} />*/}
 			</div>
 		);
 	}
