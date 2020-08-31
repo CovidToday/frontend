@@ -1,1 +1,2 @@
-#Test Text
+[31 Aug] Selected hotspot districts are now available. Doubling time has been added as a transmission indicator. We are working on sqaushing bugs, please bear with us. 
+[Coming soon] Upgraded data table. Interactive state comparison graphs. 
