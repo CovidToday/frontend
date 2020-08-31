@@ -272,20 +272,21 @@ export default class Dashboard extends Component {
 
 	componentDidMount() {
 		this.setData();
-		if (window.innerWidth <= '1000') {
-			this.setState({ columnDefs: this.columnDefMobile });
-			this.setState({ mobileView: true });
-		}
+		this.setView();
 	}
 
 	componentWillMount() {
 		this.configureVerticalLinesPlugin();
 	}
 
-
+    setView() {
+        if (window.innerWidth <= '1000') {
+        	this.setState({ columnDefs: this.columnDefMobile });
+        	this.setState({ mobileView: true });
+        }
+    }
 
 	async setData() {
-
 		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/rt_graph.json')
 			.then(response => {
 				this.setState({ rtStateDataApi: response.data });
