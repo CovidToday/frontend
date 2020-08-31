@@ -1924,79 +1924,6 @@ export default class Dashboard extends Component {
 							</Container>
 						</div>
 
-						{/*<div id="Map">
-						<h1>MAP</h1>
-					</div>
-
-					<div id="Compare">
-							<div className="sub-header-row mt-4">
-							<span className="header-bar-text">COMPARE DATA FOR STATES</span>
-							</div>
-						{* Comparision chart *}
-						<Container>
-							<Row>
-								<Col>
-									Download the dataset
-								</Col>
-								<Col xs="9">
-									List of objetcs
-								</Col>
-							</Row>
-							<Row>
-								<Col>
-									<table style={{ maxHeight: 450, overflowX: 'hidden' }} class="table table-responsive">
-										<thead>
-											<tr style={{ position: 'sticky', top: 0 }}>
-												<th></th>
-												<th>States</th>
-											</tr>
-										</thead>
-										<tbody>
-											{this.state.rowData && this.state.rowData.map((item) => {
-												const stateName = this.getName(item.key);
-												return (
-													<tr>
-														<td><input type="checkbox"
-															onChange={() => this.onStateCheckBoxChange(stateName)}
-															checked={this.state.statesForComparision.indexOf(stateName) > -1 ? true : false}
-														></input></td>
-														<td>{stateName}</td>
-													</tr>
-												);
-											})}
-										</tbody>
-									</table>
-								</Col>
-								<Col xs="9">
-									<Tabs defaultActiveKey="home" id="uncontrolled-tab-example">
-										<Tab eventKey="home" title="1">
-											<ComparisionChart
-											comparisionGraphData={this.state.comparisionGraphData}
-											lockdownDates={this.state.lockdownDates}
-											lockdownChartText={this.state.lockdownChartText}
-											></ComparisionChart>
-										</Tab>
-										<Tab eventKey="profile" title="2">
-											{ <Sonnet /> }
-											wfejbgk
-										</Tab>
-										<Tab eventKey="contact" title="3">
-											{ <Sonnet /> }
-										</Tab>
-										<Tab eventKey="profil" title="4">
-											{ <Sonnet /> }
-										</Tab><Tab eventKey="proile" title="5">
-											{ <Sonnet /> }
-										</Tab>
-										<Tab eventKey="profie" title="6">
-											{ <Sonnet /> }
-										</Tab>
-									</Tabs>
-								</Col>
-							</Row>
-						</Container>
-					</div>*/}
-
 						<div id="Analysis">
 							<div className="sub-header-row mt-4">
 								<span className="header-bar-text">KNOW ABOUT THE INDICATORS</span>
@@ -2039,13 +1966,13 @@ export default class Dashboard extends Component {
 						</div>
 					</div>
 				</>}
-				{/*<div className="footer-pic-container">
+				<div className="footer-pic-container">
 					<img src={Footer} className="footer-pic" onClick={(e) => {
 						e.preventDefault();
 						window.location = "https://www.covidtoday.in/aboutUs"
 					}} />
 				</div>
-				<Licence font={licenceFont} width={licenceWidth} />*/}
+				<Licence font={licenceFont} width={licenceWidth} />
 			</div>
 		);
 	}
