@@ -2319,9 +2319,17 @@ export default class Dashboard extends Component {
                     <Col xs="9">
                       <Row>
                         <Col size="6">
-                          <Card style={{ width: "13rem" }}>
+                          <Card
+                            style={{
+                              width: "13rem",
+                              margin: "10px",
+                              height: "150px",
+                            }}
+                          >
                             <Card.Body>
-                              <Card.Text style={{ textAlign: "left" }}>
+                              <Card.Text
+                                style={{ textAlign: "left", fontSize: "15px" }}
+                              >
                                 <div>
                                   <input
                                     type="radio"
@@ -2350,10 +2358,18 @@ export default class Dashboard extends Component {
                           </Card>
                         </Col>
                         <Col size="6">
-                          <Card style={{ width: "13rem" }}>
+                          <Card
+                            style={{
+                              width: "13rem",
+                              margin: "10px",
+                              height: "150px",
+                            }}
+                          >
                             <Card.Body>
                               <Card.Title>TRANSMISSION INDICATORS</Card.Title>
-                              <Card.Text style={{ textAlign: "left" }}>
+                              <Card.Text
+                                style={{ textAlign: "left", fontSize: "15px" }}
+                              >
                                 <div>
                                   <input
                                     type="radio"
@@ -2382,10 +2398,18 @@ export default class Dashboard extends Component {
                           </Card>
                         </Col>
                         <Col size="6">
-                          <Card style={{ width: "13rem" }}>
+                          <Card
+                            style={{
+                              width: "13rem",
+                              margin: "10px",
+                              height: "150px",
+                            }}
+                          >
                             <Card.Body>
                               <Card.Title>TESTING INDICATORS</Card.Title>
-                              <Card.Text style={{ textAlign: "left" }}>
+                              <Card.Text
+                                style={{ textAlign: "left", fontSize: "15px" }}
+                              >
                                 <div>
                                   <input
                                     type="radio"
@@ -2400,10 +2424,18 @@ export default class Dashboard extends Component {
                           </Card>
                         </Col>
                         <Col size="6">
-                          <Card>
+                          <Card
+                            style={{
+                              width: "13rem",
+                              margin: "10px",
+                              height: "150px",
+                            }}
+                          >
                             <Card.Body>
                               <Card.Title>HEALTHCARE INDICATORS</Card.Title>
-                              <Card.Text style={{ textAlign: "left" }}>
+                              <Card.Text
+                                style={{ textAlign: "left", fontSize: "15px" }}
+                              >
                                 <div>
                                   <input
                                     type="radio"
