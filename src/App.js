@@ -15,7 +15,7 @@ export default class App extends Component {
 		return (
 			<div>
 			<BrowserRouter>
-			<div>
+			{/*<div>
             	<span className={mobileView ? "header-pic-container-mobile" : "header-pic-container"}>
             		<img src={Header} className={mobileView ? "header-pic-mobile" : "header-pic"} />
             	</span>
@@ -39,7 +39,7 @@ export default class App extends Component {
             	</span>
             	<span>
             	</span>
-            </div>
+            </div>*/}
 				<Switch>
                     <Route exact path="/" ><Dashboard /> </Route>
                     <Route path="/methods" ><Methods /> </Route>
