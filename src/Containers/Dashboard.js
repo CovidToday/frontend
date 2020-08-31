@@ -1502,7 +1502,7 @@ export default class Dashboard extends Component {
 								The functionality for districts is in Beta Version. We are working on improving the data.
                             </Alert>}
 							<br />
-
+							<this.blog />
 							<br />
 							{this.state.mobileView && <Container>
 								<Row>
