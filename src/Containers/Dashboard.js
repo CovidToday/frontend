@@ -1863,7 +1863,7 @@ export default class Dashboard extends Component {
 						</div>
 
 						<div id="Table">
-							{/*<div className="sub-header-row mt-4">
+							<div className="sub-header-row mt-4">
 								<span className="header-bar-text">LATEST STATEWISE DATA</span>
 							</div>
 							<div className={mobileView ? "table-info-mobile" : "table-info"} style={{ backgroundColor: "white" }}>
@@ -1921,7 +1921,7 @@ export default class Dashboard extends Component {
 										pinnedTopRowData={this.state.pinnedTopRowData}
 										onSelectionChanged={this.onSelectionChanged.bind(this)} />
 								</div>
-							</Container>*/}
+							</Container>
 						</div>
 
 						{/*<div id="Map">
@@ -2039,13 +2039,13 @@ export default class Dashboard extends Component {
 						</div>
 					</div>
 				</>}
-				<div className="footer-pic-container">
+				/*<div className="footer-pic-container">
 					<img src={Footer} className="footer-pic" onClick={(e) => {
 						e.preventDefault();
 						window.location = "https://www.covidtoday.in/aboutUs"
 					}} />
 				</div>
-				<Licence font={licenceFont} width={licenceWidth} />
+				<Licence font={licenceFont} width={licenceWidth} />*/
 			</div>
 		);
 	}
