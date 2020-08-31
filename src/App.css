@@ -652,3 +652,9 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 .summary-card-mobile {
     height: 75px;
 }
+
+.loader {
+   position: fixed;
+   top: 50%;
+   left: 50%;
+}

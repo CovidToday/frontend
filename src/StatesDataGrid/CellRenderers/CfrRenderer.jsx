@@ -11,15 +11,15 @@ export default class PosRateRenderer extends Component {
 	getValue() {
 		const data = this.props.data;
 			if(this.props.value && this.props.value !== "NA"){
-				if(parseFloat(data.ccfr) < parseFloat(data.cfrOld)) {
+				if(parseFloat(data.ccfr) < (parseFloat(data.cfrOld) - parseFloat(data.cfrOld/20))) {
 				    return <span title={`Value shown for ${this.props.data.cfrDate}`}><span style={{paddingRight: "3px"}}>
 				        {this.props.value}</span><img src={downIcon} className="cell-icon"/></span>
-			    } else if(parseFloat(data.ccfr) === parseFloat(data.cfrOld)) {
+			    } else if(parseFloat(data.ccfr) > (parseFloat(data.cfrOld) + parseFloat(data.cfrOld/20))) {
                   	return <span title={`Value shown for ${this.props.data.cfrDate}`}><span style={{paddingRight: "3px"}}>
-                  		{this.props.value}</span><img src={yellowDash} className="cell-icon"/></span>
+                  		{this.props.value}</span><img src={upIcon} className="cell-icon"/></span>
                 } else {
 				    return <span title={`Value shown for ${this.props.data.cfrDate}`}><span style={{paddingRight: "3px"}}>
-				        {this.props.value}</span><img src={upIcon} className="cell-icon"/></span>
+				        {this.props.value}</span><img src={yellowDash} className="cell-icon"/></span>
 			    }
 		    } else {
 		        return <span>-</span>

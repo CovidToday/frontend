@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactGA from 'react-ga';
 import '.././App.css';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -9,7 +8,7 @@ import axios from 'axios';
 import { Line, Chart, Bar } from 'react-chartjs-2';
 import {
 	Container, Row, Col, Dropdown, Card, Tabs, Tab, Button, Popover, OverlayTrigger,
-	CardGroup, Accordion, ButtonToolbar, Alert
+	CardGroup, Accordion, ButtonToolbar, Spinner
 } from 'react-bootstrap';
 import Header from ".././images/header.png"
 import Footer from ".././images/footer.jpg"
@@ -58,6 +57,7 @@ export default class Dashboard extends Component {
 		this.textDivRef = React.createRef();
 		this.plotsRef = React.createRef();
 		this.tableRef = React.createRef();
+		this.statesHeaderName = "STATES";
 
 		this.state = {
 			blogtitle: "",
@@ -65,7 +65,7 @@ export default class Dashboard extends Component {
 			columnDefs: [
 				{
 					headerName: '', children: [
-						{ headerName: "STATES", field: "state", sortable: true, flex: 2, suppressMovable: true, maxWidth: "170", filter: 'agTextColumnFilter' }
+						{ headerValueGetter: params => `${this.statesHeaderName}`, field: "state", sortable: true, flex: 2, suppressMovable: true, maxWidth: "170", filter: 'agTextColumnFilter' }
 					]
 				},
 				{
@@ -184,14 +184,15 @@ export default class Dashboard extends Component {
 			},
 			lastUpdatedTime: "",
 			cardsData: [],
-			showDistricts: false
+			showDistricts: false,
+			loading: true
 		}
 	}
 
 	columnDefMobile = [
 		{
 			headerName: '', children: [
-				{ headerName: "STATES", field: "state", sortable: true, suppressMovable: true, pinned: 'left', width: 120 }
+				{ headerValueGetter: params => `${this.statesHeaderName}`, field: "state", sortable: true, suppressMovable: true, pinned: 'left', width: 120 }
 			]
 		},
 		{
@@ -272,21 +273,20 @@ export default class Dashboard extends Component {
 
 	componentDidMount() {
 		this.setData();
-		this.setView();
+		if (window.innerWidth <= '1000') {
+			this.setState({ columnDefs: this.columnDefMobile });
+			this.setState({ mobileView: true });
+		}
 	}
 
 	componentWillMount() {
 		this.configureVerticalLinesPlugin();
 	}
 
-    setView() {
-        if (window.innerWidth <= '1000') {
-        	this.setState({ columnDefs: this.columnDefMobile });
-        	this.setState({ mobileView: true });
-        }
-    }
+
 
 	async setData() {
+		//RT
 		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/rt_graph.json')
 			.then(response => {
 				this.setState({ rtStateDataApi: response.data });
@@ -298,7 +298,7 @@ export default class Dashboard extends Component {
 			.then(response => {
 				this.setState({ rtDistrictDataApi: response.data });
 			});
-
+		//OTHER METRICS
 		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/allmetrics_states.json')
 			.then(response => {
 				this.setState({ allStateData: response.data });
@@ -315,7 +315,7 @@ export default class Dashboard extends Component {
 			.then(response => {
 				this.setState({ allDistrictData: response.data });
 			});
-
+		//BLOG
 		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Title.txt')
 			.then(response => {
 				this.setState({ blogtitle: response.data });
@@ -366,7 +366,7 @@ export default class Dashboard extends Component {
 	configureVerticalLinesPlugin() {
 		const verticalLinePlugin = {
 			getLinePosition: function (chart, pointIndex) {
-				const meta = chart.getDatasetMeta(0);
+				const meta = chart.getDatasetMeta(0); // first dataset is used to discover X coordinate of a point
 				const data = meta.data;
 				if (data[pointIndex])
 					return data[pointIndex]._model.x;
@@ -376,14 +376,14 @@ export default class Dashboard extends Component {
 				const scale = chartInstance.scales['y-axis-0'];
 				const context = chartInstance.chart.ctx;
 
-
+				// render vertical line
 				context.beginPath();
 				context.strokeStyle = 'rgb(0,64,101,0.3)';
 				context.moveTo(lineLeftOffset, scale.top);
 				context.lineTo(lineLeftOffset, scale.bottom);
 				context.stroke();
 
-
+				// write label
 				context.fillStyle = "#004065";
 				context.textAlign = 'left';
 				context.font = '11px "Titillium Web"';
@@ -429,7 +429,7 @@ export default class Dashboard extends Component {
 			list && list.forEach(s => {
 				const name = !this.state.showDistricts ? this.getName(s) : s;
 
-
+				//rt
 				const rtIndex = rtApi[s] ? rtApi[s].rt_point.length - 1 : -1;
 				const rtPoint = rtIndex > 0 ? (rtApi[s].rt_point[rtIndex]).toFixed(2) : "NA";
 				const rtl95 = rtIndex > 0 ? (rtApi[s].rt_l95[rtIndex]).toFixed(2) : "NA";
@@ -443,14 +443,14 @@ export default class Dashboard extends Component {
 				}
 				const rtData = rtPoint === "NA" ? "NA" : `${rtPoint} (${rtl95}-${rtu95})`;
 
-
+				//cfr
 				const cfrIndex = allApi[name] ? allApi[name].cfr3_point.length - 1 : -1;
 				const cfrPoint = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex]).toFixed(2) : "NA";
 				const cfrPointOld = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex - 7]).toFixed(2) : "NA";
 				const cfrDate = cfrIndex > 0 ? allApi[name].dates[cfrIndex] : "-";
 				const cfrPoint2 = cfrIndex > 0 ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
 
-
+				//posRate
 				const posRateArr = Object.entries(allApi);
 				let cumCases;
 				let cumCasesDate;
@@ -649,7 +649,7 @@ export default class Dashboard extends Component {
 			this.setState({ rowData: data })
 		}
 
-
+		//India data
 		const rtIndexInd = this.state.rtStateDataApi["TT"].rt_point.length - 1;
 		const rtPointInd = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_point[rtIndexInd]).toFixed(2) : "NA";
 		const rtl95Ind = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_l95[rtIndexInd]).toFixed(2) : "NA";
@@ -768,6 +768,13 @@ export default class Dashboard extends Component {
 		})
 		this.setState({ pinnedTopRowData: pinnedData });
 		this.setState({ cardsData: infoData });
+		this.setState({loading: false});
+
+		if(this.state.showDistricts) {
+		    this.onStateSelect("Ahmedabad");
+		} else {
+		    this.onStateSelect("TT");
+		}
 	}
 
 	getDailyCasesGraphData = (dataFromApi) => {
@@ -782,11 +789,11 @@ export default class Dashboard extends Component {
 
 
 
-
+			// Main data
 			let mainData = [{
 				label: 'Daily Cases',
 				data: dataFromApi.daily_positive_cases.slice(dateIndex, dataFromApi.dates.length),
-				borderColor: 'rgba(0, 64, 101,0.1)',
+				borderColor: 'rgba(0, 64, 101,0.1)',//'#004065',
 				radius: 1,
 			}, {
 				type: 'line',
@@ -814,10 +821,11 @@ export default class Dashboard extends Component {
 
 
 
-
+			// Main data
 			let mainData = [{
 				label: 'Daily Tests',
 				data: dataFromApi.daily_tests.slice(dateIndex, dataFromApi.dates.length),
+				// borderColor: '#004065',
 				backgroundColor: 'rgba(0, 64, 101,0.1)',
 				radius: 1,
 				fill: false,
@@ -851,7 +859,7 @@ export default class Dashboard extends Component {
 			let minRtDataPoint = Math.floor(Math.min(...dataFromApi.rt_l95.slice(dateIndex, dataFromApi.dates.length)));
 			minRtDataPoint = Math.min(minRtDataPoint, 0.5);
 
-
+			//Horizontal line
 			let horizontalLineData = [];
 			for (let i = 0; i < data.labels.length; i++) {
 				horizontalLineData.push(1);
@@ -866,11 +874,34 @@ export default class Dashboard extends Component {
 				hoverRadius: 0,
 			});
 
+			//The vertical lines data logic
+			// let verticalLineData = [];
+			// const lockdownDates = this.state.lockdownDates;
+			// for (let j = 0; j < lockdownDates.length; j++) {
+			// 	let obj = {
+			// 		//type: 'line',
+			// 		label: 'Lockdown ' + (j + 1),
+			// 		backgroundColor: 'red',
+			// 		borderColor: 'red',
+			// 		radius: 0,
+			// 		hoverRadius: 0,
+			// 		data: []
+			// 	};
+			// 	for (let i = minRtDataPoint; i <= maxRtDataPoint; i++) {
+			// 		obj.data.push({
+			// 			x: lockdownDates[j],
+			// 			y: i
+			// 		});
+			// 	}
+			// 	verticalLineData.push(obj);
+			// }
+			// data.datasets.push(...verticalLineData);
 
+			// Main data
 			let mainData = [{
 				label: 'Rt l95',
 				data: dataFromApi.rt_l95.slice(dateIndex, dataFromApi.dates.length),
-				fill: '2',
+				fill: '2',// + (verticalLineData.length + 2),
 				backgroundColor: '#d3efff',
 				borderWidth: 1,
 				radius: 0,
@@ -878,7 +909,7 @@ export default class Dashboard extends Component {
 			}, {
 				label: 'Rt l50',
 				data: dataFromApi.rt_l50.slice(dateIndex, dataFromApi.dates.length),
-				fill: '1',
+				fill: '1',// + (verticalLineData.length + 3),
 				backgroundColor: '#558aaf',
 				borderWidth: 1,
 				radius: 0,
@@ -928,10 +959,26 @@ export default class Dashboard extends Component {
 			let maxDbtDatapoint = Math.floor(Math.max(...dataFromApi.dbt_u95.slice(dateIndex, dataFromApi.dates.length)));
 			maxDbtDatapoint = Math.min(maxDbtDatapoint, 100);
 
+			//Horizontal line
+			// let horizontalLineData = [];
+			// for (let i = 0; i < data.labels.length; i++) {
+			// 	horizontalLineData.push(1);
+			// }
+			// data.datasets.push({
+			// 	label: 'fixed value',
+			// 	data: horizontalLineData,
+			// 	borderColor: 'rgba(0,100,0,0.5)',
+			// 	borderWidth: 2,
+			// 	fill: false,
+			// 	radius: 0,
+			// 	hoverRadius: 0,
+			// });
+
+			// Main data
 			let mainData = [{
 				label: 'DBT l95',
 				data: dataFromApi.dbt_l95.slice(dateIndex, dataFromApi.dates.length),
-				fill: '2',
+				fill: '2',// + (verticalLineData.length + 2),
 				backgroundColor: '#d3efff',
 				borderWidth: 1,
 				radius: 0,
@@ -974,6 +1021,7 @@ export default class Dashboard extends Component {
 			maxCFRPoint = Math.max(maxCFRPoint, 10);
 			maxCFRPoint = Math.min(maxCFRPoint, 20);
 
+			// Horizontal line
 			let horizontalLineData = [];
 			for (let i = 0; i < data.labels.length; i++) {
 				horizontalLineData.push(10);
@@ -1002,7 +1050,7 @@ export default class Dashboard extends Component {
 			});
 			const cfrDataSet = dataFromApi.cfr3_point.slice();
 
-
+			// Main data
 			let mainData = [{
 				label: 'CFR',
 				data: cfrDataSet.slice(dateIndex, cfrDataSet.length),
@@ -1027,7 +1075,7 @@ export default class Dashboard extends Component {
 			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
 			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
 
-
+			// Horizontal line
 			let horizontalLineData = [];
 			for (let i = 0; i < data.labels.length; i++) {
 				horizontalLineData.push(0);
@@ -1042,7 +1090,7 @@ export default class Dashboard extends Component {
 				hoverRadius: 0,
 			});
 
-
+			// Main data
 			let mainData = [{
 				label: 'Mobility Average',
 				data: dataFromApi.average_mobility.slice(dateIndex, dataFromApi.dates.length),
@@ -1113,7 +1161,7 @@ export default class Dashboard extends Component {
 				api["India"].dates.slice(dateIndex, api["India"].dates.length);
 
 
-
+			// Main data
 			let mainData = [];
 			states && states.forEach(s => {
 				mainData.push({
@@ -1157,7 +1205,7 @@ export default class Dashboard extends Component {
 			let maxPosRatePoint = Math.ceil(Math.max(...dataFromApi.daily_positivity_rate_ma.slice(dateIndex, dataFromApi.daily_positivity_rate_ma.length)))
 			maxPosRatePoint = Math.min(75, maxPosRatePoint);
 
-
+			// Horizontal line
 			let horizontalLineData = [];
 			for (let i = 0; i < data.labels.length; i++) {
 				horizontalLineData.push(10);
@@ -1186,7 +1234,7 @@ export default class Dashboard extends Component {
 			});
 			const positivityRateDataSet = dataFromApi.daily_positivity_rate_ma.slice();
 
-
+			// Main data
 			let mainData = [{
 				label: 'Positivity Rate',
 				data: positivityRateDataSet.slice(dateIndex, positivityRateDataSet.length),
@@ -1291,7 +1339,7 @@ export default class Dashboard extends Component {
 	}
 
 	async switchStateDistrict() {
-		const { showDistricts } = this.state
+		const { showDistricts } = this.state;
 		await this.setState({ showDistricts: !showDistricts });
 		this.setRowData();
 	};
@@ -1332,20 +1380,8 @@ export default class Dashboard extends Component {
 	getCompareImage = (value, valueOld) => {
 		if (value > valueOld) {
 			return upIcon;
-		} else if (value < valueOld) {
+		} else {
 			return downIcon;
-		} else {
-			return yellowDash;
-		}
-	}
-
-	getCompareImageReverse = (value, valueOld) => {
-		if (value > valueOld) {
-			return greenUp;
-		} else if (value < valueOld) {
-			return redDown;
-		} else {
-			return yellowDash;
 		}
 	}
 
@@ -1422,7 +1458,7 @@ export default class Dashboard extends Component {
 		const cardsArrIndex = this.state.cardsData && this.state.cardsData.length > 1 ?
 			this.state.cardsData.findIndex(d => d.state === this.state.selectedState) : -1;
 
-
+		//summary card values
 		const totalCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].total) ? this.state.cardsData[cardsArrIndex].total : 0;
 		const deceasedCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].deceased) ? this.state.cardsData[cardsArrIndex].deceased : 0;
 		const recoveredCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].recovered) ? this.state.cardsData[cardsArrIndex].recovered : 0;
@@ -1444,15 +1480,20 @@ export default class Dashboard extends Component {
 		const dailyActive = dailyPos && dailyDeath && dailyRec && !isNaN((dailyPos - (dailyDeath + dailyRec))) ? (dailyPos - (dailyDeath + dailyRec)) : 0;
 		const dailyActiveOld = dailyPosOld && dailyDeathOld && dailyRecOld && !isNaN((dailyPosOld - (dailyDeathOld + dailyRecOld))) ? (dailyPosOld - (dailyDeathOld + dailyRecOld)) : 0;
 
-        const fontSize = this.state.mobileView ? "x-small" : "smaller";
+        const fontSize = this.state.mobileView ? "small" : "medium";
         const array = this.state.rowData && this.state.rowData;
         array.sort(this.compareArr);
 
 		return (
 			<div>
 
-				{selectedView === "Home" && <>
-					<div className="App">
+			    <div>
+
+			        {this.state.loading && <div className="loader">
+			            <Spinner animation="border" /><br/>
+			        </div>}
+
+					{!this.state.loading && <div className="App">
 
 						<div className="home-text">
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicHeading }}>Tracking India's Progress Through The Coronavirus Pandemic, Today</div>
@@ -1485,7 +1526,7 @@ export default class Dashboard extends Component {
                         	<span className="header-bar-text">
                         		<span style={{ marginRight: "15px" }}>
                         			<Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle" onClick={() => this.switchStateDistrict()}>
-                        				{this.state.showDistricts ? "Show State Data" : "Show District Data"}
+                        				{this.state.showDistricts ? "States Data" : "Districts Data"}
                         			</Button>
                         		</span>
                         	</span>
@@ -1494,9 +1535,6 @@ export default class Dashboard extends Component {
                         </div>
 						<br />
 						<div id="Summary">
-							{this.state.showDistricts && <Alert variant="warning">
-								The functionality for districts is in Beta Version. We are working on improving the data.
-                            </Alert>}
 							<br />
 							<this.blog />
 							<br />
@@ -1889,9 +1927,8 @@ export default class Dashboard extends Component {
 											Understand what the parameters mean
 											<a className="link-text" style={{ color: "blue" }} onClick={this.handleDivScroll}> here</a>.<br />
 											Raw data sources and detailed method of calculation
-											<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-														e.preventDefault();
-														window.location = "https://www.covidtoday.in/methods"
+											<a className="link-text" style={{ color: "blue" }} onClick={() => {
+														this.props.updateView("methods");
 													}}> here</a>.
 										</div>
 											</Card.Body>
@@ -1920,6 +1957,79 @@ export default class Dashboard extends Component {
 							</Container>
 						</div>
 
+						{/*<div id="Map">
+						<h1>MAP</h1>
+					</div>
+
+					<div id="Compare">
+							<div className="sub-header-row mt-4">
+							<span className="header-bar-text">COMPARE DATA FOR STATES</span>
+							</div>
+						{*//* Comparision chart *//*}
+						<Container>
+							<Row>
+								<Col>
+									Download the dataset
+								</Col>
+								<Col xs="9">
+									List of objetcs
+								</Col>
+							</Row>
+							<Row>
+								<Col>
+									<table style={{ maxHeight: 450, overflowX: 'hidden' }} class="table table-responsive">
+										<thead>
+											<tr style={{ position: 'sticky', top: 0 }}>
+												<th></th>
+												<th>States</th>
+											</tr>
+										</thead>
+										<tbody>
+											{this.state.rowData && this.state.rowData.map((item) => {
+												const stateName = this.getName(item.key);
+												return (
+													<tr>
+														<td><input type="checkbox"
+															onChange={() => this.onStateCheckBoxChange(stateName)}
+															checked={this.state.statesForComparision.indexOf(stateName) > -1 ? true : false}
+														></input></td>
+														<td>{stateName}</td>
+													</tr>
+												);
+											})}
+										</tbody>
+									</table>
+								</Col>
+								<Col xs="9">
+									<Tabs defaultActiveKey="home" id="uncontrolled-tab-example">
+										<Tab eventKey="home" title="1">
+											<ComparisionChart
+											comparisionGraphData={this.state.comparisionGraphData}
+											lockdownDates={this.state.lockdownDates}
+											lockdownChartText={this.state.lockdownChartText}
+											></ComparisionChart>
+										</Tab>
+										<Tab eventKey="profile" title="2">
+											{*//* <Sonnet /> *//*}
+											wfejbgk
+										</Tab>
+										<Tab eventKey="contact" title="3">
+											{*//* <Sonnet /> *//*}
+										</Tab>
+										<Tab eventKey="profil" title="4">
+											{*//* <Sonnet /> *//*}
+										</Tab><Tab eventKey="proile" title="5">
+											{*//* <Sonnet /> *//*}
+										</Tab>
+										<Tab eventKey="profie" title="6">
+											{*//* <Sonnet /> *//*}
+										</Tab>
+									</Tabs>
+								</Col>
+							</Row>
+						</Container>
+					</div>*/}
+
 						<div id="Analysis">
 							<div className="sub-header-row mt-4">
 								<span className="header-bar-text">KNOW ABOUT THE INDICATORS</span>
@@ -1929,15 +2039,13 @@ export default class Dashboard extends Component {
 								<IndicatorDescriptionCards fontSize={fontSizeDynamic} />
 							</div>
 							<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
-							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-									e.preventDefault();
-									window.location = "https://www.covidtoday.in/methods"
+							<a className="link-text" style={{ color: "blue" }} onClick={() => {
+									this.props.updateView("methods");
 								}}> Methods</a> page.
 							Caution should be used in interpretation as the transmission and testing indicators are not entirely independent, and one may affect the other.
 							We use best practices in all calculations, however some inadvertent errors may creep in despite our efforts.
-							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-									e.preventDefault();
-									window.location = "https://www.covidtoday.in/contribute"
+							<a className="link-text" style={{ color: "blue" }} onClick={() => {
+									this.props.updateView("contribute");
 								}}> Report an error.</a></div>
 
 							<LinkButtons fontSize={fontSizeDynamic} />
@@ -1947,28 +2055,25 @@ export default class Dashboard extends Component {
 								<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamic }}>For The People, By The People</div>
 								<div className="for-the-people-text" style={{ fontSize: fontSizeDynamic }}>COVID TODAY is an initiative by iCART, a multidisciplinary volunteer team of passionate doctors,
 								researchers, coders, and public health experts from institutes across India.
-							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-										e.preventDefault();
-										window.location = "https://www.covidtoday.in/aboutUs"
+							<a className="link-text" style={{ color: "blue" }} onClick={() => {
+										this.props.updateView("about");
 									}}> Learn more about the team</a>. This pandemic demands everyone to
 							come together so that we can gradually move towards a new normal in the coming months while ensuring those who are vulnerable are protected.
 							We envisage this platform to grow with your contribution and we welcome anyone who can contribute meaningfully to the project. Head over to
-							the <a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-										e.preventDefault();
-										window.location = "https://www.covidtoday.in/contribute"
+							the <a className="link-text" style={{ color: "blue" }} onClick={() => {
+										this.props.updateView("contribute");
 									}}>Contribute </a>page to see how you can pitch in.
 							</div>
 							</div>
 						</div>
-					</div>
-				</>}
-				<div className="footer-pic-container">
-					<img src={Footer} className="footer-pic" onClick={(e) => {
-						e.preventDefault();
-						window.location = "https://www.covidtoday.in/aboutUs"
-					}} />
+                        <div className="footer-pic-container">
+                            <img src={Footer} className="footer-pic" onClick={() => {
+                                this.props.updateView("about");
+                            }} />
+                        </div>
+                        <Licence font={licenceFont} width={licenceWidth} />
+					</div>}
 				</div>
-				<Licence font={licenceFont} width={licenceWidth} />
 			</div>
 		);
 	}
