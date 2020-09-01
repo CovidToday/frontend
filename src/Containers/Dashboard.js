@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactGA from 'react-ga';
 import '.././App.css';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -9,7 +8,7 @@ import axios from 'axios';
 import { Line, Chart, Bar } from 'react-chartjs-2';
 import {
 	Container, Row, Col, Dropdown, Card, Tabs, Tab, Button, Popover, OverlayTrigger,
-	CardGroup, Accordion, ButtonToolbar, Alert
+	CardGroup, Accordion, ButtonToolbar, Spinner
 } from 'react-bootstrap';
 import Header from ".././images/header.png"
 import Footer from ".././images/footer.jpg"
@@ -58,6 +57,7 @@ export default class Dashboard extends Component {
 		this.textDivRef = React.createRef();
 		this.plotsRef = React.createRef();
 		this.tableRef = React.createRef();
+		this.statesHeaderName = "STATES";
 
 		this.state = {
 			blogtitle: "",
@@ -65,7 +65,7 @@ export default class Dashboard extends Component {
 			columnDefs: [
 				{
 					headerName: '', children: [
-						{ headerName: "STATES", field: "state", sortable: true, flex: 2, suppressMovable: true, maxWidth: "170", filter: 'agTextColumnFilter' }
+						{ headerValueGetter: params => `${this.statesHeaderName}`, field: "state", sortable: true, flex: 2, suppressMovable: true, maxWidth: "170", filter: 'agTextColumnFilter' }
 					]
 				},
 				{
@@ -154,6 +154,7 @@ export default class Dashboard extends Component {
 			minRtDataPoint: 0,
 			maxRtDataPoint: 0,
 			maxDbtDatapoint: 0,
+			minDbtDatapoint: 0,
 			maxCFRPoint: 0,
 			maxPosRatePoint: 0,
 			lockdownDates: ["25 March", "15 April", "04 May", "18 May", "08 June", "01 July", "01 August"],
@@ -184,14 +185,15 @@ export default class Dashboard extends Component {
 			},
 			lastUpdatedTime: "",
 			cardsData: [],
-			showDistricts: false
+			showDistricts: false,
+			loading: true
 		}
 	}
 
 	columnDefMobile = [
 		{
 			headerName: '', children: [
-				{ headerName: "STATES", field: "state", sortable: true, suppressMovable: true, pinned: 'left', width: 120 }
+				{ headerValueGetter: params => `${this.statesHeaderName}`, field: "state", sortable: true, suppressMovable: true, pinned: 'left', width: 120 }
 			]
 		},
 		{
@@ -315,14 +317,14 @@ export default class Dashboard extends Component {
 				this.setState({ allDistrictData: response.data });
 			});
 		//BLOG
-		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Title.txt')
+		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/master/src/Blogs/Title.txt')
 			.then(response => {
 				this.setState({ blogtitle: response.data });
 				if (response.data[0] != "#")
 					this.setState({ showblog: this.state.showblog + 1 });
 			});
 
-		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Description.txt')
+		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/master/src/Blogs/Description.txt')
 			.then(response => {
 				this.setState({ blogdescription: response.data });
 				if (response.data[0] != "#")
@@ -767,6 +769,17 @@ export default class Dashboard extends Component {
 		})
 		this.setState({ pinnedTopRowData: pinnedData });
 		this.setState({ cardsData: infoData });
+		this.setState({loading: false});
+
+		if(this.state.showDistricts) {
+		    this.onStateSelect("Ahmedabad");
+		    this.statesHeaderName = "DISTRICTS";
+		    this.dataGrid && this.dataGrid.refreshHeader();
+		} else {
+		    this.onStateSelect("TT");
+		    this.statesHeaderName = "STATES";
+		    this.dataGrid && this.dataGrid.refreshHeader();
+		}
 	}
 
 	getDailyCasesGraphData = (dataFromApi) => {
@@ -949,7 +962,10 @@ export default class Dashboard extends Component {
 			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
 
 			let maxDbtDatapoint = Math.floor(Math.max(...dataFromApi.dbt_u95.slice(dateIndex, dataFromApi.dates.length)));
-			maxDbtDatapoint = Math.min(maxDbtDatapoint, 100);
+			maxDbtDatapoint = Math.min(maxDbtDatapoint, 130);
+
+			let minDbtDatapoint = Math.floor(Math.min(...dataFromApi.dbt_l95.slice(dateIndex, dataFromApi.dates.length)));
+            minDbtDatapoint = Math.max(minDbtDatapoint, -100);
 
 			//Horizontal line
 			// let horizontalLineData = [];
@@ -994,6 +1010,7 @@ export default class Dashboard extends Component {
 			this.setState({
 				dbtGraphData: data,
 				maxDbtDatapoint: maxDbtDatapoint,
+				minDbtDatapoint: minDbtDatapoint,
 			}, this.DbtChartRender);
 		}
 	}
@@ -1306,9 +1323,9 @@ export default class Dashboard extends Component {
 					<Dropdown.Item href="#Table"><img src={tableIcon} style={{ height: "25px", width: "25px", marginLeft: "-10px" }} />  Table</Dropdown.Item>
 					<Dropdown.Divider />
 					{/*<Dropdown.Item href="#Map"><img src={mapIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Map</Dropdown.Item>
-                <Dropdown.Divider/>
-                <Dropdown.Item href="#Compare"><img src={compareIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Compare State</Dropdown.Item>
-                <Dropdown.Divider/>*/}
+                    <Dropdown.Divider/>*/}
+                    <Dropdown.Item onClick={() => this.props.updateView("contribute")}><img src={compareIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Contribute</Dropdown.Item>
+                    <Dropdown.Divider/>
 					<Dropdown.Item href="#Analysis"><img src={analysisIcon} style={{ height: "25px", width: "25px", marginLeft: "-10px" }} />  Analysis</Dropdown.Item>
 				</Dropdown.Menu>
 			</Dropdown>
@@ -1331,7 +1348,7 @@ export default class Dashboard extends Component {
 	}
 
 	async switchStateDistrict() {
-		const { showDistricts } = this.state
+		const { showDistricts } = this.state;
 		await this.setState({ showDistricts: !showDistricts });
 		this.setRowData();
 	};
@@ -1372,20 +1389,8 @@ export default class Dashboard extends Component {
 	getCompareImage = (value, valueOld) => {
 		if (value > valueOld) {
 			return upIcon;
-		} else if (value < valueOld) {
+		} else {
 			return downIcon;
-		} else {
-			return yellowDash;
-		}
-	}
-
-	getCompareImageReverse = (value, valueOld) => {
-		if (value > valueOld) {
-			return greenUp;
-		} else if (value < valueOld) {
-			return redDown;
-		} else {
-			return yellowDash;
 		}
 	}
 
@@ -1484,22 +1489,27 @@ export default class Dashboard extends Component {
 		const dailyActive = dailyPos && dailyDeath && dailyRec && !isNaN((dailyPos - (dailyDeath + dailyRec))) ? (dailyPos - (dailyDeath + dailyRec)) : 0;
 		const dailyActiveOld = dailyPosOld && dailyDeathOld && dailyRecOld && !isNaN((dailyPosOld - (dailyDeathOld + dailyRecOld))) ? (dailyPosOld - (dailyDeathOld + dailyRecOld)) : 0;
 
-        const fontSize = this.state.mobileView ? "x-small" : "smaller";
+        const fontSize = this.state.mobileView ? "small" : "medium";
         const array = this.state.rowData && this.state.rowData;
         array.sort(this.compareArr);
 
 		return (
 			<div>
 
-				{selectedView === "Home" && <>
-					<div className="App">
+			    <div>
 
-						<div className="home-text">
+			        {this.state.loading && <div className="loader">
+			            <Spinner animation="border" /><br/>
+			        </div>}
+
+					{!this.state.loading && <div className="App">
+
+						{/*<div className="home-text">
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicHeading }}>Tracking India's Progress Through The Coronavirus Pandemic, Today</div>
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicSH, fontWeight: "bolder" }}>Understanding Your State's Response Through Live Outbreak Indicators</div>
 							<br />
-						</div>
-
+						</div>*/}
+                        <br/>
 						<div className="sub-header-row sticky-top">
                         	<span className="header-bar-nav"><this.NavDropdown /></span>
                         	{!this.state.mobileView &&
@@ -1525,7 +1535,7 @@ export default class Dashboard extends Component {
                         	<span className="header-bar-text">
                         		<span style={{ marginRight: "15px" }}>
                         			<Button variant="outline-primary" style={{ fontSize: fontSize }} className="st-di-toggle" onClick={() => this.switchStateDistrict()}>
-                        				{this.state.showDistricts ? "Show State Data" : "Show District Data"}
+                        				{this.state.showDistricts ? "States Data" : "Districts Data"}
                         			</Button>
                         		</span>
                         	</span>
@@ -1534,9 +1544,6 @@ export default class Dashboard extends Component {
                         </div>
 						<br />
 						<div id="Summary">
-							{this.state.showDistricts && <Alert variant="warning">
-								The functionality for districts is in Beta Version. We are working on improving the data.
-                            </Alert>}
 							<br />
 							<this.blog />
 							<br />
@@ -1819,6 +1826,7 @@ export default class Dashboard extends Component {
 													<div className="dbt-graph">
 														<DbtChart
 															maxDbtDatapoint={this.state.maxDbtDatapoint}
+															minDbtDatapoint={this.state.minDbtDatapoint}
 															dbtGraphData={this.state.dbtGraphData}
 															lockdownDates={this.state.lockdownDates}
 															lockdownChartText={this.state.lockdownChartText}
@@ -1921,7 +1929,8 @@ export default class Dashboard extends Component {
 											Hover on the cells to see the date for which parameter is shown.<br /><br />
 
 													<b>What do the colours mean</b><br />
-											Up and Down arrows indicate change in respective parameters as compared to 7 days ago. <br />
+											 Up arrowhead (value increased), down arrowhead (value decreased), and yellow dash (value within +-5%)
+											 indicate change in respective parameters as compared to 7 days ago. <br />
 													{`Rt is Red: >1, Yellow: <1 for less than 2 weeks, Green: < 1 for more than 2 weeks (based on WHO criteria).`} <br />
 													{`Positivity Rate is Red: >10%, Yellow: 5-10%, Green: < 5% (based on WHO criteria).`} <br />
 													{`Corrected CFR is Red: >10%, Yellow: 5-10%, Green: < 5%.`} <br /><br />
@@ -1929,9 +1938,8 @@ export default class Dashboard extends Component {
 											Understand what the parameters mean
 											<a className="link-text" style={{ color: "blue" }} onClick={this.handleDivScroll}> here</a>.<br />
 											Raw data sources and detailed method of calculation
-											<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-														e.preventDefault();
-														window.location = "https://www.covidtoday.in/methods"
+											<a className="link-text" style={{ color: "blue" }} onClick={() => {
+														this.props.updateView("methods");
 													}}> here</a>.
 										</div>
 											</Card.Body>
@@ -1954,6 +1962,7 @@ export default class Dashboard extends Component {
 										frameworkComponents={this.state.frameworkComponents}
 										headerHeight={window.innerWidth < '1200' ? '60' : '48'}
 										domLayout='autoHeight'
+										onGridReady={params => this.dataGrid = params.api}
 										pinnedTopRowData={this.state.pinnedTopRowData}
 										onSelectionChanged={this.onSelectionChanged.bind(this)} />
 								</div>
@@ -2042,15 +2051,13 @@ export default class Dashboard extends Component {
 								<IndicatorDescriptionCards fontSize={fontSizeDynamic} />
 							</div>
 							<div className="disclaimer" style={{ fontSize: fontSizeDynamic }}>The raw data sources and detailed method of calculation is provided in the
-							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-									e.preventDefault();
-									window.location = "https://www.covidtoday.in/methods"
+							<a className="link-text" style={{ color: "blue" }} onClick={() => {
+									this.props.updateView("methods");
 								}}> Methods</a> page.
 							Caution should be used in interpretation as the transmission and testing indicators are not entirely independent, and one may affect the other.
 							We use best practices in all calculations, however some inadvertent errors may creep in despite our efforts.
-							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-									e.preventDefault();
-									window.location = "https://www.covidtoday.in/contribute"
+							<a className="link-text" style={{ color: "blue" }} onClick={() => {
+									this.props.updateView("contribute");
 								}}> Report an error.</a></div>
 
 							<LinkButtons fontSize={fontSizeDynamic} />
@@ -2060,28 +2067,25 @@ export default class Dashboard extends Component {
 								<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamic }}>For The People, By The People</div>
 								<div className="for-the-people-text" style={{ fontSize: fontSizeDynamic }}>COVID TODAY is an initiative by iCART, a multidisciplinary volunteer team of passionate doctors,
 								researchers, coders, and public health experts from institutes across India.
-							<a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-										e.preventDefault();
-										window.location = "https://www.covidtoday.in/aboutUs"
+							<a className="link-text" style={{ color: "blue" }} onClick={() => {
+										this.props.updateView("about");
 									}}> Learn more about the team</a>. This pandemic demands everyone to
 							come together so that we can gradually move towards a new normal in the coming months while ensuring those who are vulnerable are protected.
 							We envisage this platform to grow with your contribution and we welcome anyone who can contribute meaningfully to the project. Head over to
-							the <a className="link-text" style={{ color: "blue" }} onClick={(e) => {
-										e.preventDefault();
-										window.location = "https://www.covidtoday.in/contribute"
+							the <a className="link-text" style={{ color: "blue" }} onClick={() => {
+										this.props.updateView("contribute");
 									}}>Contribute </a>page to see how you can pitch in.
 							</div>
 							</div>
 						</div>
-					</div>
-				</>}
-				<div className="footer-pic-container">
-					<img src={Footer} className="footer-pic" onClick={(e) => {
-						e.preventDefault();
-						window.location = "https://www.covidtoday.in/aboutUs"
-					}} />
+                        <div className="footer-pic-container">
+                            <img src={Footer} className="footer-pic" onClick={() => {
+                                this.props.updateView("about");
+                            }} />
+                        </div>
+                        <Licence font={licenceFont} width={licenceWidth} />
+					</div>}
 				</div>
-				<Licence font={licenceFont} width={licenceWidth} />
 			</div>
 		);
 	}

@@ -58,8 +58,9 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 }
 
 .header-pic-container {
-	width: 35%;
-	text-align: left;
+	width: 100%;
+	text-align: center;
+	padding: 15px;
 }
 
 .header-pic-container-mobile {
@@ -69,8 +70,7 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 
 .header-pic {
 	display: inline-block;
-	width: inherit;
-	padding-left: 45px;
+	width: 35%
 }
 
 .header-pic-mobile {
@@ -110,6 +110,7 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 .header-bar-dropdown {
 	display: table-cell;
 	text-align: center;
+	padding-top: 2px;
 }
 
 .sub-header-row {
@@ -181,8 +182,9 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 }
 
 .nav-button-group {
-	padding-left: 25px;
 	width: 100%;
+	text-align: center;
+	padding-top: 15px;
 }
 
 .nav-bar {
@@ -198,6 +200,7 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 	width: 100%;
 	display: block;
 	text-align: center;
+	padding-top: 15px;
 }
 
 .link-text {
@@ -574,23 +577,23 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 }
 
 .blue-card {
-    background-color: #b6f2f0 !important;
+    background-color: #7a9cc6ff !important;
 }
 
 .red-card {
-    background-color: #ff7a7a !important;
+    background-color: #ffb5c2ff !important;
 }
 
 .green-card {
-    background-color: #78f0a6 !important;
+    background-color: #97ba7d !important;
 }
 
 .yellow-card {
-    background-color: #f5fa69 !important;
+    background-color: #ffe9ceff !important;
 }
 
 .grey-card {
-    background-color: #b5b5b5 !important;
+    background-color: #ffbe86 !important;
 }
 
 .summary-card-heading {
@@ -602,11 +605,13 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 .summary-card-number {
     font-family: Titillium Web;
     font-size: larger;
+    font-weight: bold;
 }
 
 .summary-card-number-rt {
     font-family: Titillium Web;
     font-size: medium;
+    font-weight: bold;
 }
 
 .summary-card-number-secondary {
@@ -627,11 +632,13 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 .summary-card-number-mobile {
     font-family: Titillium Web;
     font-size: large;
+    font-weight: bold;
 }
 
 .summary-card-number-mobile-rt {
     font-family: Titillium Web;
     font-size: small;
+    font-weight: bold;
 }
 
 .summary-card-number-secondary-mobile {
@@ -651,4 +658,10 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 
 .summary-card-mobile {
     height: 75px;
+}
+
+.loader {
+   position: fixed;
+   top: 50%;
+   left: 50%;
 }
