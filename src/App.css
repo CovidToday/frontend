@@ -184,6 +184,7 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 .nav-button-group {
 	width: 100%;
 	text-align: center;
+	padding-top: 15px;
 }
 
 .nav-bar {
@@ -199,6 +200,7 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 	width: 100%;
 	display: block;
 	text-align: center;
+	padding-top: 15px;
 }
 
 .link-text {
