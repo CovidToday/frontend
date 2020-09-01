@@ -154,6 +154,7 @@ export default class Dashboard extends Component {
 			minRtDataPoint: 0,
 			maxRtDataPoint: 0,
 			maxDbtDatapoint: 0,
+			minDbtDatapoint: 0,
 			maxCFRPoint: 0,
 			maxPosRatePoint: 0,
 			lockdownDates: ["25 March", "15 April", "04 May", "18 May", "08 June", "01 July", "01 August"],
@@ -963,6 +964,9 @@ export default class Dashboard extends Component {
 			let maxDbtDatapoint = Math.floor(Math.max(...dataFromApi.dbt_u95.slice(dateIndex, dataFromApi.dates.length)));
 			maxDbtDatapoint = Math.min(maxDbtDatapoint, 130);
 
+			let minDbtDatapoint = Math.floor(Math.min(...dataFromApi.dbt_l95.slice(dateIndex, dataFromApi.dates.length)));
+            minDbtDatapoint = Math.max(minDbtDatapoint, -100);
+
 			//Horizontal line
 			// let horizontalLineData = [];
 			// for (let i = 0; i < data.labels.length; i++) {
@@ -1006,6 +1010,7 @@ export default class Dashboard extends Component {
 			this.setState({
 				dbtGraphData: data,
 				maxDbtDatapoint: maxDbtDatapoint,
+				minDbtDatapoint: minDbtDatapoint,
 			}, this.DbtChartRender);
 		}
 	}
@@ -1499,12 +1504,12 @@ export default class Dashboard extends Component {
 
 					{!this.state.loading && <div className="App">
 
-						<div className="home-text">
+						{/*<div className="home-text">
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicHeading }}>Tracking India's Progress Through The Coronavirus Pandemic, Today</div>
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicSH, fontWeight: "bolder" }}>Understanding Your State's Response Through Live Outbreak Indicators</div>
 							<br />
-						</div>
-
+						</div>*/}
+                        <br/>
 						<div className="sub-header-row sticky-top">
                         	<span className="header-bar-nav"><this.NavDropdown /></span>
                         	{!this.state.mobileView &&
@@ -1821,6 +1826,7 @@ export default class Dashboard extends Component {
 													<div className="dbt-graph">
 														<DbtChart
 															maxDbtDatapoint={this.state.maxDbtDatapoint}
+															minDbtDatapoint={this.state.minDbtDatapoint}
 															dbtGraphData={this.state.dbtGraphData}
 															lockdownDates={this.state.lockdownDates}
 															lockdownChartText={this.state.lockdownChartText}

@@ -6,7 +6,7 @@ export default class DbtChart extends Component {
 		super(props);
 	}
 	render() {
-		const { maxDbtDatapoint, dbtGraphData, lockdownDates, lockdownChartText } = this.props;
+		const { maxDbtDatapoint, minDbtDatapoint, dbtGraphData, lockdownDates, lockdownChartText } = this.props;
 		return <Line
 			data={dbtGraphData}
 			height={300}
@@ -63,6 +63,7 @@ export default class DbtChart extends Component {
 						display: true,
 						ticks: {
 							max: maxDbtDatapoint,
+							min: minDbtDatapoint,
 							// stepSize: 0.5
 						},
 					}],
