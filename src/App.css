@@ -574,11 +574,11 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 }
 
 .blue-card {
-    background-color: #b6f2f0 !important;
+    background-color: #7a9cc6ff !important;
 }
 
 .red-card {
-    background-color: #ff7a7a !important;
+    background-color: #ffb5c2ff !important;
 }
 
 .green-card {
@@ -586,7 +586,7 @@ ag-header-cell ag-header-cell-sortable ag-column-hover {
 }
 
 .yellow-card {
-    background-color: #f5fa69 !important;
+    background-color: #ffe9ceff !important;
 }
 
 .grey-card {

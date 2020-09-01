@@ -38,19 +38,19 @@ export default class App extends Component {
                     </span>
                     <span className={mobileView ? "nav-button-group-mobile" : "nav-button-group"}>
                         <span className={mobileView ? "nav-bar-mobile" : "nav-bar"}>
-                            <Button variant="outline-primary" style={{ fontSize: tabFontSize, padding: "0px" }} className="nav-button"
+                            <Button variant="outline-primary" style={{ fontSize: tabFontSize }} className="nav-button"
                                 onClick={() => {this.setState({selectedView: "home"})}}>Dashboard</Button>
                         </span>
                         <span className={mobileView ? "nav-bar-mobile" : "nav-bar"}>
-                            <Button variant="outline-primary" style={{ fontSize: tabFontSize, padding: "0px" }} className="nav-button"
+                            <Button variant="outline-primary" style={{ fontSize: tabFontSize }} className="nav-button"
                                 onClick={() => {this.setState({selectedView: "methods"})}}>Methods</Button>
                         </span>
                         <span className={mobileView ? "nav-bar-mobile" : "nav-bar"}>
-                            <Button variant="outline-primary" style={{ fontSize: tabFontSize, padding: "0px" }} className="nav-button"
+                            <Button variant="outline-primary" style={{ fontSize: tabFontSize }} className="nav-button"
                                 onClick={() => {this.setState({selectedView: "contribute"})}}>Contribute</Button>
                         </span>
                         <span className={mobileView ? "nav-bar-mobile" : "nav-bar"}>
-                            <Button variant="outline-primary" style={{ fontSize: tabFontSize, padding: "0px" }} className="nav-button"
+                            <Button variant="outline-primary" style={{ fontSize: tabFontSize }} className="nav-button"
                                 onClick={() => {this.setState({selectedView: "about"})}}>About Us</Button>
                         </span>
                     </span>

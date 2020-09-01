@@ -772,8 +772,12 @@ export default class Dashboard extends Component {
 
 		if(this.state.showDistricts) {
 		    this.onStateSelect("Ahmedabad");
+		    this.statesHeaderName = "DISTRICTS";
+		    this.dataGrid && this.dataGrid.refreshHeader();
 		} else {
 		    this.onStateSelect("TT");
+		    this.statesHeaderName = "STATES";
+		    this.dataGrid && this.dataGrid.refreshHeader();
 		}
 	}
 
@@ -957,7 +961,7 @@ export default class Dashboard extends Component {
 			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
 
 			let maxDbtDatapoint = Math.floor(Math.max(...dataFromApi.dbt_u95.slice(dateIndex, dataFromApi.dates.length)));
-			maxDbtDatapoint = Math.min(maxDbtDatapoint, 100);
+			maxDbtDatapoint = Math.min(maxDbtDatapoint, 130);
 
 			//Horizontal line
 			// let horizontalLineData = [];
@@ -1919,7 +1923,8 @@ export default class Dashboard extends Component {
 											Hover on the cells to see the date for which parameter is shown.<br /><br />
 
 													<b>What do the colours mean</b><br />
-											Up and Down arrows indicate change in respective parameters as compared to 7 days ago. <br />
+											 Up arrowhead (value increased), down arrowhead (value decreased), and yellow dash (value within +-5%)
+											 indicate change in respective parameters as compared to 7 days ago. <br />
 													{`Rt is Red: >1, Yellow: <1 for less than 2 weeks, Green: < 1 for more than 2 weeks (based on WHO criteria).`} <br />
 													{`Positivity Rate is Red: >10%, Yellow: 5-10%, Green: < 5% (based on WHO criteria).`} <br />
 													{`Corrected CFR is Red: >10%, Yellow: 5-10%, Green: < 5%.`} <br /><br />
@@ -1951,6 +1956,7 @@ export default class Dashboard extends Component {
 										frameworkComponents={this.state.frameworkComponents}
 										headerHeight={window.innerWidth < '1200' ? '60' : '48'}
 										domLayout='autoHeight'
+										onGridReady={params => this.dataGrid = params.api}
 										pinnedTopRowData={this.state.pinnedTopRowData}
 										onSelectionChanged={this.onSelectionChanged.bind(this)} />
 								</div>
