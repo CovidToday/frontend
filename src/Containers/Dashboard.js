@@ -317,14 +317,14 @@ export default class Dashboard extends Component {
 				this.setState({ allDistrictData: response.data });
 			});
 		//BLOG
-		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Title.txt')
+		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/master/src/Blogs/Title.txt')
 			.then(response => {
 				this.setState({ blogtitle: response.data });
 				if (response.data[0] != "#")
 					this.setState({ showblog: this.state.showblog + 1 });
 			});
 
-		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/develop/src/Blogs/Description.txt')
+		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/master/src/Blogs/Description.txt')
 			.then(response => {
 				this.setState({ blogdescription: response.data });
 				if (response.data[0] != "#")
@@ -1323,9 +1323,9 @@ export default class Dashboard extends Component {
 					<Dropdown.Item href="#Table"><img src={tableIcon} style={{ height: "25px", width: "25px", marginLeft: "-10px" }} />  Table</Dropdown.Item>
 					<Dropdown.Divider />
 					{/*<Dropdown.Item href="#Map"><img src={mapIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}  />  Map</Dropdown.Item>
-                <Dropdown.Divider/>
-                <Dropdown.Item href="#Compare"><img src={compareIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Compare State</Dropdown.Item>
-                <Dropdown.Divider/>*/}
+                    <Dropdown.Divider/>*/}
+                    <Dropdown.Item onClick={() => this.props.updateView("contribute")}><img src={compareIcon} style={{height : "25px", width : "25px",marginLeft:"-10px" }}   />  Contribute</Dropdown.Item>
+                    <Dropdown.Divider/>
 					<Dropdown.Item href="#Analysis"><img src={analysisIcon} style={{ height: "25px", width: "25px", marginLeft: "-10px" }} />  Analysis</Dropdown.Item>
 				</Dropdown.Menu>
 			</Dropdown>

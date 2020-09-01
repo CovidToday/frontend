@@ -33,10 +33,10 @@ export default class App extends Component {
 		return (
 			<div>
                 <div>
-                    <span className={mobileView ? "header-pic-container-mobile" : "header-pic-container"}>
+                    <div className={mobileView ? "header-pic-container-mobile" : "header-pic-container"}>
                         <img src={Header} className={mobileView ? "header-pic-mobile" : "header-pic"} />
-                    </span>
-                    <span className={mobileView ? "nav-button-group-mobile" : "nav-button-group"}>
+                    </div>
+                    <div className={mobileView ? "nav-button-group-mobile" : "nav-button-group"}>
                         <span className={mobileView ? "nav-bar-mobile" : "nav-bar"}>
                             <Button variant="outline-primary" style={{ fontSize: tabFontSize }} className="nav-button"
                                 onClick={() => {this.setState({selectedView: "home"})}}>Dashboard</Button>
@@ -47,15 +47,17 @@ export default class App extends Component {
                         </span>
                         <span className={mobileView ? "nav-bar-mobile" : "nav-bar"}>
                             <Button variant="outline-primary" style={{ fontSize: tabFontSize }} className="nav-button"
-                                onClick={() => {this.setState({selectedView: "contribute"})}}>Contribute</Button>
+                                onClick={() => {window.open("https://covidtoday.github.io/backend/", "_blank")}}>Get Data</Button>
                         </span>
+                       {/*<span className={mobileView ? "nav-bar-mobile" : "nav-bar"}>
+                            <Button variant="outline-primary" style={{ fontSize: tabFontSize }} className="nav-button"
+                                onClick={() => {this.setState({selectedView: "contribute"})}}>Contribute</Button>
+                        </span>*/}
                         <span className={mobileView ? "nav-bar-mobile" : "nav-bar"}>
                             <Button variant="outline-primary" style={{ fontSize: tabFontSize }} className="nav-button"
                                 onClick={() => {this.setState({selectedView: "about"})}}>About Us</Button>
                         </span>
-                    </span>
-                    <span>
-                    </span>
+                    </div>
                 </div>
 				<div>
                     {this.state.selectedView === "home" && <Dashboard updateView={this.updateSelectedView} />}
