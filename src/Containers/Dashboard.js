@@ -14,6 +14,11 @@ import Header from ".././images/header.png"
 import Footer from ".././images/footer.jpg"
 import informationIcon from ".././images/information_icon.png";
 import PosRateRenderer from '.././StatesDataGrid/CellRenderers/PosRateRenderer.jsx';
+import IncidenceRenderer from '.././StatesDataGrid/CellRenderers/IncidenceRenderer.jsx';
+import DBTRenderer from '.././StatesDataGrid/CellRenderers/DBTRenderer.jsx';
+import DailyTPMRenderer from '.././StatesDataGrid/CellRenderers/DailyTPMRenderer.jsx';
+import CrudeCfrRenderer from '.././StatesDataGrid/CellRenderers/CrudeCfrRenderer.jsx';
+import RecRateRenderer from '.././StatesDataGrid/CellRenderers/RecRateRenderer.jsx';
 import CfrRenderer from '.././StatesDataGrid/CellRenderers/CfrRenderer.jsx';
 import RtRenderer from '.././StatesDataGrid/CellRenderers/RtRenderer.jsx';
 import CasesRenderer from '.././StatesDataGrid/CellRenderers/CasesRenderer.jsx';
@@ -91,17 +96,36 @@ export default class Dashboard extends Component {
 							}
 						},
 						{
-							headerName: "CUMULATIVE CASES", field: "cumCases", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
-							cellRenderer: 'cumCasesRenderer', filter: 'agNumberColumnFilter', headerTooltip: "Total number of COVID+ cases detected till date"
+							headerName: "CASES", field: "dailyCases", sortable: true, flex: 1, suppressMovable: true, headerTooltip: "Number of COVID+ cases detected per day(averaged over last 7 days)",
+							cellRenderer: 'casesRenderer', filter: 'agNumberColumnFilter', minWidth: 100, comparator: this.numberSort
 						},
-						{
-							headerName: "DAILY CASES", field: "dailyCases", sortable: true, flex: 1, suppressMovable: true, headerTooltip: "Number of COVID+ cases detected per day(averaged over last 7 days)",
-							cellRenderer: 'casesRenderer', filter: 'agNumberColumnFilter', comparator: this.numberSort
-						}
+                        {
+                         	headerName: "INCIDENCE", field: "incidence", sortable: true, flex: 1, suppressMovable: true, headerTooltip: "Daily Cases Per Million",
+                         	cellRenderer: 'IncidenceRenderer', filter: 'agNumberColumnFilter', comparator: this.numberSort, cellStyle: function (params) {
+                                let style;
+                                const number = (params.data.incidence);
+                                if (number > 100) {
+                                   style = { backgroundColor: '#fdcbdd' };
+                                } else if (number <= 50) {
+                                   style = { backgroundColor: '#e1fae9' };
+                                } else if (number <= 100 && number > 50) {
+                                   style = { backgroundColor: '#fafae1' };
+                                }
+                                return style;
+                                }
+                        },
+                        {
+                            headerName: "DOUBLING TIME", field: "dbt", sortable: true, flex: 1, suppressMovable: true, headerTooltip: "Doubling Time",
+                            cellRenderer: 'DBTRenderer', filter: 'agNumberColumnFilter', comparator: this.numberSort
+                        }
 					]
 				},
 				{
 					headerName: 'TESTING', headerTooltip: "These numbers indicate the amount of testing being done in a state", children: [
+					    {
+                        	headerName: "DAILY TESTS PER MILLION", field: "dailyTPM", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
+                        	cellRenderer: 'DailyTPMRenderer', filter: 'agNumberColumnFilter', headerTooltip: "Daily Tests Per Million"
+                        },
 						{
 							headerName: "POSITIVITY RATE(%)", field: "posRate", sortable: true, flex: 1, suppressMovable: true, headerTooltip: "Percent of tests done per day that came back positive (averaged over last 7 days). Indicates RECENT trend",
 							cellRenderer: 'posRateRenderer', comparator: this.numberSort, filter: 'agNumberColumnFilter', cellStyle: function (params) {
@@ -120,27 +144,32 @@ export default class Dashboard extends Component {
 						{
 							headerName: "CUMULATIVE POSITIVITY RATE(%)", field: "cumPosRate", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
 							cellRenderer: 'cumPosRateRenderer', filter: 'agNumberColumnFilter', headerTooltip: "Percent of tests done till date that came back positive"
-						},
-						{
-							headerName: "CORRECTED CASE FATALITY RATE(%)", field: "ccfr", sortable: true, flex: 1, suppressMovable: true, filter: 'agNumberColumnFilter', comparator: this.numberSort,
-							cellRenderer: 'cfrRenderer', headerTooltip: "Out of every 100 COVID+ cases whose outcome is expected to be known, this many have passed away", cellStyle: function (params) {
-								let style;
-								if (params.data.ccfr > 10) {
-									style = { backgroundColor: '#fdcbdd' };
-								} else if (params.data.ccfr <= 5) {
-									style = { backgroundColor: '#e1fae9' };
-								} else if (params.data.ccfr <= 10 && params.data.ccfr > 5) {
-									style = { backgroundColor: '#fafae1' };
-								}
-								return style;
-							}
-						},
-						{
-							headerName: "TESTS PER MILLION", field: "testsPerMil", filter: 'agNumberColumnFilter', sortable: true, flex: 1, suppressMovable: true,
-							cellRenderer: 'TPMRenderer', comparator: this.numberSort, headerTooltip: "Number of people tested out of every 1 million people in the state"
 						}
 					]
-				}
+				},
+                {
+                 	headerName: 'HEALTHCARE', headerTooltip: "", children: [
+                 		{
+                            headerName: "RECOVERY RATE", field: "recRate", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
+                            cellRenderer: 'RecRateRenderer', filter: 'agNumberColumnFilter', headerTooltip: "Percent of closed cases that have recovered"
+                        },
+                 		{
+                 			headerName: "FATALITY RATE", field: "ccfr", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
+                 			cellRenderer: 'cfrRenderer', filter: 'agNumberColumnFilter', headerTooltip: "", cellStyle: function (params) {
+                                let style;
+                                const number = (params.data.ccfr);
+                                if (number > 3) {
+                                    style = { backgroundColor: '#fdcbdd' };
+                                } else if (number <= 2) {
+                                    style = { backgroundColor: '#e1fae9' };
+                               } else if (number <= 3 && number > 2) {
+                                    style = { backgroundColor: '#fafae1' };
+                               }
+                               return style;
+                            }
+                 		}
+                 	]
+                }
 			],
 			rowData: [],
 			pinnedTopRowData: [],
@@ -182,6 +211,11 @@ export default class Dashboard extends Component {
 				cumPosRateRenderer: CumPosRateRenderer,
 				cumCasesRenderer: CumCasesRenderer,
 				TPMRenderer: TPMRenderer,
+				IncidenceRenderer: IncidenceRenderer,
+				DBTRenderer: DBTRenderer,
+				DailyTPMRenderer: DailyTPMRenderer,
+				CrudeCfrRenderer: CrudeCfrRenderer,
+				RecRateRenderer: RecRateRenderer
 			},
 			lastUpdatedTime: "",
 			cardsData: [],
@@ -220,20 +254,39 @@ export default class Dashboard extends Component {
 					}
 				},
 				{
-					headerName: "CUMULATIVE CASES", field: "cumCases", width: 100, sortable: true, suppressMovable: true, headerTooltip: "Total number of COVID+ cases detected till date",
-					cellRenderer: 'cumCasesRenderer', comparator: this.numberSort, cellStyle: { fontSize: "x-small" }
-				},
-				{
-					headerName: "DAILY CASES", field: "dailyCases", width: 80, sortable: true, suppressMovable: true, headerTooltip: "Number of COVID+ cases detected per day(averaged over last 7 days)",
+					headerName: "CASES", field: "dailyCases", width: 100, sortable: true, suppressMovable: true, headerTooltip: "Number of COVID+ cases detected per day(averaged over last 7 days)",
 					cellRenderer: 'casesRenderer', comparator: this.numberSort, cellStyle: { fontSize: "x-small" }
-				}
+				},
+                {
+                    headerName: "INCIDENCE", field: "incidence", width: 90, sortable: true, suppressMovable: true, headerTooltip: "Daily Cases Per Million",
+                    cellRenderer: 'IncidenceRenderer', comparator: this.numberSort, cellStyle: { fontSize: "x-small" }, cellStyle: function (params) {
+                       let style;
+                       const number = (params.data.incidence);
+                       if (number > 100) {
+                           style = { backgroundColor: '#fdcbdd' };
+                       } else if (number <= 50) {
+                           style = { backgroundColor: '#e1fae9' };
+                       } else if (number <= 100 && number > 50) {
+                           style = { backgroundColor: '#fafae1' };
+                       }
+                       return style;
+                       }
+                },
+                {
+                     headerName: "DOUBLING TIME", field: "dbt", width: 90, sortable: true, suppressMovable: true, headerTooltip: "Doubling Time",
+                     cellRenderer: 'DBTRenderer', cellStyle: { fontSize: "x-small" }, comparator: this.numberSort
+                }
 			]
 		},
 		{
 			headerName: 'TESTING', headerTooltip: "These numbers indicate the amount of testing being done in a state", children: [
+			    {
+                    headerName: "DAILY TESTS PER MILLION", field: "dailyTPM", width: 90, sortable: true, suppressMovable: true, comparator: this.numberSort,
+                    cellRenderer: 'DailyTPMRenderer', cellStyle: { fontSize: "x-small" }, headerTooltip: "Daily Tests Per Million"
+                },
 				{
 					headerName: "POSITIVITY RATE(%)", field: "posRate", width: 90, sortable: true, suppressMovable: true, headerTooltip: "Percent of tests done per day that came back positive (averaged over last 7 days). Indicates RECENT trend",
-					cellRenderer: 'posRateRenderer', comparator: this.numberSort, cellStyle: function (params) {
+					cellRenderer: 'posRateRenderer', comparator: this.numberSort, cellStyle: { fontSize: "x-small" }, cellStyle: function (params) {
 						let style;
 						const posRateNumber = parseFloat(params.data.posRate);
 						if (posRateNumber > 10) {
@@ -249,27 +302,32 @@ export default class Dashboard extends Component {
 				{
 					headerName: "CUMULATIVE POSITIVITY RATE(%)", field: "cumPosRate", width: 100, sortable: true, headerTooltip: "Percent of tests done till date that came back positive",
 					cellRenderer: 'cumPosRateRenderer', suppressMovable: true, comparator: this.numberSort, cellStyle: { fontSize: "x-small" }
-				},
-				{
-					headerName: "CORRECTED CASE FATALITY RATE(%)", field: "ccfr", width: 100, sortable: true, suppressMovable: true, comparator: this.numberSort,
-					cellRenderer: 'cfrRenderer', headerTooltip: "Out of every 100 COVID+ cases whose outcome is expected to be known, this many have passed away", cellStyle: function (params) {
-						let style;
-						if (params.data.ccfr > 10) {
-							style = { backgroundColor: '#fdcbdd', fontSize: "x-small" };
-						} else if (params.data.ccfr <= 5) {
-							style = { backgroundColor: '#e1fae9', fontSize: "x-small" };
-						} else if (params.data.ccfr <= 10 && params.data.ccfr > 5) {
-							style = { backgroundColor: '#fafae1', fontSize: "x-small" };
-						}
-						return style;
-					}
-				},
-				{
-					headerName: "TESTS PER MILLION", field: "testsPerMil", width: 90, sortable: true, suppressMovable: true, headerTooltip: "Number of people tested out of every 1 million people in the state",
-					cellRenderer: 'TPMRenderer', comparator: this.numberSort, cellStyle: { fontSize: "x-small" }
 				}
 			]
-		}
+		},
+        {
+             headerName: 'HEALTHCARE', headerTooltip: "", children: [
+                 {
+                    headerName: "RECOVERY RATE", field: "recRate", width: 90, sortable: true, suppressMovable: true, comparator: this.numberSort,
+                    cellRenderer: 'RecRateRenderer', cellStyle: { fontSize: "x-small" }, headerTooltip: "Percent of closed cases that have recovered"
+                 },
+                 {
+                    headerName: "FATALITY RATE", field: "ccfr", width: 90, sortable: true, suppressMovable: true, comparator: this.numberSort,
+                    cellRenderer: 'cfrRenderer', headerTooltip: "", cellStyle: { fontSize: "x-small" }, cellStyle: function (params) {
+                        let style;
+                        const number = (params.data.ccfr);
+                        if (number > 3) {
+                            style = { backgroundColor: '#fdcbdd' };
+                        } else if (number <= 2) {
+                            style = { backgroundColor: '#e1fae9' };
+                        } else if (number <= 3 && number > 2) {
+                            style = { backgroundColor: '#fafae1' };
+                        }
+                        return style;
+                    }
+                 }
+             ]
+         }
 	];
 
 	componentDidMount() {
@@ -445,11 +503,16 @@ export default class Dashboard extends Component {
 				const rtData = rtPoint === "NA" ? "NA" : `${rtPoint} (${rtl95}-${rtu95})`;
 
 				//cfr
-				const cfrIndex = allApi[name] ? allApi[name].cfr3_point.length - 1 : -1;
-				const cfrPoint = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex]).toFixed(2) : "NA";
-				const cfrPointOld = cfrIndex > 0 ? (allApi[name].cfr3_point[cfrIndex - 7]).toFixed(2) : "NA";
+				const cfrIndex = allApi[name] ? allApi[name].cfr2_point.length - 1 : -1;
+				const cfrPoint = cfrIndex > 0 ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
+				const cfrPointOld = cfrIndex > 0 ? (allApi[name].cfr2_point[cfrIndex - 7]).toFixed(2) : "NA";
 				const cfrDate = cfrIndex > 0 ? allApi[name].dates[cfrIndex] : "-";
 				const cfrPoint2 = cfrIndex > 0 ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
+
+				const crudeCFRIndex = allApi[name] ? allApi[name].cfr1_point.length - 1 : -1;
+				const crudeCFRPoint = crudeCFRIndex > 0 ? (allApi[name].cfr1_point[crudeCFRIndex]).toFixed(2) : "NA";
+				const crudeCFRPointOld = crudeCFRIndex > 0 ? (allApi[name].cfr1_point[crudeCFRIndex - 7]).toFixed(2) : "NA";
+				const crudeCFRDate = crudeCFRIndex > 0 ? allApi[name].dates[crudeCFRIndex] : "-";
 
 				//posRate
 				const posRateArr = Object.entries(allApi);
@@ -560,13 +623,16 @@ export default class Dashboard extends Component {
 
 				let dbt;
 				let dbtDate;
+				let dbtOld;
 				posRateArr.forEach(data => {
 					if (data[0] === name) {
 						const indexDbt = data[1].dbt_point.slice().reverse().findIndex(i => i !== "");
 						const countDbt = data[1].dbt_point.length - 1;
 						const dbtIndex = indexDbt >= 0 ? countDbt - indexDbt : indexDbt;
 						const dbtFloat = (data[1].dbt_point[dbtIndex]);
-						dbt = dbtFloat && dbtFloat !== "" ? Math.floor(dbtFloat) : "-";
+						dbt = dbtFloat && dbtFloat !== "" ? (dbtFloat).toFixed(1) : "-";
+						const dbtFloatOld = (data[1].dbt_point[dbtIndex - 7]);
+                        dbtOld = dbtFloatOld && dbtFloatOld !== "" ? (dbtFloatOld).toFixed(1) : "-";
 						dbtDate = data[1].dates[dbtIndex];
 					}
 				});
@@ -627,6 +693,41 @@ export default class Dashboard extends Component {
 					}
 				});
 
+				let dailyCasesPM;
+				let dailyCasesPMOld;
+				let dailyCasesPMDate
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexdailyCasesPM = data[1].daily_cases_per_million.slice().reverse().findIndex(i => i !== "");
+						const countdailyCasesPM = data[1].daily_cases_per_million.length - 1;
+						const dailyCasesPMIndex = indexdailyCasesPM >= 0 ? countdailyCasesPM - indexdailyCasesPM : indexdailyCasesPM;
+						const dailyCasesPMFloat = (data[1].daily_cases_per_million[dailyCasesPMIndex]);
+						dailyCasesPM = dailyCasesPMFloat && dailyCasesPMFloat !== "" ? (dailyCasesPMFloat).toFixed(2) : "-";
+						const dailyCasesPMFloatOld = (data[1].daily_cases_per_million[dailyCasesPMIndex - 7]);
+						dailyCasesPMOld = dailyCasesPMFloatOld && dailyCasesPMFloatOld !== "" ? (dailyCasesPMFloatOld).toFixed(2) : "NA";
+						dailyCasesPMDate = data[1].dates[dailyCasesPMIndex];
+					}
+				});
+
+				let dailyTestsPM;
+				let dailyTestsPMOld;
+				let dailyTestsPMDate
+				posRateArr.forEach(data => {
+					if (data[0] === name) {
+						const indexdailyTestsPM = data[1].daily_tests_per_million.slice().reverse().findIndex(i => i !== "");
+						const countdailyTestsPM = data[1].daily_tests_per_million.length - 1;
+						const dailyTestsPMIndex = indexdailyTestsPM >= 0 ? countdailyTestsPM - indexdailyTestsPM : indexdailyTestsPM;
+						const dailyTestsPMFloat = (data[1].daily_tests_per_million[dailyTestsPMIndex]);
+						dailyTestsPM = dailyTestsPMFloat && dailyTestsPMFloat !== "" ? (dailyTestsPMFloat).toFixed(2) : "-";
+						const dailyTestsPMFloatOld = (data[1].daily_tests_per_million[dailyTestsPMIndex - 7]);
+						dailyTestsPMOld = dailyTestsPMFloatOld && dailyTestsPMFloatOld !== "" ? (dailyTestsPMFloatOld).toFixed(2) : "NA";
+						dailyTestsPMDate = data[1].dates[dailyTestsPMIndex];
+					}
+				});
+
+				const recoveryRate = cumRecovered && cumDeceased && !isNaN((cumRecovered / (cumRecovered + cumDeceased)) * 100) ?
+				    ((cumRecovered / (cumRecovered + cumDeceased)) * 100).toFixed(2) : 0;
+
 				infoData.push({
 					key: s, state: name, total: cumCases, totalDate: cumCasesDate, recovered: cumRecovered,
 					recoveredDate: cumRecoveredDate, deceased: cumDeceased, deceasedDate: cumDeceasedDate, tests: cumTests,
@@ -639,7 +740,10 @@ export default class Dashboard extends Component {
 					key: s, state: name, rt: rtData, cumCases: cumCases, dailyCases: dailyPos, posRate: maPosRate, cumPosRate: cumulativePosRate,
 					ccfr: cfrPoint, rtCurrent: rtPoint, rtOld: rtToCompare, dailyCasesOld: dailyPosOld, posRateOld: maPosRateOld, cfrOld: cfrPointOld,
 					rtDate: rtDate, cumCasesDate: cumCasesDate, maCasesDate: maCasesDate, posRateDate: posRateDate, cumPRateDate: cumPRateDate, cfrDate: cfrDate,
-					testsPerMil: tpm, tpmDate: tpmDate
+					testsPerMil: tpm, tpmDate: tpmDate, incidence: dailyCasesPM, incidenceOld: dailyCasesPMOld, incidenceDate: dailyCasesPMDate,
+                    dailyTPM: dailyTestsPM, dailyTPMOld: dailyTestsPMOld, dailyTPMDate: dailyTestsPMDate, crudeCFR: crudeCFRPoint,
+                    crudeCFROld: crudeCFRPointOld, crudeCFRDate: crudeCFRDate, dbt: dbt, dbtOld: dbtOld, dbtDate: dbtDate,
+                    recRate: recoveryRate
 				});
 			});
 			data.sort(function (a, b) {
@@ -664,11 +768,16 @@ export default class Dashboard extends Component {
 		}
 		const rtDataInd = `${rtPointInd} (${rtl95Ind}-${rtu95Ind})`
 
-		const cfrIndexInd = this.state.allStateData.India.cfr3_point.length - 1;
-		const cfrPointInd = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr3_point[cfrIndexInd]).toFixed(2) : "NA";
+		const cfrIndexInd = this.state.allStateData.India.cfr2_point.length - 1;
+		const cfrPointInd = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr2_point[cfrIndexInd]).toFixed(2) : "NA";
 		const cfrDate = cfrIndexInd > 0 ? this.state.allStateData.India.dates[cfrIndexInd] : "-";
-		const cfrPointOld = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr3_point[cfrIndexInd - 7]).toFixed(2) : "NA";
+		const cfrPointOld = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr2_point[cfrIndexInd - 7]).toFixed(2) : "NA";
 		const cfrPointInd2 = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr2_point[cfrIndexInd]).toFixed(2) : "NA";
+
+		const crudeCFRIndexInd = this.state.allStateData.India.cfr1_point.length - 1;
+		const crudeCFRPointInd = crudeCFRIndexInd > 0 ? (this.state.allStateData.India.cfr1_point[crudeCFRIndexInd]).toFixed(2) : "NA";
+		const crudeCFRDate = crudeCFRIndexInd > 0 ? this.state.allStateData.India.dates[crudeCFRIndexInd] : "-";
+		const crudeCFRPointOld = crudeCFRIndexInd > 0 ? (this.state.allStateData.India.cfr1_point[crudeCFRIndexInd - 7]).toFixed(2) : "NA";
 
 		const posRateArrInd = this.state.allStateData.India;
 
@@ -725,8 +834,9 @@ export default class Dashboard extends Component {
 		const indexIndDbt = posRateArrInd.dbt_point.slice().reverse().findIndex(i => i !== "");
 		const countIndDbt = posRateArrInd.dbt_point.length - 1;
 		const dbtIndexInd = indexIndDbt >= 0 ? countIndDbt - indexIndDbt : indexIndDbt;
-		const dbtInd = Math.floor(posRateArrInd.dbt_point[dbtIndexInd]);
+		const dbtInd = (posRateArrInd.dbt_point[dbtIndexInd]).toFixed(1);;
 		const dbtIndDate = posRateArrInd.dates[dbtIndexInd];
+		const dbtIndOld = (posRateArrInd.dbt_point[dbtIndexInd - 7]).toFixed(1);;
 
 		const indexIndDailyPos = posRateArrInd.daily_positive_cases.slice().reverse().findIndex(i => i !== "");
 		const countIndDailyPos = posRateArrInd.daily_positive_cases.length - 1;
@@ -752,6 +862,23 @@ export default class Dashboard extends Component {
 		const DailyTestsInd = Math.floor(posRateArrInd.daily_tests[DailyTestsIndexInd]);
 		const DailyTestsIndOld = Math.floor(posRateArrInd.daily_tests[DailyTestsIndexInd - 7]);
 
+		const indexIndincidence = posRateArrInd.daily_cases_per_million.slice().reverse().findIndex(i => i !== "");
+		const countIndincidence = posRateArrInd.daily_cases_per_million.length - 1;
+		const incidenceIndexInd = indexIndincidence >= 0 ? countIndincidence - indexIndincidence : indexIndincidence;
+		const incidenceInd = (posRateArrInd.daily_cases_per_million[incidenceIndexInd]).toFixed(2);
+		const incidenceIndOld = (posRateArrInd.daily_cases_per_million[incidenceIndexInd - 7]).toFixed(2);
+		const incidenceIndDate = posRateArrInd.dates[incidenceIndexInd];
+
+		const indexInddailytpm = posRateArrInd.daily_cases_per_million.slice().reverse().findIndex(i => i !== "");
+		const countInddailytpm = posRateArrInd.daily_cases_per_million.length - 1;
+		const dailytpmIndexInd = indexInddailytpm >= 0 ? countInddailytpm - indexInddailytpm : indexInddailytpm;
+		const dailytpmInd = (posRateArrInd.daily_cases_per_million[dailytpmIndexInd]).toFixed(2);
+		const dailytpmIndOld = (posRateArrInd.daily_cases_per_million[dailytpmIndexInd - 7]).toFixed(2);
+		const dailytpmIndDate = posRateArrInd.dates[dailytpmIndexInd];
+
+		const recoveryRateInd = cumRecoveredInd && cumDeceasedInd && !isNaN((cumRecoveredInd / (cumRecoveredInd + cumDeceasedInd)) * 100) ?
+			((cumRecoveredInd / (cumRecoveredInd + cumDeceasedInd)) * 100).toFixed(2) : 0;
+
 		infoData.push({
 			key: "TT", state: "India", total: cumCasesInd, totalDate: cumCasesIndDate, recovered: cumRecoveredInd,
 			recoveredDate: cumRecoveredIndDate, deceased: cumDeceasedInd, deceasedDate: cumDeceasedIndDate,
@@ -765,7 +892,9 @@ export default class Dashboard extends Component {
 			key: "TT", state: "India", rt: rtDataInd, cumCases: cumCasesInd, dailyCases: DailyPosInd, posRate: PosRateMaInd, cumPosRate: cumulativePosRateInd,
 			ccfr: cfrPointInd, rtCurrent: rtPointInd, rtOld: rtToCompareInd, rtDate: rtDate, cfrDate: cfrDate, cfrOld: cfrPointOld, dailyCasesOld: DailyPosIndOld,
 			posRateOld: PosRateMaIndOld, cumCasesDate: cumCasesIndDate, maCasesDate: maCasesIndDate, posRateDate: posRateDateInd, cumPRateDate: cumPRDateInd,
-			testsPerMil: tpmInd, tpmDate: tpmIndDate
+			testsPerMil: tpmInd, tpmDate: tpmIndDate, incidence: incidenceInd, incidenceOld: incidenceIndOld, incidenceDate: incidenceIndDate,
+			dailyTPM: dailytpmInd, dailyTPMOld: dailytpmIndOld, dailyTPMDate: dailytpmIndDate, crudeCFR: crudeCFRPointInd,
+            crudeCFROld: crudeCFRPointOld, crudeCFRDate: crudeCFRDate, dbt: dbtInd, dbtOld: dbtIndOld, dbtDate: dbtIndDate, recRate: recoveryRateInd
 		})
 		this.setState({ pinnedTopRowData: pinnedData });
 		this.setState({ cardsData: infoData });
@@ -1475,8 +1604,8 @@ export default class Dashboard extends Component {
 		const tests = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].tests) ? this.state.cardsData[cardsArrIndex].tests : 0;
 		const rt = cardsArrIndex !== -1 && this.state.cardsData ? this.state.cardsData[cardsArrIndex].rt : 0;
 		const dbt = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dbt) ? this.state.cardsData[cardsArrIndex].dbt : 0;
-		const recoveryRate = recoveredCases && totalCases && !isNaN((recoveredCases / (recoveredCases + deceasedCases)) * 100) ? (recoveredCases / (recoveredCases + deceasedCases)) * 100 : 0;
-		const fatRate = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].cfr) ? this.state.cardsData[cardsArrIndex].cfr : 0;
+		const recoveryRate = recoveredCases && deceasedCases && !isNaN((recoveredCases / (recoveredCases + deceasedCases)) * 100) ? ((recoveredCases / (recoveredCases + deceasedCases)) * 100) : 0;
+		const fatRate = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].cfr) ? (this.state.cardsData[cardsArrIndex].cfr) : 0;
 		const posRate = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].posRate) ? this.state.cardsData[cardsArrIndex].posRate : 0;
 		const dailyPos = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyPos) ? this.state.cardsData[cardsArrIndex].dailyPos : 0;
 		const dailyPosOld = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyPosOld) ? this.state.cardsData[cardsArrIndex].dailyPosOld : 0;
@@ -1947,7 +2076,7 @@ export default class Dashboard extends Component {
 									</Card>
 								</Accordion>
 							</div>
-							<Container>
+							<Container style={{maxWidth: "1350px"}}>
 								<div ref={this.tableRef}
 									id="myTable"
 									className="ag-theme-balham"
