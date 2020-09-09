@@ -261,6 +261,8 @@ export default class Dashboard extends Component {
 			},
 			lastUpdatedTime: "",
 			cardsData: [],
+			comparisonParameter: "daily_positive_cases",
+			comparisonChecked: "cases"
 		};
 	}
 
@@ -1426,7 +1428,7 @@ export default class Dashboard extends Component {
 	};
 
 	onStateCheckBoxChange(state) {
-		const { statesForComparision } = this.state;
+		const { statesForComparision, comparisonParameter } = this.state;
 		let updatedStates = [];
 		if (statesForComparision.indexOf(state) > -1) {
 			updatedStates = statesForComparision.filter((s) => s != state);
@@ -1440,7 +1442,7 @@ export default class Dashboard extends Component {
 			() =>
 				this.getComparisionGraphData(
 					this.state.positivityRateDataFromApi,
-					"daily_positive_cases"
+					comparisonParameter
 				)
 		);
 	}
@@ -2322,19 +2324,45 @@ export default class Dashboard extends Component {
 													<Card>
 														<Card.Body>
 															<div class="form-check">
-																<input class="form-check-input" type="radio" name="comparisionGraphDataset" id="cg-cases" value="cases" checked />
+																<input  class="form-check-input"
+																        type="radio"
+																        name="comparisionGraphDataset"
+																        id="cg-cases"
+																        value="cases"
+																        checked={this.state.comparisonChecked === "cases"}
+																        onClick={() => {
+																            this.setState({comparisonParameter: "daily_positive_cases", comparisonChecked: "cases"});
+																            this.getComparisionGraphData(this.state.positivityRateDataFromApi, "daily_positive_cases");
+																        }} />
 																<label class="form-check-label" for="cg-cases">
 																	Cases
 																	</label>
 															</div>
 															<div class="form-check">
-																<input class="form-check-input" type="radio" name="comparisionGraphDataset" id="cg-deaths" value="deaths" />
+																<input  class="form-check-input"
+																        type="radio"
+																        name="comparisionGraphDataset"
+																        id="cg-deaths"
+																        value="deaths"
+																        checked={this.state.comparisonChecked === "deaths"}
+																        onClick={() => {
+																            this.setState({comparisonParameter: "daily_deceased", comparisonChecked: "deaths"});
+                                                                            this.getComparisionGraphData(this.state.positivityRateDataFromApi, "daily_deceased");
+																        }} />
 																<label class="form-check-label" for="cg-deaths">
 																	Deaths
 																	</label>
 															</div>
 															<div class="form-check">
-																<input class="form-check-input" type="radio" name="comparisionGraphDataset" id="cg-tests" value="tests" />
+																<input  class="form-check-input"
+																        type="radio"
+																        name="comparisionGraphDataset"
+																        id="cg-tests"
+																        value="tests"
+																        onClick={() => {
+																            this.setState({comparisonParameter: "daily_tests", comparisonChecked: "tests"});
+                                                                            this.getComparisionGraphData(this.state.positivityRateDataFromApi, "daily_tests");
+																        }} />
 																<label class="form-check-label" for="cg-tests">
 																	Tests
 																	</label>
