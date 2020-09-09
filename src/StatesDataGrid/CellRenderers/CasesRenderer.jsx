@@ -16,7 +16,7 @@ export default class PosRateRenderer extends Component {
 				                <span style={{paddingRight: "2px"}}>{data.cumCases}</span>
 				                <span>(
                                     <span style={{fontSize: "smaller"}}>{this.props.value}</span>
-				                    <img src={downIcon} className="cell-icon" style={{height: "10px"}}/>)
+				                    {/*<img src={downIcon} className="cell-icon" style={{height: "10px"}}/>*/})
 				                </span>
 				           </span>
 			    } else if(parseFloat(data.dailyCases) > (parseFloat(data.dailyCasesOld) + parseFloat(data.dailyCasesOld/20))) {
@@ -24,7 +24,7 @@ export default class PosRateRenderer extends Component {
                                 <span style={{paddingRight: "2px"}}>{data.cumCases}</span>
                                 <span>(
                                     <span style={{fontSize: "smaller"}}>{this.props.value}</span>
-                                    <img src={upIcon} className="cell-icon" style={{height: "10px"}}/>)
+                                    {/*<img src={upIcon} className="cell-icon" style={{height: "10px"}}/>*/})
                                 </span>
                            </span>
                 } else {
@@ -32,7 +32,7 @@ export default class PosRateRenderer extends Component {
 				                <span style={{paddingRight: "2px"}}>{data.cumCases}</span>
 				                <span>(
 				                    <span style={{fontSize: "smaller"}}>{this.props.value}</span>
-				                    <img src={yellowDash} className="cell-icon" style={{height: "10px"}}/>)
+				                    {/*<img src={yellowDash} className="cell-icon" style={{height: "10px"}}/>*/})
 				                </span>
 				           </span>
 			    }
