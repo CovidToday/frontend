@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import upIcon from "../../images/up red.png"
-import downIcon from "../../images/down green.png"
+import upIcon from "../../images/greenUp.svg"
+import downIcon from "../../images/redDown.png"
 import yellowDash from "../../images/yellowDash.png"
 
 
