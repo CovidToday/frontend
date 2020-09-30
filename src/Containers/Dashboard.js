@@ -489,15 +489,21 @@ export default class Dashboard extends Component {
 				const name = !this.state.showDistricts ? this.getName(s) : s;
 
 				//rt
-				const rtIndex = rtApi[s] ? rtApi[s].rt_point.length - 1 : -1;
-				const rtPoint = rtIndex > 0 ? (rtApi[s].rt_point[rtIndex]).toFixed(2) : "NA";
-				const rtl95 = rtIndex > 0 ? (rtApi[s].rt_l95[rtIndex]).toFixed(2) : "NA";
-				const rtu95 = rtIndex > 0 ? (rtApi[s].rt_u95[rtIndex]).toFixed(2) : "NA";
+				let rtIndex = rtApi[s] ? rtApi[s].rt_point.length - 1 : -1;
+				for(let i = rtIndex; i>=0; i--) {
+				    if(rtApi[s].rt_point[i] !== "") {
+				        rtIndex = i;
+				        break;
+				    }
+				}
+				const rtPoint = rtIndex > 0 && (rtApi[s].rt_point[rtIndex]) !== "" ? (rtApi[s].rt_point[rtIndex]).toFixed(2) : "NA";
+				const rtl95 = rtIndex > 0 && (rtApi[s].rt_l95[rtIndex]) !== "" ? (rtApi[s].rt_l95[rtIndex]).toFixed(2) : "NA";
+				const rtu95 = rtIndex > 0 && (rtApi[s].rt_u95[rtIndex]) !== "" ? (rtApi[s].rt_u95[rtIndex]).toFixed(2) : "NA";
 				const rtDate = rtIndex > 0 ? (rtApi[s].dates[rtIndex]) : "-";
 				const rtToCompare = [];
 				if (rtIndex > 13) {
 					for (let i = rtIndex - 13; i <= rtIndex; i++) {
-						rtToCompare.push((rtApi[s].rt_point[i]).toFixed(2));
+						rtToCompare.push((rtApi[s].rt_point[i]) !== "" ? (rtApi[s].rt_point[i]).toFixed(2) : "NA");
 					};
 				}
 				const rtData = rtPoint === "NA" ? "NA" : `${rtPoint} (${rtl95}-${rtu95})`;
@@ -755,15 +761,21 @@ export default class Dashboard extends Component {
 		}
 
 		//India data
-		const rtIndexInd = this.state.rtStateDataApi["TT"].rt_point.length - 1;
-		const rtPointInd = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_point[rtIndexInd]).toFixed(2) : "NA";
-		const rtl95Ind = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_l95[rtIndexInd]).toFixed(2) : "NA";
-		const rtu95Ind = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].rt_u95[rtIndexInd]).toFixed(2) : "NA";
+		let rtIndexInd = this.state.rtStateDataApi["TT"].rt_point.length - 1;
+		for(let i = rtIndexInd; i>=0; i--) {
+            if(rtApi["TT"].rt_point[i] !== "") {
+        	    rtIndexInd = i;
+        		break;
+        	}
+        }
+		const rtPointInd = rtIndexInd > 0 && (this.state.rtStateDataApi["TT"].rt_point[rtIndexInd]) !== "" ? (this.state.rtStateDataApi["TT"].rt_point[rtIndexInd]).toFixed(2) : "NA";
+		const rtl95Ind = rtIndexInd > 0 && (this.state.rtStateDataApi["TT"].rt_l95[rtIndexInd]) !== "" ? (this.state.rtStateDataApi["TT"].rt_l95[rtIndexInd]).toFixed(2) : "NA";
+		const rtu95Ind = rtIndexInd > 0 && (this.state.rtStateDataApi["TT"].rt_u95[rtIndexInd]) !== "" ? (this.state.rtStateDataApi["TT"].rt_u95[rtIndexInd]).toFixed(2) : "NA";
 		const rtDate = rtIndexInd > 0 ? (this.state.rtStateDataApi["TT"].dates[rtIndexInd]) : "-";
 		const rtToCompareInd = [];
 		if (rtIndexInd > 13) {
 			for (let i = rtIndexInd - 13; i <= rtIndexInd; i++) {
-				rtToCompareInd.push((this.state.rtStateDataApi["TT"].rt_point[i]).toFixed(2));
+				rtToCompareInd.push((this.state.rtStateDataApi["TT"].rt_point[i]) !== "" ? (this.state.rtStateDataApi["TT"].rt_point[i]).toFixed(2) : "NA");
 			};
 		}
 		const rtDataInd = `${rtPointInd} (${rtl95Ind}-${rtu95Ind})`
