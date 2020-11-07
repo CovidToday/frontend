@@ -509,16 +509,16 @@ export default class Dashboard extends Component {
 				const rtData = rtPoint === "NA" ? "NA" : `${rtPoint} (${rtl95}-${rtu95})`;
 
 				//cfr
-				const cfrIndex = allApi[name] ? allApi[name].cfr2_point.length - 1 : -1;
-				const cfrPoint = cfrIndex > 0 ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
-				const cfrPointOld = cfrIndex > 0 ? (allApi[name].cfr2_point[cfrIndex - 7]).toFixed(2) : "NA";
-				const cfrDate = cfrIndex > 0 ? allApi[name].dates[cfrIndex] : "-";
-				const cfrPoint2 = cfrIndex > 0 ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
+				const cfrIndex = allApi[name] && allApi[name].cfr2_point ? allApi[name].cfr2_point.length - 1 : -1;
+				const cfrPoint = cfrIndex > 0 && allApi[name].cfr2_point ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
+				const cfrPointOld = cfrIndex > 0 && allApi[name].cfr2_point ? (allApi[name].cfr2_point[cfrIndex - 7]).toFixed(2) : "NA";
+				const cfrDate = cfrIndex > 0 && allApi[name].cfr2_point ? allApi[name].dates[cfrIndex] : "-";
+				const cfrPoint2 = cfrIndex > 0 && allApi[name].cfr2_point ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
 
-				const crudeCFRIndex = allApi[name] ? allApi[name].cfr1_point.length - 1 : -1;
-				const crudeCFRPoint = crudeCFRIndex > 0 ? (allApi[name].cfr1_point[crudeCFRIndex]).toFixed(2) : "NA";
-				const crudeCFRPointOld = crudeCFRIndex > 0 ? (allApi[name].cfr1_point[crudeCFRIndex - 7]).toFixed(2) : "NA";
-				const crudeCFRDate = crudeCFRIndex > 0 ? allApi[name].dates[crudeCFRIndex] : "-";
+				const crudeCFRIndex = allApi[name] && allApi[name].cfr1_point ? allApi[name].cfr1_point.length - 1 : -1;
+				const crudeCFRPoint = crudeCFRIndex > 0 && allApi[name].cfr1_point ? (allApi[name].cfr1_point[crudeCFRIndex]).toFixed(2) : "NA";
+				const crudeCFRPointOld = crudeCFRIndex > 0 && allApi[name].cfr1_point ? (allApi[name].cfr1_point[crudeCFRIndex - 7]).toFixed(2) : "NA";
+				const crudeCFRDate = crudeCFRIndex > 0 && allApi[name].cfr1_point ? allApi[name].dates[crudeCFRIndex] : "-";
 
 				//posRate
 				const posRateArr = Object.entries(allApi);
@@ -780,16 +780,16 @@ export default class Dashboard extends Component {
 		}
 		const rtDataInd = `${rtPointInd} (${rtl95Ind}-${rtu95Ind})`
 
-		const cfrIndexInd = this.state.allStateData.India.cfr2_point.length - 1;
-		const cfrPointInd = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr2_point[cfrIndexInd]).toFixed(2) : "NA";
+		const cfrIndexInd = this.state.allStateData.India.cfr2_point && this.state.allStateData.India.cfr2_point.length - 1;
+		const cfrPointInd = cfrIndexInd > 0 && this.state.allStateData.India.cfr2_point ? (this.state.allStateData.India.cfr2_point[cfrIndexInd]).toFixed(2) : "NA";
 		const cfrDate = cfrIndexInd > 0 ? this.state.allStateData.India.dates[cfrIndexInd] : "-";
-		const cfrPointOld = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr2_point[cfrIndexInd - 7]).toFixed(2) : "NA";
-		const cfrPointInd2 = cfrIndexInd > 0 ? (this.state.allStateData.India.cfr2_point[cfrIndexInd]).toFixed(2) : "NA";
+		const cfrPointOld = cfrIndexInd > 0 && this.state.allStateData.India.cfr2_point ? (this.state.allStateData.India.cfr2_point[cfrIndexInd - 7]).toFixed(2) : "NA";
+		const cfrPointInd2 = cfrIndexInd > 0 && this.state.allStateData.India.cfr2_point ? (this.state.allStateData.India.cfr2_point[cfrIndexInd]).toFixed(2) : "NA";
 
-		const crudeCFRIndexInd = this.state.allStateData.India.cfr1_point.length - 1;
-		const crudeCFRPointInd = crudeCFRIndexInd > 0 ? (this.state.allStateData.India.cfr1_point[crudeCFRIndexInd]).toFixed(2) : "NA";
-		const crudeCFRDate = crudeCFRIndexInd > 0 ? this.state.allStateData.India.dates[crudeCFRIndexInd] : "-";
-		const crudeCFRPointOld = crudeCFRIndexInd > 0 ? (this.state.allStateData.India.cfr1_point[crudeCFRIndexInd - 7]).toFixed(2) : "NA";
+		const crudeCFRIndexInd = this.state.allStateData.India.cfr1_point && this.state.allStateData.India.cfr1_point.length - 1;
+		const crudeCFRPointInd = crudeCFRIndexInd > 0 && this.state.allStateData.India.cfr1_point ? (this.state.allStateData.India.cfr1_point[crudeCFRIndexInd]).toFixed(2) : "NA";
+		const crudeCFRDate = crudeCFRIndexInd > 0 && this.state.allStateData.India.cfr1_point ? this.state.allStateData.India.dates[crudeCFRIndexInd] : "-";
+		const crudeCFRPointOld = crudeCFRIndexInd > 0 && this.state.allStateData.India.cfr1_point ? (this.state.allStateData.India.cfr1_point[crudeCFRIndexInd - 7]).toFixed(2) : "NA";
 
 		const posRateArrInd = this.state.allStateData.India;
 
@@ -881,11 +881,11 @@ export default class Dashboard extends Component {
 		const incidenceIndOld = Math.floor(posRateArrInd.daily_cases_per_million[incidenceIndexInd - 7]);
 		const incidenceIndDate = posRateArrInd.dates[incidenceIndexInd];
 
-		const indexInddailytpm = posRateArrInd.daily_cases_per_million.slice().reverse().findIndex(i => i !== "");
-		const countInddailytpm = posRateArrInd.daily_cases_per_million.length - 1;
+		const indexInddailytpm = posRateArrInd.daily_tests_per_million.slice().reverse().findIndex(i => i !== "");
+		const countInddailytpm = posRateArrInd.daily_tests_per_million.length - 1;
 		const dailytpmIndexInd = indexInddailytpm >= 0 ? countInddailytpm - indexInddailytpm : indexInddailytpm;
-		const dailytpmInd = Math.floor(posRateArrInd.daily_cases_per_million[dailytpmIndexInd]);
-		const dailytpmIndOld = Math.floor(posRateArrInd.daily_cases_per_million[dailytpmIndexInd - 7]);
+		const dailytpmInd = Math.floor(posRateArrInd.daily_tests_per_million[dailytpmIndexInd]);
+		const dailytpmIndOld = Math.floor(posRateArrInd.daily_tests_per_million[dailytpmIndexInd - 7]);
 		const dailytpmIndDate = posRateArrInd.dates[dailytpmIndexInd];
 
 		const recoveryRateInd = cumRecoveredInd && cumDeceasedInd && !isNaN((cumRecoveredInd / (cumRecoveredInd + cumDeceasedInd)) * 100) ?
@@ -1167,7 +1167,7 @@ export default class Dashboard extends Component {
 			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
 			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
 
-			let maxCFRPoint = Math.ceil(Math.max(...dataFromApi.cfr3_point.slice(dateIndex, dataFromApi.dates.length)));
+			let maxCFRPoint = dataFromApi.cfr3_point ? Math.ceil(Math.max(...dataFromApi.cfr3_point.slice(dateIndex, dataFromApi.dates.length))) : 0;
 			maxCFRPoint = Math.max(maxCFRPoint, 10);
 			maxCFRPoint = Math.min(maxCFRPoint, 20);
 
@@ -1198,12 +1198,12 @@ export default class Dashboard extends Component {
 				radius: 0,
 				hoverRadius: 0,
 			});
-			const cfrDataSet = dataFromApi.cfr3_point.slice();
+			const cfrDataSet = dataFromApi.cfr3_point && dataFromApi.cfr3_point.slice();
 
 			// Main data
 			let mainData = [{
 				label: 'CFR',
-				data: cfrDataSet.slice(dateIndex, cfrDataSet.length),
+				data: cfrDataSet && cfrDataSet.slice(dateIndex, cfrDataSet.length),
 				borderColor: '#004065',
 				radius: 1,
 				fill: false
