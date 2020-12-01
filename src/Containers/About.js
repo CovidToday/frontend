@@ -74,7 +74,7 @@ export default class About extends Component {
 							has over 34 years working experience. He has worked in Government of Maharashtra, UNICEF India Country Office in charge of Emergency Preparedness and 
 							Response and has been a Member of the High Power Committee (HPC) on disaster management plans set up by GoI in 1999 and is currently a member of the 
 							Peer Committee on Technological Preparedness for National Disruptions set up by the Indian National Academy of Engineering. He is on the governing 
-							boards of several organizations. </a> 
+							boards of several organizations.<a href="https://in.linkedin.com/in/vinod-menon-a05b5050"> Know more.</a> 
 							<br/><br/>
 
 							<b>Dr Habib Hasan Farooqui
