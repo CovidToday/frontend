@@ -126,11 +126,11 @@ export default class About extends Component {
 <b>Amulya Gupta</b>, MBBS student, AIIMS Delhi<br/>
 <b>Bhavik Bansal</b>, MBBS student, AIIMS Delhi<br/>
 <b>Dr Ayush Lohiya</b>, Assistant Professor, Public Health, Super Specialty Cancer Institute & Hospital, Lucknow<br/>
-<b>Dr Priyamadhaba Behera</b>, Assistant Professor , Department of Community Medicine and Family Medicine, AIIMS Bhubaneswar<br/><br/>
+<b>Dr Priyamadhaba Behera</b>, Assistant Professor , Department of Community Medicine and Family Medicine, AIIMS Bhubaneswar<br/>
 <b>Dev Balaji</b>, M.Tech Bioengineering and Medical Nanotechnology, Former researcher at Harvard Medical School and IISc Bangalore<br/>
 <b>Devarsh Patel</b>, BS-MS student, IISER Pune<br/>
 <b>Tanisha Mittal</b>, Masters student, Health Services Administration, University of Michigan School of Public Health<br/>
-<b>Varun Vasudevan</b>, Ph.D. Student, Institute for Computational and Mathematical Engineering, Stanford University<br/>
+<b>Varun Vasudevan</b>, Ph.D. Student, Institute for Computational and Mathematical Engineering, Stanford University<br/><br/><br/>
 
 <b>COVID-19 research from iCART:</b><br/>
 1. <a href="https://pubmed.ncbi.nlm.nih.gov/32528664/?from_single_result=SARS-CoV-2+epidemic+in+India%3A+epidemiological+features+and+in+silico+analysis+of+the+effect+of+interventions
