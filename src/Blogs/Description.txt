@@ -1,3 +1,2 @@
-[10 Sep] Table updated with new metrics: Daily cases per million, Daily tests per million, Doubling time, Recovery rate and Fatality rate. 
-[31 Aug] Selected hotspot districts are now available. Doubling time added as a transmission indicator. 
+[Upcoming Updates] State and district level vaccination coverage metrics, a more optimized method to estimate Rt, and a comprehensive COVID-19 resource center. 
 
