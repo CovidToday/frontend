@@ -346,19 +346,19 @@ export default class Dashboard extends Component {
 
 	async setData() {
 		//RT
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/rt_graph.json')
+		await axios.get('https://covidtoday.github.io/backend/state_data/rt_graph.json')
 			.then(response => {
 				this.setState({ rtStateDataApi: response.data });
 				this.setState({ rtDataFromApi: this.state.rtStateDataApi });
 				this.getRtPointGraphData(this.state.rtDataFromApi.TT);
 			});
 
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/rt_graph.json')
+		await axios.get('https://covidtoday.github.io/backend/district_data/rt_graph.json')
 			.then(response => {
 				this.setState({ rtDistrictDataApi: response.data });
 			});
 		//OTHER METRICS
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/state_data/allmetrics_states.json')
+		await axios.get('https://covidtoday.github.io/backend/state_data/allmetrics_states.json')
 			.then(response => {
 				this.setState({ allStateData: response.data });
 				this.setState({ allDataFromApi: response.data });
@@ -370,7 +370,7 @@ export default class Dashboard extends Component {
 				this.getComparisionGraphData(this.state.allStateData, "daily_positive_cases");
 			});
 
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/district_data/allmetrics_districts.json')
+		await axios.get('https://covidtoday.github.io/backend/district_data/allmetrics_districts.json')
 			.then(response => {
 				this.setState({ allDistrictData: response.data });
 			});
@@ -389,7 +389,7 @@ export default class Dashboard extends Component {
 					this.setState({ showblog: this.state.showblog + 1 });
 			});
 
-		await axios.get('https://raw.githubusercontent.com/CovidToday/backend/master/mobility-index/india_mobility_indented.json')
+		await axios.get('https://covidtoday.github.io/backend/mobility-index/india_mobility_indented.json')
 			.then(response => {
 				this.setState({ mobilityDataFromApi: response.data });
 				this.getMobilityGraphData(this.state.mobilityDataFromApi.India);
