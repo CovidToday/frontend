@@ -25,6 +25,9 @@ import CasesRenderer from '.././StatesDataGrid/CellRenderers/CasesRenderer.jsx';
 import CumPosRateRenderer from '.././StatesDataGrid/CellRenderers/CumPosRateRenderer.jsx';
 import CumCasesRenderer from '.././StatesDataGrid/CellRenderers/CumCasesRenderer.jsx';
 import TPMRenderer from '.././StatesDataGrid/CellRenderers/TPMRenderer.jsx';
+import DailyDosesPerMillionRenderer from '.././StatesDataGrid/CellRenderers/DailyDosesPerMillionRenderer.jsx';
+import PercOneDoseRenderer from '.././StatesDataGrid/CellRenderers/PercOneDoseRenderer.jsx';
+import PercTwoDoseRenderer from '.././StatesDataGrid/CellRenderers/PercTwoDoseRenderer.jsx';
 import graphIcon from ".././images/dashgraph.png";
 import tableIcon from ".././images/dashtable.png";
 import compareIcon from ".././images/dashcompare.png";
@@ -44,6 +47,9 @@ import PosRateChart from ".././Plots/PosRateChart.js"
 import DailyTestsChart from ".././Plots/DailyTestsChart.js"
 import MobilityChart from ".././Plots/MobilityChart.js"
 import RtChart from ".././Plots/RtChart.js"
+import DailyDeathsChart from ".././Plots/DailyDeathsChart.js"
+import DailyVaccineChart from ".././Plots/DailyVaccineChart.js"
+import TotalVaccineChart from ".././Plots/TotalVaccineChart.js"
 import DailyCasesChart from ".././Plots/DailyCasesChart.js"
 import DbtChart from ".././Plots/DbtChart.js"
 import * as StateEnums from ".././Commons/StateEnums.js"
@@ -113,11 +119,11 @@ export default class Dashboard extends Component {
                                 }
                                 return style;
                                 }
-                        },
+                        }/*,
                         {
                             headerName: "DOUBLING TIME(days)", field: "dbt", sortable: true, flex: 1, suppressMovable: true, headerTooltip: "Days taken for total cases to double",
                             cellRenderer: 'DBTRenderer', filter: 'agNumberColumnFilter', comparator: this.numberSort
-                        }
+                        }*/
 					]
 				},
 				{
@@ -149,10 +155,10 @@ export default class Dashboard extends Component {
 				},
                 {
                  	headerName: 'HEALTHCARE', headerTooltip: "", children: [
-                 		{
+                 		/*{
                             headerName: "RECOVERY RATE(%)", field: "recRate", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
                             cellRenderer: 'RecRateRenderer', filter: 'agNumberColumnFilter', headerTooltip: "Percent of closed cases that have recovered"
-                        },
+                        },*/
                  		{
                  			headerName: "FATALITY RATE(%)", field: "ccfr", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
                  			cellRenderer: 'cfrRenderer', filter: 'agNumberColumnFilter', headerTooltip: "Percent of closed cases that have died", cellStyle: function (params) {
@@ -167,7 +173,19 @@ export default class Dashboard extends Component {
                                }
                                return style;
                             }
-                 		}
+                 		},
+                 		{
+                            headerName: "DAILY DOSES PER MILLION", field: "dailyDosesPerMillion", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
+                            cellRenderer: 'DailyDosesPerMillionRenderer', filter: 'agNumberColumnFilter', headerTooltip: "Number of vaccine doses given per million"
+                        },
+                        {
+                            headerName: "POPULATION GIVEN ONE DOSE(%)", field: "percOneDose", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
+                            cellRenderer: 'PercOneDoseRenderer', filter: 'agNumberColumnFilter', headerTooltip: "Percentage of people given one dose of vaccine"
+                        },
+                        {
+                            headerName: "POPULATION FULLY VACCINATED(%)", field: "percTwoDose", sortable: true, flex: 1, suppressMovable: true, comparator: this.numberSort,
+                            cellRenderer: 'PercTwoDoseRenderer', filter: 'agNumberColumnFilter', headerTooltip: "Percentage of people fully vaccinated"
+                        }
                  	]
                 }
 			],
@@ -180,6 +198,7 @@ export default class Dashboard extends Component {
 			rtDistrictDataApi: [],
 			allStateData: [],
 			allDistrictData: [],
+			statesVaccineData: [],
 			minRtDataPoint: 0,
 			maxRtDataPoint: 0,
 			maxDbtDatapoint: 0,
@@ -189,11 +208,15 @@ export default class Dashboard extends Component {
 			lockdownDates: ["25 March", "15 April", "04 May", "18 May", "08 June", "01 July", "01 August"],
 			lockdownChartText: ['LD 1', 'LD 2', 'LD 3', 'LD 4', 'Unlock 1', 'Unlock 2', 'Unlock 3'],
 			graphStartDate: '22 March',
+			vaccineGraphStart: '16 January',
 			rtPointGraphData: { datasets: [{ data: [] }], labels: [] },
 			cfrGraphData: { datasets: [{ data: [] }], labels: [] },
 			mobilityGraphData: { datasets: [{ data: [] }], lables: [] },
 			positivityRateGraphData: { datasets: [{ data: [] }], lables: [] },
+			totalVaccineGraphData: { datasets: [{ data: [] }], lables: [] },
 			dailyCasesGraphData: { datasets: [{ data: [] }], lables: [] },
+			dailyDeathsGraphData: { datasets: [{ data: [] }], lables: [] },
+			dailyVaccineGraphData: { datasets: [{ data: [] }], lables: [] },
 			dailyTestsGraphData: { datasets: [{ data: [] }], lables: [] },
 			dbtGraphData: { datasets: [{ data: [] }], labels: [] },
 			comparisionGraphData: { datasets: [{ data: [] }], lables: [] },
@@ -215,7 +238,10 @@ export default class Dashboard extends Component {
 				DBTRenderer: DBTRenderer,
 				DailyTPMRenderer: DailyTPMRenderer,
 				CrudeCfrRenderer: CrudeCfrRenderer,
-				RecRateRenderer: RecRateRenderer
+				RecRateRenderer: RecRateRenderer,
+				DailyDosesPerMillionRenderer: DailyDosesPerMillionRenderer,
+				PercOneDoseRenderer: PercOneDoseRenderer,
+				PercTwoDoseRenderer: PercTwoDoseRenderer
 			},
 			lastUpdatedTime: "",
 			cardsData: [],
@@ -271,11 +297,11 @@ export default class Dashboard extends Component {
                        }
                        return style;
                        }
-                },
+                }/*,
                 {
                      headerName: "DOUBLING TIME (days)", field: "dbt", width: 90, sortable: true, suppressMovable: true, headerTooltip: "Days taken for closed cases to double",
                      cellRenderer: 'DBTRenderer', cellStyle: { fontSize: "x-small" }, comparator: this.numberSort
-                }
+                }*/
 			]
 		},
 		{
@@ -307,10 +333,10 @@ export default class Dashboard extends Component {
 		},
         {
              headerName: 'HEALTHCARE', headerTooltip: "", children: [
-                 {
+                 /*{
                     headerName: "RECOVERY RATE(%)", field: "recRate", width: 90, sortable: true, suppressMovable: true, comparator: this.numberSort,
                     cellRenderer: 'RecRateRenderer', cellStyle: { fontSize: "x-small" }, headerTooltip: "Percent of closed cases that have recovered"
-                 },
+                 },*/
                  {
                     headerName: "FATALITY RATE(%)", field: "ccfr", width: 90, sortable: true, suppressMovable: true, comparator: this.numberSort,
                     cellRenderer: 'cfrRenderer', headerTooltip: "Percent of closed cases that have died", cellStyle: { fontSize: "x-small" }, cellStyle: function (params) {
@@ -325,7 +351,19 @@ export default class Dashboard extends Component {
                         }
                         return style;
                     }
-                 }
+                 },
+                 {
+                    headerName: "DAILY DOSES PER MILLION", field: "dailyDosesPerMillion", width: 90, sortable: true, suppressMovable: true, comparator: this.numberSort,
+                    cellRenderer: 'DailyDosesPerMillionRenderer', cellStyle: { fontSize: "x-small" }, headerTooltip: "Number of vaccine doses given per million"
+                 },
+                 {
+                    headerName: "POPULATION GIVEN ONE DOSE(%)", field: "percOneDose", width: 100, sortable: true, suppressMovable: true, comparator: this.numberSort,
+                    cellRenderer: 'PercOneDoseRenderer', cellStyle: { fontSize: "x-small" }, headerTooltip: "Percentage of people given one dose of vaccine"
+                 },
+                 {
+                    headerName: "POPULATION FULLY VACCINATED(%)", field: "percTwoDose", width: 115, sortable: true, suppressMovable: true, comparator: this.numberSort,
+                    cellRenderer: 'PercTwoDoseRenderer', cellStyle: { fontSize: "x-small" }, headerTooltip: "Percentage of people fully vaccinated"
+                 },
              ]
          }
 	];
@@ -357,6 +395,12 @@ export default class Dashboard extends Component {
 			.then(response => {
 				this.setState({ rtDistrictDataApi: response.data });
 			});
+		await axios.get('https://covidtoday.github.io/backend/state_data/State_vaccine_mini.json')
+            .then(response => {
+                this.setState({ statesVaccineData: response.data });
+                this.getDailyVaccineGraphData(this.state.statesVaccineData.India);
+                this.getTotalVaccineGraphData(this.state.statesVaccineData.India);
+            });
 		//OTHER METRICS
 		await axios.get('https://covidtoday.github.io/backend/state_data/allmetrics_states.json')
 			.then(response => {
@@ -365,6 +409,7 @@ export default class Dashboard extends Component {
 				this.getCfrGraphData(this.state.allStateData.India);
 				this.getPositivityRateGraphData(this.state.allStateData.India);
 				this.getDailyCasesGraphData(this.state.allStateData.India);
+				this.getDailyDeathsGraphData(this.state.allStateData.India);
 				this.getDailyTestsGraphData(this.state.allStateData.India);
 				this.getDbtGraphData(this.state.allStateData.India);
 				this.getComparisionGraphData(this.state.allStateData, "daily_positive_cases");
@@ -375,7 +420,7 @@ export default class Dashboard extends Component {
 				this.setState({ allDistrictData: response.data });
 			});
 		//BLOG
-		await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/master/src/Blogs/Title.txt')
+		/*await axios.get('https://raw.githubusercontent.com/CovidToday/frontend/master/src/Blogs/Title.txt')
 			.then(response => {
 				this.setState({ blogtitle: response.data });
 				if (response.data[0] != "#")
@@ -387,7 +432,7 @@ export default class Dashboard extends Component {
 				this.setState({ blogdescription: response.data });
 				if (response.data[0] != "#")
 					this.setState({ showblog: this.state.showblog + 1 });
-			});
+			});*/
 
 		await axios.get('https://covidtoday.github.io/backend/mobility-index/india_mobility_indented.json')
 			.then(response => {
@@ -483,8 +528,9 @@ export default class Dashboard extends Component {
 		this.setState({ rtDataFromApi: rtApi });
 		const allApi = this.state.showDistricts ? this.state.allDistrictData : this.state.allStateData;
 		this.setState({ allDataFromApi: allApi });
+		const vaccineApi = this.state.statesVaccineData;
 
-		if (rtApi && allApi && Object.keys(rtApi).length > 0 && Object.keys(allApi).length > 0) {
+		if (rtApi && allApi && vaccineApi && Object.keys(rtApi).length > 0 && Object.keys(allApi).length > 0) {
 			list && list.forEach(s => {
 				const name = !this.state.showDistricts ? this.getName(s) : s;
 
@@ -511,14 +557,81 @@ export default class Dashboard extends Component {
 				//cfr
 				const cfrIndex = allApi[name] && allApi[name].cfr2_point ? allApi[name].cfr2_point.length - 1 : -1;
 				const cfrPoint = cfrIndex > 0 && allApi[name].cfr2_point ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
-				const cfrPointOld = cfrIndex > 0 && allApi[name].cfr2_point ? (allApi[name].cfr2_point[cfrIndex - 7]).toFixed(2) : "NA";
+				const cfrPointOld = cfrIndex > 0 && allApi[name].cfr2_point ? (allApi[name].cfr2_point[cfrIndex - 14]).toFixed(2) : "NA";
 				const cfrDate = cfrIndex > 0 && allApi[name].cfr2_point ? allApi[name].dates[cfrIndex] : "-";
 				const cfrPoint2 = cfrIndex > 0 && allApi[name].cfr2_point ? (allApi[name].cfr2_point[cfrIndex]).toFixed(2) : "NA";
 
 				const crudeCFRIndex = allApi[name] && allApi[name].cfr1_point ? allApi[name].cfr1_point.length - 1 : -1;
 				const crudeCFRPoint = crudeCFRIndex > 0 && allApi[name].cfr1_point ? (allApi[name].cfr1_point[crudeCFRIndex]).toFixed(2) : "NA";
-				const crudeCFRPointOld = crudeCFRIndex > 0 && allApi[name].cfr1_point ? (allApi[name].cfr1_point[crudeCFRIndex - 7]).toFixed(2) : "NA";
+				const crudeCFRPointOld = crudeCFRIndex > 0 && allApi[name].cfr1_point ? (allApi[name].cfr1_point[crudeCFRIndex - 14]).toFixed(2) : "NA";
 				const crudeCFRDate = crudeCFRIndex > 0 && allApi[name].cfr1_point ? allApi[name].dates[crudeCFRIndex] : "-";
+
+				//vaccine
+				const vaccineArr = Object.entries(vaccineApi);
+                let dailyDosesPerMillion;
+                let dailyDosesPerMillionDate
+                vaccineArr.forEach(data => {
+                    if(data[0] === name) {
+                        const indexDosesPerMillion = data[1].daily_doses_per_million.slice().reverse().findIndex(i => i !== "");
+                        const countDosesPerMillion = data[1].daily_doses_per_million.length - 1;
+                        const dosesPerMillionIndex = indexDosesPerMillion >= 0 ? countDosesPerMillion - indexDosesPerMillion : indexDosesPerMillion;
+                        const dosesPerMillionFloat = data[1].daily_doses_per_million[dosesPerMillionIndex];
+                        dailyDosesPerMillion = dosesPerMillionFloat && dosesPerMillionFloat !== "" ? dosesPerMillionFloat.toFixed(2) : "-";
+                        dailyDosesPerMillionDate = data[1].dates[dosesPerMillionIndex];
+                    }
+                })
+
+                let percOneDose;
+                let percOneDoseDate;
+                vaccineArr.forEach(data => {
+                    if(data[0] === name) {
+                        const indexPercOneDose = data[1].pct_population_onedose.slice().reverse().findIndex(i => i !== "");
+                        const countPercOneDose = data[1].pct_population_onedose.length - 1;
+                        const percOneDoseIndex = indexPercOneDose >= 0 ? countPercOneDose - indexPercOneDose : indexPercOneDose;
+                        const percOneDoseFloat = data[1].pct_population_onedose[percOneDoseIndex];
+                        percOneDose = percOneDoseFloat && percOneDoseFloat !== "" ? percOneDoseFloat.toFixed(2) : "-";
+                        percOneDoseDate = data[1].dates[percOneDoseIndex];
+                    }
+                })
+
+                let percTwoDose;
+                let percTwoDoseDate;
+                vaccineArr.forEach(data => {
+                    if(data[0] === name) {
+                        const indexPercTwoDose = data[1].pct_population_twodose.slice().reverse().findIndex(i => i !== "");
+                        const countPercTwoDose = data[1].pct_population_twodose.length - 1;
+                        const percTwoDoseIndex = indexPercTwoDose >= 0 ? countPercTwoDose - indexPercTwoDose : indexPercTwoDose;
+                        const percTwoDoseFloat = data[1].pct_population_twodose[percTwoDoseIndex];
+                        percTwoDose = percTwoDoseFloat && percTwoDoseFloat !== "" ? percTwoDoseFloat.toFixed(2) : "-";
+                        percTwoDoseDate = data[1].dates[percTwoDoseIndex];
+                    }
+                })
+
+                let cumDoses;
+                let cumDosesDate;
+                vaccineArr.forEach(data => {
+                    if(data[0] === name) {
+                        const indexCumDoses = data[1].cum_doses.slice().reverse().findIndex(i => i !== "");
+                        const countCumDoses = data[1].cum_doses.length - 1;
+                        const cumDosesIndex = indexCumDoses >= 0 ? countCumDoses - indexCumDoses : indexCumDoses;
+                        const cumDosesFloat = data[1].cum_doses[cumDosesIndex];
+                        cumDoses = cumDosesFloat && cumDosesFloat !== "" ? cumDosesFloat : "-";
+                        cumDosesDate = data[1].dates[cumDosesIndex];
+                    }
+                })
+
+                let dailyDoses;
+                let dailyDosesDate;
+                vaccineArr.forEach(data => {
+                    if(data[0] === name) {
+                        const indexDailyDoses = data[1].daily_doses.slice().reverse().findIndex(i => i !== "");
+                        const countDailyDoses = data[1].daily_doses.length - 1;
+                        const dailyDosesIndex = indexDailyDoses >= 0 ? countDailyDoses - indexDailyDoses : indexDailyDoses;
+                        const dailyDosesFloat = data[1].daily_doses[dailyDosesIndex];
+                        dailyDoses = dailyDosesFloat && dailyDosesFloat !== "" ? dailyDosesFloat : "-";
+                        dailyDosesDate = data[1].dates[dailyDosesIndex];
+                    }
+                })
 
 				//posRate
 				const posRateArr = Object.entries(allApi);
@@ -572,6 +685,7 @@ export default class Dashboard extends Component {
 				});
 				let maCases;
 				let maCasesOld;
+				let maCasesOneWeek;
 				let maCasesDate;
 				posRateArr.forEach(data => {
 					if (data[0] === name) {
@@ -579,9 +693,11 @@ export default class Dashboard extends Component {
 						const countMACases = data[1].daily_positive_cases_ma.length - 1;
 						const MACasesIndex = indexMACases >= 0 ? countMACases - indexMACases : indexMACases;
 						const maCasesFloat = data[1].daily_positive_cases_ma[MACasesIndex];
-						const maCasesFloatOld = data[1].daily_positive_cases_ma[MACasesIndex - 7];
+						const maCasesFloatOld = data[1].daily_positive_cases_ma[MACasesIndex - 14];
+						const maCasesOneWeekFloat = data[1].daily_positive_cases_ma[MACasesIndex - 7];
 						maCases = maCasesFloat && maCasesFloat !== "" ? Math.floor(maCasesFloat) : "NA";
 						maCasesOld = maCasesFloatOld && maCasesFloatOld !== "" ? Math.floor(maCasesFloatOld) : "NA";
+						maCasesOneWeek = maCasesOneWeekFloat && maCasesOneWeekFloat !== "" ? Math.floor(maCasesOneWeekFloat) : "NA";
 						maCasesDate = data[1].dates[MACasesIndex];
 					}
 				});
@@ -595,7 +711,7 @@ export default class Dashboard extends Component {
 						const posRateMaIndex = indexPosRateMa >= 0 ? countPosRateMa - indexPosRateMa : indexPosRateMa;
 						const maPosRateFloat = (data[1].daily_positivity_rate_ma[posRateMaIndex]);
 						maPosRate = maPosRateFloat && maPosRateFloat !== "" ? (maPosRateFloat).toFixed(2) : "NA";
-						const maPosRateFloatOld = (data[1].daily_positivity_rate_ma[posRateMaIndex - 7]);
+						const maPosRateFloatOld = (data[1].daily_positivity_rate_ma[posRateMaIndex - 14]);
 						maPosRateOld = maPosRateFloatOld && maPosRateFloatOld !== "" ? (maPosRateFloatOld).toFixed(2) : "NA";
 						posRateDate = data[1].dates[posRateMaIndex];
 					}
@@ -637,7 +753,7 @@ export default class Dashboard extends Component {
 						const dbtIndex = indexDbt >= 0 ? countDbt - indexDbt : indexDbt;
 						const dbtFloat = (data[1].dbt_point[dbtIndex]);
 						dbt = dbtFloat && dbtFloat !== "" ? (dbtFloat).toFixed(1) : "-";
-						const dbtFloatOld = (data[1].dbt_point[dbtIndex - 7]);
+						const dbtFloatOld = (data[1].dbt_point[dbtIndex - 14]);
                         dbtOld = dbtFloatOld && dbtFloatOld !== "" ? (dbtFloatOld).toFixed(1) : "-";
 						dbtDate = data[1].dates[dbtIndex];
 					}
@@ -652,7 +768,7 @@ export default class Dashboard extends Component {
 						const DailyPosIndex = indexDailyPos >= 0 ? countDailyPos - indexDailyPos : indexDailyPos;
 						const DailyPosFloat = (data[1].daily_positive_cases[DailyPosIndex]);
 						dailyPos = DailyPosFloat && DailyPosFloat !== "" ? Math.floor(DailyPosFloat) : "-";
-						const DailyPosFloatOld = (data[1].daily_positive_cases[DailyPosIndex - 7]);
+						const DailyPosFloatOld = (data[1].daily_positive_cases[DailyPosIndex - 14]);
 						dailyPosOld = DailyPosFloatOld && DailyPosFloatOld !== "" ? (DailyPosFloatOld).toFixed(2) : "NA";
 					}
 				});
@@ -666,7 +782,7 @@ export default class Dashboard extends Component {
 						const DailyRecIndex = indexDailyRec >= 0 ? countDailyRec - indexDailyRec : indexDailyRec;
 						const DailyRecFloat = (data[1].daily_recovered[DailyRecIndex]);
 						dailyRec = DailyRecFloat && DailyRecFloat !== "" ? Math.floor(DailyRecFloat) : "-";
-						const DailyRecFloatOld = (data[1].daily_recovered[DailyRecIndex - 7]);
+						const DailyRecFloatOld = (data[1].daily_recovered[DailyRecIndex - 14]);
 						dailyRecOld = DailyRecFloatOld && DailyRecFloatOld !== "" ? (DailyRecFloatOld).toFixed(2) : "NA";
 					}
 				});
@@ -680,10 +796,24 @@ export default class Dashboard extends Component {
 						const DailyDeathIndex = indexDailyDeath >= 0 ? countDailyDeath - indexDailyDeath : indexDailyDeath;
 						const DailyDeathFloat = (data[1].daily_deceased[DailyDeathIndex]);
 						dailyDeath = DailyDeathFloat && DailyDeathFloat !== "" ? Math.floor(DailyDeathFloat) : "-";
-						const DailyDeathFloatOld = (data[1].daily_deceased[DailyDeathIndex - 7]);
+						const DailyDeathFloatOld = (data[1].daily_deceased[DailyDeathIndex - 14]);
 						dailyDeathOld = DailyDeathFloatOld && DailyDeathFloatOld !== "" ? (DailyDeathFloatOld).toFixed(2) : "NA";
 					}
 				});
+
+				let dailyDeathMa;
+                let dailyDeathMaOld;
+                posRateArr.forEach(data => {
+                	if (data[0] === name) {
+                		const indexDailyDeathMa = data[1].daily_deceased_ma.slice().reverse().findIndex(i => i !== "");
+                		const countDailyDeathMa = data[1].daily_deceased_ma.length - 1;
+                		const DailyDeathMaIndex = indexDailyDeathMa >= 0 ? countDailyDeathMa - indexDailyDeathMa : indexDailyDeathMa;
+                		const DailyDeathMaFloat = (data[1].daily_deceased_ma[DailyDeathMaIndex]);
+                		dailyDeathMa = DailyDeathMaFloat && DailyDeathMaFloat !== "" ? Math.floor(DailyDeathMaFloat) : "-";
+                		const DailyDeathMaFloatOld = (data[1].daily_deceased[DailyDeathMaIndex - 14]);
+                		dailyDeathMaOld = DailyDeathMaFloatOld && DailyDeathMaFloatOld !== "" ? (DailyDeathMaFloatOld).toFixed(2) : "NA";
+                	}
+                });
 
 				let dailyTests;
 				let dailyTestsOld;
@@ -694,7 +824,7 @@ export default class Dashboard extends Component {
 						const DailyTestsIndex = indexDailyTests >= 0 ? countDailyTests - indexDailyTests : indexDailyTests;
 						const DailyTestsFloat = (data[1].daily_tests[DailyTestsIndex]);
 						dailyTests = DailyTestsFloat && DailyTestsFloat !== "" ? Math.floor(DailyTestsFloat) : "-";
-						const DailyTestsFloatOld = (data[1].daily_tests[DailyTestsIndex - 7]);
+						const DailyTestsFloatOld = (data[1].daily_tests[DailyTestsIndex - 14]);
 						dailyTestsOld = DailyTestsFloatOld && DailyTestsFloatOld !== "" ? (DailyTestsFloatOld).toFixed(2) : "NA";
 					}
 				});
@@ -709,7 +839,7 @@ export default class Dashboard extends Component {
 						const dailyCasesPMIndex = indexdailyCasesPM >= 0 ? countdailyCasesPM - indexdailyCasesPM : indexdailyCasesPM;
 						const dailyCasesPMFloat = (data[1].daily_cases_per_million[dailyCasesPMIndex]);
 						dailyCasesPM = dailyCasesPMFloat && dailyCasesPMFloat !== "" ? Math.floor(dailyCasesPMFloat) : "-";
-						const dailyCasesPMFloatOld = (data[1].daily_cases_per_million[dailyCasesPMIndex - 7]);
+						const dailyCasesPMFloatOld = (data[1].daily_cases_per_million[dailyCasesPMIndex - 14]);
 						dailyCasesPMOld = dailyCasesPMFloatOld && dailyCasesPMFloatOld !== "" ? Math.floor(dailyCasesPMFloatOld) : "NA";
 						dailyCasesPMDate = data[1].dates[dailyCasesPMIndex];
 					}
@@ -725,7 +855,7 @@ export default class Dashboard extends Component {
 						const dailyTestsPMIndex = indexdailyTestsPM >= 0 ? countdailyTestsPM - indexdailyTestsPM : indexdailyTestsPM;
 						const dailyTestsPMFloat = (data[1].daily_tests_per_million[dailyTestsPMIndex]);
 						dailyTestsPM = dailyTestsPMFloat && dailyTestsPMFloat !== "" ? Math.floor(dailyTestsPMFloat) : "-";
-						const dailyTestsPMFloatOld = (data[1].daily_tests_per_million[dailyTestsPMIndex - 7]);
+						const dailyTestsPMFloatOld = (data[1].daily_tests_per_million[dailyTestsPMIndex - 14]);
 						dailyTestsPMOld = dailyTestsPMFloatOld && dailyTestsPMFloatOld !== "" ? Math.floor(dailyTestsPMFloatOld) : "NA";
 						dailyTestsPMDate = data[1].dates[dailyTestsPMIndex];
 					}
@@ -739,7 +869,9 @@ export default class Dashboard extends Component {
 					recoveredDate: cumRecoveredDate, deceased: cumDeceased, deceasedDate: cumDeceasedDate, tests: cumTests,
 					testsDate: cumTestsDate, rt: rtData, rtDate: rtDate, dbt: dbt, dbtDate: dbtDate, cfr: cfrPoint2, posRate: maPosRate,
 					dailyPos: dailyPos, dailyPosOld: dailyPosOld, dailyRec: dailyRec, dailyRecOld: dailyRecOld,
-					dailyDeath: dailyDeath, dailyDeathOld: dailyDeathOld, dailyTests: dailyTests, dailyTestsOld: dailyTestsOld
+					dailyDeath: dailyDeath, dailyDeathOld: dailyDeathOld, dailyTests: dailyTests, dailyTestsOld: dailyTestsOld,
+					dailyDosesPerMillion: dailyDosesPerMillion, percOneDose: percOneDose, percTwoDose: percTwoDose,
+					cumDoses: cumDoses, dailyDoses: dailyDoses, maCases: maCases, maCasesOneWeek: maCasesOneWeek
 				});
 
 				data.push({
@@ -749,7 +881,9 @@ export default class Dashboard extends Component {
 					testsPerMil: tpm, tpmDate: tpmDate, incidence: dailyCasesPM, incidenceOld: dailyCasesPMOld, incidenceDate: dailyCasesPMDate,
                     dailyTPM: dailyTestsPM, dailyTPMOld: dailyTestsPMOld, dailyTPMDate: dailyTestsPMDate, crudeCFR: crudeCFRPoint,
                     crudeCFROld: crudeCFRPointOld, crudeCFRDate: crudeCFRDate, dbt: dbt, dbtOld: dbtOld, dbtDate: dbtDate,
-                    recRate: recoveryRate
+                    recRate: recoveryRate, dailyDosesPerMillion: dailyDosesPerMillion, percOneDose: percOneDose, percTwoDose: percTwoDose,
+                    cumDoses: cumDoses, dailyDoses: dailyDoses, dailyDosesPerMillionDate: dailyDosesPerMillionDate, percOneDoseDate: percOneDoseDate,
+                    percTwoDoseDate: percTwoDoseDate, cumDosesDate: cumDosesDate, dailyDosesDate: dailyDosesDate
 				});
 			});
 			data.sort(function (a, b) {
@@ -763,7 +897,7 @@ export default class Dashboard extends Component {
 		//India data
 		let rtIndexInd = this.state.rtStateDataApi["TT"].rt_point.length - 1;
 		for(let i = rtIndexInd; i>=0; i--) {
-            if(rtApi["TT"].rt_point[i] !== "") {
+            if(rtApi["TT"] && rtApi["TT"].rt_point[i] !== "") {
         	    rtIndexInd = i;
         		break;
         	}
@@ -783,13 +917,45 @@ export default class Dashboard extends Component {
 		const cfrIndexInd = this.state.allStateData.India.cfr2_point && this.state.allStateData.India.cfr2_point.length - 1;
 		const cfrPointInd = cfrIndexInd > 0 && this.state.allStateData.India.cfr2_point ? (this.state.allStateData.India.cfr2_point[cfrIndexInd]).toFixed(2) : "NA";
 		const cfrDate = cfrIndexInd > 0 ? this.state.allStateData.India.dates[cfrIndexInd] : "-";
-		const cfrPointOld = cfrIndexInd > 0 && this.state.allStateData.India.cfr2_point ? (this.state.allStateData.India.cfr2_point[cfrIndexInd - 7]).toFixed(2) : "NA";
+		const cfrPointOld = cfrIndexInd > 0 && this.state.allStateData.India.cfr2_point ? (this.state.allStateData.India.cfr2_point[cfrIndexInd - 14]).toFixed(2) : "NA";
 		const cfrPointInd2 = cfrIndexInd > 0 && this.state.allStateData.India.cfr2_point ? (this.state.allStateData.India.cfr2_point[cfrIndexInd]).toFixed(2) : "NA";
 
 		const crudeCFRIndexInd = this.state.allStateData.India.cfr1_point && this.state.allStateData.India.cfr1_point.length - 1;
 		const crudeCFRPointInd = crudeCFRIndexInd > 0 && this.state.allStateData.India.cfr1_point ? (this.state.allStateData.India.cfr1_point[crudeCFRIndexInd]).toFixed(2) : "NA";
 		const crudeCFRDate = crudeCFRIndexInd > 0 && this.state.allStateData.India.cfr1_point ? this.state.allStateData.India.dates[crudeCFRIndexInd] : "-";
-		const crudeCFRPointOld = crudeCFRIndexInd > 0 && this.state.allStateData.India.cfr1_point ? (this.state.allStateData.India.cfr1_point[crudeCFRIndexInd - 7]).toFixed(2) : "NA";
+		const crudeCFRPointOld = crudeCFRIndexInd > 0 && this.state.allStateData.India.cfr1_point ? (this.state.allStateData.India.cfr1_point[crudeCFRIndexInd - 14]).toFixed(2) : "NA";
+
+        const vaccineArrInd = this.state.statesVaccineData.India;
+
+        const indexDailyDosesPerMillionInd = vaccineArrInd.daily_doses_per_million.slice().reverse().findIndex(i => i !== "");
+        const dailyDosesPerMillionIndCount = vaccineArrInd.daily_doses_per_million.length - 1;
+        const dailyDosesPerMillionIndIndex = indexDailyDosesPerMillionInd >= 0 ? dailyDosesPerMillionIndCount - indexDailyDosesPerMillionInd : indexDailyDosesPerMillionInd;
+        const dailyDosesPerMillionInd = (vaccineArrInd.daily_doses_per_million[dailyDosesPerMillionIndIndex]).toFixed(2);
+        const dailyDosesPerMillionIndDate = vaccineArrInd.dates[dailyDosesPerMillionIndIndex];
+
+        const indexPercOneDoseInd = vaccineArrInd.pct_population_onedose.slice().reverse().findIndex(i => i !== "");
+        const percOneDoseIndCount = vaccineArrInd.pct_population_onedose.length - 1;
+        const percOneDoseIndIndex = indexPercOneDoseInd >= 0 ? percOneDoseIndCount - indexPercOneDoseInd : indexPercOneDoseInd;
+        const percOneDoseInd = (vaccineArrInd.pct_population_onedose[percOneDoseIndIndex]).toFixed(2);
+        const percOneDoseIndDate = vaccineArrInd.dates[percOneDoseIndIndex];
+
+        const indexPercTwoDoseInd = vaccineArrInd.pct_population_twodose.slice().reverse().findIndex(i => i !== "");
+        const percTwoDoseIndCount = vaccineArrInd.pct_population_twodose.length - 1;
+        const percTwoDoseIndIndex = indexPercTwoDoseInd >= 0 ? percTwoDoseIndCount - indexPercTwoDoseInd : indexPercTwoDoseInd;
+        const percTwoDoseInd = (vaccineArrInd.pct_population_twodose[percTwoDoseIndIndex]).toFixed(2);
+        const percTwoDoseIndDate = vaccineArrInd.dates[percTwoDoseIndIndex];
+
+        const indexCumDosesInd = vaccineArrInd.cum_doses.slice().reverse().findIndex(i => i !== "");
+        const cumDosesIndCount = vaccineArrInd.cum_doses.length - 1;
+        const cumDosesIndIndex = indexCumDosesInd >= 0 ? cumDosesIndCount - indexCumDosesInd : indexCumDosesInd;
+        const cumDosesInd = (vaccineArrInd.cum_doses[cumDosesIndIndex]);
+        const cumDosesIndDate = vaccineArrInd.dates[cumDosesIndIndex];
+
+        const indexDailyDosesInd = vaccineArrInd.daily_doses.slice().reverse().findIndex(i => i !== "");
+        const dailyDosesIndCount = vaccineArrInd.daily_doses.length - 1;
+        const dailyDosesIndIndex = indexDailyDosesInd >= 0 ? dailyDosesIndCount - indexDailyDosesInd : indexDailyDosesInd;
+        const dailyDosesInd = (vaccineArrInd.daily_doses[dailyDosesIndIndex]);
+        const dailyDosesIndDate = vaccineArrInd.dates[dailyDosesIndIndex];
 
 		const posRateArrInd = this.state.allStateData.India;
 
@@ -821,14 +987,15 @@ export default class Dashboard extends Component {
 		const countIndPosRateMa = posRateArrInd.daily_positivity_rate_ma.length - 1;
 		const posRateMaIndexInd = indexIndPosRateMa >= 0 ? countIndPosRateMa - indexIndPosRateMa : indexIndPosRateMa;
 		const PosRateMaInd = (posRateArrInd.daily_positivity_rate_ma[posRateMaIndexInd]).toFixed(2);
-		const PosRateMaIndOld = (posRateArrInd.daily_positivity_rate_ma[posRateMaIndexInd - 7]).toFixed(2);
+		const PosRateMaIndOld = (posRateArrInd.daily_positivity_rate_ma[posRateMaIndexInd - 14]).toFixed(2);
 		const posRateDateInd = posRateArrInd.dates[posRateMaIndexInd];
 
 		const indexIndcasesMa = posRateArrInd.daily_positive_cases_ma.slice().reverse().findIndex(i => i !== "");
 		const countIndcasesMa = posRateArrInd.daily_positive_cases_ma.length - 1;
 		const casesMaIndexInd = indexIndcasesMa >= 0 ? countIndcasesMa - indexIndcasesMa : indexIndcasesMa;
 		const casesMaInd = Math.floor(posRateArrInd.daily_positive_cases_ma[casesMaIndexInd]);
-		const casesMaIndOld = Math.floor(posRateArrInd.daily_positive_cases_ma[casesMaIndexInd - 7]);
+		const casesMaIndOld = Math.floor(posRateArrInd.daily_positive_cases_ma[casesMaIndexInd - 14]);
+		const casesMaIndOneWeek = Math.floor(posRateArrInd.daily_positive_cases_ma[casesMaIndexInd - 7]);
 		const maCasesIndDate = posRateArrInd.dates[casesMaIndexInd];
 
 		const indexIndTpm = posRateArrInd.test_per_million.slice().reverse().findIndex(i => i !== "");
@@ -848,44 +1015,44 @@ export default class Dashboard extends Component {
 		const dbtIndexInd = indexIndDbt >= 0 ? countIndDbt - indexIndDbt : indexIndDbt;
 		const dbtInd = (posRateArrInd.dbt_point[dbtIndexInd]).toFixed(1);;
 		const dbtIndDate = posRateArrInd.dates[dbtIndexInd];
-		const dbtIndOld = (posRateArrInd.dbt_point[dbtIndexInd - 7]).toFixed(1);;
+		const dbtIndOld = (posRateArrInd.dbt_point[dbtIndexInd - 14]).toFixed(1);;
 
 		const indexIndDailyPos = posRateArrInd.daily_positive_cases.slice().reverse().findIndex(i => i !== "");
 		const countIndDailyPos = posRateArrInd.daily_positive_cases.length - 1;
 		const DailyPosIndexInd = indexIndDailyPos >= 0 ? countIndDailyPos - indexIndDailyPos : indexIndDailyPos;
 		const DailyPosInd = Math.floor(posRateArrInd.daily_positive_cases[DailyPosIndexInd]);
-		const DailyPosIndOld = Math.floor(posRateArrInd.daily_positive_cases[DailyPosIndexInd - 7]);
+		const DailyPosIndOld = Math.floor(posRateArrInd.daily_positive_cases[DailyPosIndexInd - 14]);
 
 		const indexIndDailyRec = posRateArrInd.daily_recovered.slice().reverse().findIndex(i => i !== "");
 		const countIndDailyRec = posRateArrInd.daily_recovered.length - 1;
 		const DailyRecIndexInd = indexIndDailyRec >= 0 ? countIndDailyRec - indexIndDailyRec : indexIndDailyRec;
 		const DailyRecInd = Math.floor(posRateArrInd.daily_recovered[DailyRecIndexInd]);
-		const DailyRecIndOld = Math.floor(posRateArrInd.daily_recovered[DailyRecIndexInd - 7]);
+		const DailyRecIndOld = Math.floor(posRateArrInd.daily_recovered[DailyRecIndexInd - 14]);
 
 		const indexIndDailyDeath = posRateArrInd.daily_deceased.slice().reverse().findIndex(i => i !== "");
 		const countIndDailyDeath = posRateArrInd.daily_deceased.length - 1;
 		const DailyDeathIndexInd = indexIndDailyDeath >= 0 ? countIndDailyDeath - indexIndDailyDeath : indexIndDailyDeath;
 		const DailyDeathInd = Math.floor(posRateArrInd.daily_deceased[DailyDeathIndexInd]);
-		const DailyDeathIndOld = Math.floor(posRateArrInd.daily_deceased[DailyDeathIndexInd - 7]);
+		const DailyDeathIndOld = Math.floor(posRateArrInd.daily_deceased[DailyDeathIndexInd - 14]);
 
 		const indexIndDailyTests = posRateArrInd.daily_tests.slice().reverse().findIndex(i => i !== "");
 		const countIndDailyTests = posRateArrInd.daily_tests.length - 1;
 		const DailyTestsIndexInd = indexIndDailyTests >= 0 ? countIndDailyTests - indexIndDailyTests : indexIndDailyTests;
 		const DailyTestsInd = Math.floor(posRateArrInd.daily_tests[DailyTestsIndexInd]);
-		const DailyTestsIndOld = Math.floor(posRateArrInd.daily_tests[DailyTestsIndexInd - 7]);
+		const DailyTestsIndOld = Math.floor(posRateArrInd.daily_tests[DailyTestsIndexInd - 14]);
 
 		const indexIndincidence = posRateArrInd.daily_cases_per_million.slice().reverse().findIndex(i => i !== "");
 		const countIndincidence = posRateArrInd.daily_cases_per_million.length - 1;
 		const incidenceIndexInd = indexIndincidence >= 0 ? countIndincidence - indexIndincidence : indexIndincidence;
 		const incidenceInd = Math.floor(posRateArrInd.daily_cases_per_million[incidenceIndexInd]);
-		const incidenceIndOld = Math.floor(posRateArrInd.daily_cases_per_million[incidenceIndexInd - 7]);
+		const incidenceIndOld = Math.floor(posRateArrInd.daily_cases_per_million[incidenceIndexInd - 14]);
 		const incidenceIndDate = posRateArrInd.dates[incidenceIndexInd];
 
 		const indexInddailytpm = posRateArrInd.daily_tests_per_million.slice().reverse().findIndex(i => i !== "");
 		const countInddailytpm = posRateArrInd.daily_tests_per_million.length - 1;
 		const dailytpmIndexInd = indexInddailytpm >= 0 ? countInddailytpm - indexInddailytpm : indexInddailytpm;
 		const dailytpmInd = Math.floor(posRateArrInd.daily_tests_per_million[dailytpmIndexInd]);
-		const dailytpmIndOld = Math.floor(posRateArrInd.daily_tests_per_million[dailytpmIndexInd - 7]);
+		const dailytpmIndOld = Math.floor(posRateArrInd.daily_tests_per_million[dailytpmIndexInd - 14]);
 		const dailytpmIndDate = posRateArrInd.dates[dailytpmIndexInd];
 
 		const recoveryRateInd = cumRecoveredInd && cumDeceasedInd && !isNaN((cumRecoveredInd / (cumRecoveredInd + cumDeceasedInd)) * 100) ?
@@ -897,7 +1064,9 @@ export default class Dashboard extends Component {
 			tests: testsInd, testsDate: testsIndDate, rt: rtDataInd, rtDate: rtDate, dbt: dbtInd, dbtDate: dbtIndDate,
 			cfr: cfrPointInd2, posRate: PosRateMaInd, dailyPos: DailyPosInd, dailyPosOld: DailyPosIndOld, dailyRec: DailyRecInd,
 			dailyRecOld: DailyRecIndOld, dailyDeath: DailyDeathInd, dailyDeathOld: DailyDeathIndOld, dailyTests: DailyTestsInd,
-			dailyTestsOld: DailyTestsIndOld
+			dailyTestsOld: DailyTestsIndOld, dailyDosesPerMillion: dailyDosesPerMillionInd, percOneDose: percOneDoseInd,
+			percTwoDose: percTwoDoseInd, cumDoses: cumDosesInd, dailyDoses: dailyDosesInd, maCasesOneWeek: casesMaIndOneWeek,
+			maCases: casesMaInd
 		});
 
 		pinnedData.push({
@@ -906,7 +1075,10 @@ export default class Dashboard extends Component {
 			posRateOld: PosRateMaIndOld, cumCasesDate: cumCasesIndDate, maCasesDate: maCasesIndDate, posRateDate: posRateDateInd, cumPRateDate: cumPRDateInd,
 			testsPerMil: tpmInd, tpmDate: tpmIndDate, incidence: incidenceInd, incidenceOld: incidenceIndOld, incidenceDate: incidenceIndDate,
 			dailyTPM: dailytpmInd, dailyTPMOld: dailytpmIndOld, dailyTPMDate: dailytpmIndDate, crudeCFR: crudeCFRPointInd,
-            crudeCFROld: crudeCFRPointOld, crudeCFRDate: crudeCFRDate, dbt: dbtInd, dbtOld: dbtIndOld, dbtDate: dbtIndDate, recRate: recoveryRateInd
+            crudeCFROld: crudeCFRPointOld, crudeCFRDate: crudeCFRDate, dbt: dbtInd, dbtOld: dbtIndOld, dbtDate: dbtIndDate, recRate: recoveryRateInd,
+            dailyDosesPerMillion: dailyDosesPerMillionInd, percOneDose: percOneDoseInd, percTwoDose: percTwoDoseInd,
+            cumDoses: cumDosesInd, dailyDoses: dailyDosesInd, dailyDosesPerMillionDate: dailyDosesPerMillionIndDate, percOneDoseDate: percOneDoseIndDate,
+            percTwoDoseDate: percTwoDoseIndDate, cumDosesDate: cumDosesIndDate, dailyDosesDate: dailyDosesIndDate
 		})
 		this.setState({ pinnedTopRowData: pinnedData });
 		this.setState({ cardsData: infoData });
@@ -955,6 +1127,38 @@ export default class Dashboard extends Component {
 			});
 		}
 	}
+	getDailyDeathsGraphData = (dataFromApi) => {
+    		if (dataFromApi) {
+    			let data = {
+    				datasets: [],
+    				labels: []
+    			};
+    			let dateIndex = dataFromApi.dates.indexOf(this.state.graphStartDate);
+    			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
+    			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
+
+
+
+    			// Main data
+    			let mainData = [{
+    				label: 'Daily Deaths',
+    				data: dataFromApi.daily_deceased.slice(dateIndex, dataFromApi.dates.length),
+    				borderColor: 'rgba(0, 64, 101,0.1)',//'#004065',
+    				radius: 1,
+    			}, {
+    				type: 'line',
+    				label: 'Daily Deaths Moving Average',
+    				data: dataFromApi.daily_deceased_ma.slice(dateIndex, dataFromApi.dates.length),
+    				borderColor: '#004065',
+    				radius: 1,
+    				fill: false
+    			}];
+    			data.datasets.push(...mainData);
+    			this.setState({
+    				dailyDeathsGraphData: data,
+    			});
+    		}
+    	}
 	getDailyTestsGraphData = (dataFromApi) => {
 		if (dataFromApi) {
 			let data = {
@@ -1167,7 +1371,7 @@ export default class Dashboard extends Component {
 			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
 			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
 
-			let maxCFRPoint = dataFromApi.cfr3_point ? Math.ceil(Math.max(...dataFromApi.cfr3_point.slice(dateIndex, dataFromApi.dates.length))) : 0;
+			let maxCFRPoint = dataFromApi.cfr2_point ? Math.ceil(Math.max(...dataFromApi.cfr2_point.slice(dateIndex, dataFromApi.dates.length))) : 0;
 			maxCFRPoint = Math.max(maxCFRPoint, 10);
 			maxCFRPoint = Math.min(maxCFRPoint, 20);
 
@@ -1198,7 +1402,7 @@ export default class Dashboard extends Component {
 				radius: 0,
 				hoverRadius: 0,
 			});
-			const cfrDataSet = dataFromApi.cfr3_point && dataFromApi.cfr3_point.slice();
+			const cfrDataSet = dataFromApi.cfr2_point && dataFromApi.cfr2_point.slice();
 
 			// Main data
 			let mainData = [{
@@ -1400,6 +1604,70 @@ export default class Dashboard extends Component {
 		}
 	}
 
+	getTotalVaccineGraphData = (dataFromApi) => {
+    		if (dataFromApi) {
+    			let data = {
+    				datasets: [],
+    				labels: []
+    			};
+    			let dateIndex = dataFromApi.dates.indexOf(this.state.vaccineGraphStart);
+    			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
+    			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
+
+    			// Main data
+    			let mainData = [{
+    			    type: 'line',
+    			    label: 'Percent One Dose',
+    				data: dataFromApi.pct_population_onedose.slice(dateIndex, dataFromApi.dates.length),
+    				borderColor: '#004065',
+    				radius: 1,
+    				fill: true
+    			},
+    			{
+    			    type: 'line',
+                    label: 'Percent Two Dose',
+                    data: dataFromApi.pct_population_twodose.slice(dateIndex, dataFromApi.dates.length),
+                    borderColor: '#004065',
+                    radius: 1,
+                    fill: true
+                }];
+    			data.datasets.push(...mainData);
+    			this.setState({
+    				totalVaccineGraphData: data,
+    			});
+    		}
+    	}
+	getDailyVaccineGraphData = (dataFromApi) => {
+        		if (dataFromApi) {
+        			let data = {
+        				datasets: [],
+        				labels: []
+        			};
+        			let dateIndex = dataFromApi.dates.indexOf(this.state.vaccineGraphStart);
+        			dateIndex = (dateIndex == -1) ? 0 : dateIndex;
+        			data.labels = dataFromApi.dates.slice(dateIndex, dataFromApi.dates.length);
+
+        			// Main data
+        			let mainData = [{
+        				label: 'Daily Doses',
+        				data: dataFromApi.daily_doses.slice(dateIndex, dataFromApi.dates.length),
+        				borderColor: 'rgba(0, 64, 101,0.1)',//'#004065',
+        				radius: 1,
+        			}, {
+        				type: 'line',
+        				label: 'Daily Doses Moving Average',
+        				data: dataFromApi.daily_doses_ma.slice(dateIndex, dataFromApi.dates.length),
+        				borderColor: '#004065',
+        				radius: 1,
+        				fill: false
+        			}];
+        			data.datasets.push(...mainData);
+        			this.setState({
+        				dailyVaccineGraphData: data,
+        			});
+        		}
+        	}
+
 	onSelectionChanged = (data) => {
 		const selectedRows = data.api.getSelectedRows();
 		const selectedState = selectedRows[0].key;
@@ -1409,6 +1677,9 @@ export default class Dashboard extends Component {
 		this.getMobilityGraphData(this.state.mobilityDataFromApi[state]);
 		this.getPositivityRateGraphData(this.state.allDataFromApi[state]);
 		this.getDailyCasesGraphData(this.state.allDataFromApi[state]);
+		this.getDailyDeathsGraphData(this.state.allDataFromApi[state]);
+		this.getDailyVaccineGraphData(this.state.statesVaccineData[state]);
+		this.getTotalVaccineGraphData(this.state.statesVaccineData[state]);
 		this.getDailyTestsGraphData(this.state.allDataFromApi[state]);
 		this.getDbtGraphData(this.state.allDataFromApi[state]);
 		this.setState({ selectedState: state });
@@ -1422,6 +1693,9 @@ export default class Dashboard extends Component {
 		this.getPositivityRateGraphData(this.state.allDataFromApi[stateName]);
 		this.getCfrGraphData(this.state.allDataFromApi[stateName]);
 		this.getDailyCasesGraphData(this.state.allDataFromApi[stateName]);
+		this.getDailyDeathsGraphData(this.state.allDataFromApi[stateName]);
+		this.getDailyVaccineGraphData(this.state.statesVaccineData[stateName]);
+		this.getTotalVaccineGraphData(this.state.statesVaccineData[stateName]);
 		this.getDailyTestsGraphData(this.state.allDataFromApi[stateName]);
 		this.getDbtGraphData(this.state.allDataFromApi[stateName]);
 	}
@@ -1550,6 +1824,24 @@ export default class Dashboard extends Component {
 			</Popover>
 		);
 
+		const dailyDeathsPopover = (
+        			<Popover id="dailydeaths-popover" style={{ maxWidth: popoverMaxWidth }}>
+        				<Popover.Title as="h3" style={{ fontSize: popoverFont }}>Daily Deaths</Popover.Title>
+        				<Popover.Content style={{ fontSize: popoverFont }}>
+        					The solid line represents the 7-day moving average of daily new deaths.
+        				</Popover.Content>
+        			</Popover>
+        		);
+
+        const dailyVaccinePopover = (
+                			<Popover id="dailyvaccine-popover" style={{ maxWidth: popoverMaxWidth }}>
+                				<Popover.Title as="h3" style={{ fontSize: popoverFont }}>Daily Doses</Popover.Title>
+                				<Popover.Content style={{ fontSize: popoverFont }}>
+                					The solid line represents the 7-day moving average of daily new vaccine doses.
+                				</Popover.Content>
+                			</Popover>
+                		);
+
 		const dailyTestsPopover = (
 			<Popover id="dailytests-popover" style={{ maxWidth: popoverMaxWidth }}>
 				<Popover.Title as="h3" style={{ fontSize: popoverFont }}>Daily Tests</Popover.Title>
@@ -1629,6 +1921,12 @@ export default class Dashboard extends Component {
 		const dailyTestsOld = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyTestsOld) ? this.state.cardsData[cardsArrIndex].dailyTestsOld : 0;
 		const dailyActive = dailyPos && dailyDeath && dailyRec && !isNaN((dailyPos - (dailyDeath + dailyRec))) ? (dailyPos - (dailyDeath + dailyRec)) : 0;
 		const dailyActiveOld = dailyPosOld && dailyDeathOld && dailyRecOld && !isNaN((dailyPosOld - (dailyDeathOld + dailyRecOld))) ? (dailyPosOld - (dailyDeathOld + dailyRecOld)) : 0;
+        const cumDoses = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].cumDoses) ? this.state.cardsData[cardsArrIndex].cumDoses : 0;
+        const dailyDoses = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].dailyDoses) ? this.state.cardsData[cardsArrIndex].dailyDoses : 0;
+        const oneDosePerc = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].percOneDose) ? this.state.cardsData[cardsArrIndex].percOneDose : 0;
+        const maCases = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].maCases) ? this.state.cardsData[cardsArrIndex].maCases : 0;
+        const maCasesOneWeek = cardsArrIndex !== -1 && this.state.cardsData && !isNaN(this.state.cardsData[cardsArrIndex].maCasesOneWeek) ? this.state.cardsData[cardsArrIndex].maCasesOneWeek : 0;
+        const growthRate = maCases && maCasesOneWeek && !isNaN(((maCases-maCasesOneWeek)*100)/maCases) ? ((maCases-maCasesOneWeek)*100)/maCases : 0;
 
         const fontSize = this.state.mobileView ? "small" : "medium";
         const array = this.state.rowData && this.state.rowData;
@@ -1640,10 +1938,10 @@ export default class Dashboard extends Component {
 			    <div>
 
 			        {this.state.loading && <div className="loader">
-			            <Spinner animation="border" /><br/>
+			            <Spinner animation="border" />
 			        </div>}
 
-					{!this.state.loading && <div className="App">
+					{<div className={this.state.loading ? "App-loading" : "App"}>
 
 						{/*<div className="home-text">
 							<div className="for-the-people-heading" style={{ fontSize: fontSizeDynamicHeading }}>Tracking India's Progress Through The Coronavirus Pandemic, Today</div>
@@ -1724,9 +2022,9 @@ export default class Dashboard extends Component {
 									<Col className="mobile-summary-cards">
 										<Card className={"red-card summary-card-mobile"}>
 											<span style={{ fontSize: fontSizeDynamic }}>
-												<span className="summary-card-heading-mobile">Doubling Time</span><br />
-												<span className="summary-card-description-mobile">Total cases double in</span><br />
-												<span className="summary-card-number-mobile">{numbro(dbt).format({ mantissa: 1 })} days</span>
+												<span className="summary-card-heading-mobile">Growth Rate</span><br />
+												<span className="summary-card-number-mobile">{numbro(growthRate).format({ mantissa: 1 })} %</span><br/>
+												<span className="summary-card-description-mobile">vs 1 week ago</span><br />
 											</span>
 										</Card>
 									</Col>
@@ -1794,6 +2092,26 @@ export default class Dashboard extends Component {
 										</Card>
 									</Col>
 								</Row>
+								<Row>
+                                	<Col className="mobile-summary-cards">
+                                		<Card className={"yellow-card summary-card-mobile"}>
+                                			<span style={{ fontSize: fontSizeDynamic }}>
+                                				<span className="summary-card-heading-mobile">Vaccine Doses </span><br />
+                                				<span className="summary-card-number-mobile">{numbro(cumDoses).format({ thousandSeparated: true })}</span><br />
+                                				<span className="summary-card-number-secondary-mobile">{numbro(dailyDoses).format({ thousandSeparated: true })}</span>
+                                			</span>
+                                		</Card>
+                                	</Col>
+                                	<Col className="mobile-summary-cards">
+                                		<Card className={"yellow-card summary-card-mobile"}>
+                                			<span style={{ fontSize: fontSizeDynamic }}>
+                                				<span className="summary-card-heading-mobile">Population Vaccinated</span><br />
+                                				<span className="summary-card-number-mobile">{numbro(oneDosePerc).format({ mantissa: 1 })}%</span><br />
+                                				<span className="summary-card-description-mobile">have got atleast one dose</span>
+                                			</span>
+                                		</Card>
+                                	</Col>
+                                </Row>
 							</Container>}
 							{!this.state.mobileView && <Container>
 								<Row>
@@ -1847,6 +2165,15 @@ export default class Dashboard extends Component {
 											</span>
 										</Card>
 									</Col>
+									<Col className="summary-cards">
+                                    	<Card className={"yellow-card summary-card"}>
+                                    		<span style={{ fontSize: fontSizeDynamic }}>
+                                    			<span className="summary-card-heading">Vaccine Doses</span><br />
+                                    			<span className="summary-card-number">{numbro(cumDoses).format({ thousandSeparated: true })}</span><br />
+                                    			<span className="summary-card-number-secondary">{numbro(dailyDoses).format({ thousandSeparated: true })}</span>
+                                    		</span>
+                                    	</Card>
+                                    </Col>
 								</Row>
 								<Row>
 									<Col className="summary-cards">
@@ -1862,9 +2189,9 @@ export default class Dashboard extends Component {
 									<Col className="summary-cards">
 										<Card className={"summary-card red-card"}>
 											<span style={{ fontSize: fontSizeDynamic }}>
-												<span className="summary-card-heading">Doubling Time</span><br />
-												<span className="summary-card-description">Total cases double in</span><br />
-												<span className="summary-card-number">{numbro(dbt).format({ mantissa: 1 })} days</span>
+												<span className="summary-card-heading">Growth Rate</span><br />
+												<span className="summary-card-number">{numbro(growthRate).format({ mantissa: 1 })} %</span><br/>
+												<span className="summary-card-description">vs 1 week ago</span><br />
 											</span>
 										</Card>
 									</Col>
@@ -1895,6 +2222,15 @@ export default class Dashboard extends Component {
 											</span>
 										</Card>
 									</Col>
+									<Col className="summary-cards">
+                                    	<Card className={"summary-card yellow-card"}>
+                                    		<span style={{ fontSize: fontSizeDynamic }}>
+                                    			<span className="summary-card-heading">Population Vaccinated</span><br />
+                                    			<span className="summary-card-number">{numbro(oneDosePerc).format({ mantissa: 1 })}%</span><br />
+                                    			<span className="summary-card-description">have got atleast one dose</span>
+                                    		</span>
+                                    	</Card>
+                                    </Col>
 								</Row>
 							</Container>}
 						</div>
@@ -1934,29 +2270,27 @@ export default class Dashboard extends Component {
 											</Col>
 										</Row>
 										<div className="mt-2"></div>
-										{/* RT Graph */}
-										<Row>
-											<Col>
-												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Effective Reproduction Number
-													<OverlayTrigger placement="left" overlay={rtPopover}>
-															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
-														</OverlayTrigger>
-													</h5>
-													<div className="rtgraph">
-														<RtChart
-															minRtDataPoint={this.state.minRtDataPoint}
-															maxRtDataPoint={this.state.maxRtDataPoint}
-															rtPointGraphData={this.state.rtPointGraphData}
-															lockdownDates={this.state.lockdownDates}
-															lockdownChartText={this.state.lockdownChartText}
-														/>
-													</div>
-												</Card>
-											</Col>
-										</Row>
+										{/* Daily Tests */}
+                                        		<Row>
+                                        			<Col>
+                                        				<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+                                        					<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Tests
+                                        					<OverlayTrigger placement="left" overlay={dailyTestsPopover}>
+                                        						<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+                                        		    		</OverlayTrigger>
+                                        			    	</h5>
+                                        					<div className="rtgraph">
+                                        						<DailyTestsChart
+                                        							dailyTestsGraphData={this.state.dailyTestsGraphData}
+                                        							lockdownDates={this.state.lockdownDates}
+                                        							lockdownChartText={this.state.lockdownChartText}
+                                        						/>
+                                        					</div>
+                                        				</Card>
+                                        			</Col>
+                                        		</Row>
 										{/* DBT Graph */}
-										<Row>
+										{/*<Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
 													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Doubling Time (Days)
@@ -1975,32 +2309,70 @@ export default class Dashboard extends Component {
 													</div>
 												</Card>
 											</Col>
-										</Row>
+										</Row>*/}
+										{/* Daily Deaths Graph */}
+                                        		<Row>
+                                        			<Col>
+                                        				<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+                                        					<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Deaths
+                                        					<OverlayTrigger placement="left" overlay={dailyDeathsPopover}>
+                                        						<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+                                        					</OverlayTrigger>
+                                        					</h5>
+                                        			    	<div className="daily-deaths-graph">
+                                        		    			<DailyDeathsChart
+                                        				    		dailyDeathsGraphData={this.state.dailyDeathsGraphData}
+                                                                    lockdownDates={this.state.lockdownDates}
+                                                                    lockdownChartText={this.state.lockdownChartText}
+                                        						/>
+                                        					</div>
+                                        				</Card>
+                                        			</Col>
+                                        		</Row>
+                                    {/* Daily Doses Graph */}
+                                                                            		<Row>
+                                                                            			<Col>
+                                                                            				<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+                                                                            					<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Doses
+                                                                            					<OverlayTrigger placement="left" overlay={dailyVaccinePopover}>
+                                                                            						<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+                                                                            					</OverlayTrigger>
+                                                                            					</h5>
+                                                                            			    	<div className="daily-vaccine-graph">
+                                                                            		    			<DailyVaccineChart
+                                                                            				    		dailyVaccineGraphData={this.state.dailyVaccineGraphData}
+                                                                            						/>
+                                                                            					</div>
+                                                                            				</Card>
+                                                                            			</Col>
+                                                                            		</Row>
 									</Col>
 									<Col>
 										{mobileView && <div className="mt-2"></div>}
 										{mobileView && <div className="plot-headers">
 											<span className="span-plot-title-mobile"><hr class="hr-text" data-content="Are we testing enough?" /></span>
 										</div>}
-										{/* Daily Tests */}
-										<Row>
-											<Col>
-												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
-													<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Daily Tests
-													<OverlayTrigger placement="left" overlay={dailyTestsPopover}>
-															<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
-														</OverlayTrigger>
-													</h5>
-													<div className="rtgraph">
-														<DailyTestsChart
-															dailyTestsGraphData={this.state.dailyTestsGraphData}
-															lockdownDates={this.state.lockdownDates}
-															lockdownChartText={this.state.lockdownChartText}
-														/>
-													</div>
-												</Card>
-											</Col>
-										</Row>
+										{/* RT Graph */}
+                                        		<Row>
+                                        			<Col>
+                                        				<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+                                        					<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Effective Reproduction Number
+                                        		    		<OverlayTrigger placement="left" overlay={rtPopover}>
+                                        							<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+                                        					</OverlayTrigger>
+                                        					</h5>
+                                        					<div className="rtgraph">
+                                        						<RtChart
+                                        							minRtDataPoint={this.state.minRtDataPoint}
+                                        							maxRtDataPoint={this.state.maxRtDataPoint}
+                                        							rtPointGraphData={this.state.rtPointGraphData}
+                                        							lockdownDates={this.state.lockdownDates}
+                                        							lockdownChartText={this.state.lockdownChartText}
+                                        						/>
+                                        					</div>
+                                        			    </Card>
+                                        			</Col>
+                                        		</Row>
 										<div className="mt-2"></div>
 										{/* Pos Rate Graph */}
 										<Row>
@@ -2022,7 +2394,44 @@ export default class Dashboard extends Component {
 												</Card>
 											</Col>
 										</Row>
-										{/* Mobility Graph */}
+										{/* CFR Graph */}
+                                        	<Row>
+                                        		<Col>
+                                    				<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+                                    					<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>CFR
+                                    						<OverlayTrigger placement="left">
+                                    							<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+                                    						</OverlayTrigger>
+                                    					</h5>
+                                    					<div className="cfrGraph">
+                                    						<CfrChart
+                                            					cfrGraphData={this.state.cfrGraphData}
+                                        						lockdownDates={this.state.lockdownDates}
+                                        						lockdownChartText={this.state.lockdownChartText}
+                                        						maxCFRPoint={this.state.maxCFRPoint}
+                                        					/>
+                                        				</div>
+                                        			</Card>
+                                        		</Col>
+                                        	</Row>
+                                        {/* Total Vaccine Graph */}
+                                        	<Row>
+                                        		<Col>
+                                        			<Card className={mobileView ? "shadow" : "plots-card shadow"}>
+                                        				<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Total Doses (%)
+                                        				<OverlayTrigger placement="left" overlay={positivityPopover}>
+                                        						<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
+                                        				</OverlayTrigger>
+                                        				</h5>
+                                        				<div className="totalvaccine-graph">
+                                        	    			<TotalVaccineChart
+                                        						totalVaccineGraphData={this.state.totalVaccineGraphData}
+                                        					/>
+                                        				</div>
+                                        			</Card>
+                                        		</Col>
+                                        	</Row>
+										{/* Mobility Graph
 										{!this.state.showDistricts && <Row>
 											<Col>
 												<Card className={mobileView ? "shadow" : "plots-card shadow"}>
@@ -2040,7 +2449,7 @@ export default class Dashboard extends Component {
 													</div>
 												</Card>
 											</Col>
-										</Row>}
+										</Row>}*/}
 										<div className="mt-2"></div>
 									</Col>
 								</Row>
@@ -2071,7 +2480,7 @@ export default class Dashboard extends Component {
 
 													<b>What do the colours mean</b><br />
 											 Up arrowhead (value increased), down arrowhead (value decreased), and yellow dash (value within +-5%)
-											 indicate change in respective parameters as compared to 7 days ago. <br />
+											 indicate change in respective parameters as compared to 14 days ago. <br />
 													{`Rt is Red: >1, Yellow: <1 for less than 2 weeks, Green: < 1 for more than 2 weeks (based on WHO criteria).`} <br />
 													{`Positivity Rate is Red: >10%, Yellow: 5-10%, Green: < 5% (based on WHO criteria).`} <br />
 													{`Corrected CFR is Red: >10%, Yellow: 5-10%, Green: < 5%.`} <br /><br />

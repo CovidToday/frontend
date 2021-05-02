@@ -5,6 +5,10 @@
 .App {
   text-align: center;
 }
+.App-loading {
+  text-align: center;
+  opacity: 20%;
+}
 
 html {
 	scroll-behavior: smooth;

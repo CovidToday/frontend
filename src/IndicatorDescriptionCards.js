@@ -8,7 +8,7 @@ export default class IndicatorDescriptionCards extends Component {
     render() {
         return (
         <>
-            <div className="for-the-people-heading" style={{ padding: "10px", fontSize: this.props.fontSize }}>How fast is the spread? (Transmission indicators)</div>
+            {/*<div className="for-the-people-heading" style={{ padding: "10px", fontSize: this.props.fontSize }}>How fast is the spread? (Transmission indicators)</div>*/}
 				<CardGroup>
 					<Card style={{ background: "#e8e8e8" }}>
 						<Card.Body>
@@ -32,12 +32,13 @@ export default class IndicatorDescriptionCards extends Component {
             					compared to that before lockdown</span>  It shows us the effect of lockdown and behavioural change on the movement of people,
             					and how this changes as restrictions are relaxed in a graded manner. We have introduced this parameter experimentally considering
             					that mobility has a direct effect on disease spread, however there is no evidence yet that the mobility indices shown directly
-            					correlate with local transmission.</div>
+            					correlate with local transmission. This aggregated data is sourced from Google Mobility Reports.</div>
             				</Card.Text>
             			</Card.Body>
             		</Card>
             	</CardGroup>
-            	<div className="for-the-people-heading" style={{ padding: "10px", fontSize: this.props.fontSize }}>Are we testing enough? (Testing indicators)</div>
+            	<div className="mt-2"></div>
+            	{/*<div className="for-the-people-heading" style={{ padding: "10px", fontSize: this.props.fontSize }}>Are we testing enough? (Testing indicators)</div>*/}
             	<CardGroup>
             		<Card style={{ background: "antiquewhite" }}>
             			<Card.Body>
@@ -56,14 +57,17 @@ export default class IndicatorDescriptionCards extends Component {
             		<span style={{ width: "2%" }}> </span>
             		<Card style={{ background: "antiquewhite" }}>
             			<Card.Body>
-            				<Card.Title className="top-text-title" style={{ fontWeight: "bolder", fontSize: this.props.fontSize }}>{`Corrected Case Fatality Rate`}</Card.Title>
+            				<Card.Title className="top-text-title" style={{ fontWeight: "bolder", fontSize: this.props.fontSize }}>{`Stringency Index`}</Card.Title>
             				<Card.Text className="top-text-body" style={{ fontSize: this.props.fontSize }}>
-            					<div>The Crude CFR is equal to the deaths till date divided by the cases till date. This naive estimate of CFR is known to be biased in
-            					ongoing outbreaks, primarily due to two factors- the delay between time of case confirmation and time of death, and the under-reporting
-            					of cases due to limitations in testing coverage. The Corrected CFR presented here corrects for the first bias, by adjusting the
-            					denominator to reflect the number of cases where death would have been reported if it had occurred, based on known estimates of
-            					delay from confirmation to death. <span style={{ fontStyle: "italic" }}>The variation in Corrected CFR across states would then reflect
-            					the degree of under-reporting or testing adequacy in a particular state (with certain limitations). </span></div>
+            					<div>The Stringency Index indicates the stringency of the policies and
+                                     measures implemented by the government to prevent the spread of
+                                     COVID-19. This index provides a systematic way to track government
+                                     responses to COVID-19 over time. This value of this index is based on a
+                                     composite of government responses including school closures,
+                                     workplace closures, and travel bans, rescaled to a value from 0 to 100
+                                     (100 = strictest). It can also be used to explore whether the government
+                                     response affects the rate of infection. The stringency index is sourced
+                                     from Oxford COVID-19 Government Response Tracker (OxCGRT). </div>
             				</Card.Text>
             			</Card.Body>
             		</Card>

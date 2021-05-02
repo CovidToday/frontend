@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 
-export default class PosRateChart extends Component {
+export default class TotalVaccineChart extends Component {
 	constructor(props) {
 		super(props);
 	}
 	render() {
 		return (
 			<Line
-				data={this.props.positivityRateGraphData}
+				data={this.props.totalVaccineGraphData}
 				height={300}
 				options={{
 					maintainAspectRatio: false,
@@ -18,9 +18,7 @@ export default class PosRateChart extends Component {
 					tooltips: {
 						mode: 'index',
 						intersect: false,
-						filter: function (tooltipItem) {
-							return tooltipItem.datasetIndex === 2;
-						},
+
 						callbacks: {
 							label: function (tooltipItem, data) {
 								var label = data.datasets[tooltipItem.datasetIndex].label || '';
@@ -51,7 +49,6 @@ export default class PosRateChart extends Component {
 						yAxes: [{
 							display: true,
 							ticks: {
-								max: this.props.maxPosRatePoint
 							}
 						}],
 						xAxes: [{
