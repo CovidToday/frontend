@@ -1890,6 +1890,14 @@ export default class Dashboard extends Component {
 				</Popover.Content>
 			</Popover>
 		);
+		const totalVaccinePopover = (
+        			<Popover id="total-vaccine-popover" style={{ maxWidth: popoverMaxWidth }}>
+        				<Popover.Title as="h3" style={{ fontSize: popoverFont }}>Total Doses (%)</Popover.Title>
+        				<Popover.Content style={{ fontSize: popoverFont }}>
+        					Percent of population given one and two doses of vaccination.
+        				</Popover.Content>
+        			</Popover>
+        		);
 		const fontSizeDynamic = mobileView ? "smaller" : "larger";
 		const fontSizeDynamicSH = mobileView ? "small" : "larger";
 		const fontSizeDynamicHeading = mobileView ? "medium" : "x-large";
@@ -2399,9 +2407,7 @@ export default class Dashboard extends Component {
                                         		<Col>
                                     				<Card className={mobileView ? "shadow" : "plots-card shadow"}>
                                     					<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>CFR
-                                    						<OverlayTrigger placement="left">
-                                    							<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
-                                    						</OverlayTrigger>
+
                                     					</h5>
                                     					<div className="cfrGraph">
                                     						<CfrChart
@@ -2419,7 +2425,7 @@ export default class Dashboard extends Component {
                                         		<Col>
                                         			<Card className={mobileView ? "shadow" : "plots-card shadow"}>
                                         				<h5 className="mb-0 mt-2 plot-heading font-weight-bold" style={{ fontSize: fontSizeDynamic }}>Total Doses (%)
-                                        				<OverlayTrigger placement="left" overlay={positivityPopover}>
+                                        				<OverlayTrigger placement="left" overlay={totalVaccinePopover}>
                                         						<img src={informationIcon} className="ml-1 information-icon" alt="information png" />
                                         				</OverlayTrigger>
                                         				</h5>
