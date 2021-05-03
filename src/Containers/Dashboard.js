@@ -395,7 +395,7 @@ export default class Dashboard extends Component {
 			.then(response => {
 				this.setState({ rtDistrictDataApi: response.data });
 			});
-		await axios.get('https://covidtoday.github.io/backend/state_data/State_vaccine_mini.json')
+		await axios.get('https://covidtoday.github.io/backend/state_data/state_vaccine.json')
             .then(response => {
                 this.setState({ statesVaccineData: response.data });
                 this.getDailyVaccineGraphData(this.state.statesVaccineData.India);
