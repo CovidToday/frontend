@@ -1,5 +1,5 @@
 # Covid Today | www.covidtoday.in 
-## Tracking India's progress through the coronavirus epidemic. 
+## Tracking India's progress through the coronavirus epidemic situation. 
 <br/>
 <br/>
 <p align="center"><img src="https://github.com/CovidToday/backend/blob/master/poster.png?raw=true" width='80%'></p>
